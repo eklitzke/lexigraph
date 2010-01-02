@@ -8,6 +8,8 @@ from tempest.view import *
 
 application = webapp.WSGIApplication(
     [(r'/', Home),
+     (r'/api/insert', api.Insert),
+     (r'/api/schema', api.Schema),
      (r'/.*', Home) # fall-through case is to go to home, which redirects to /
     ], debug=True)
 

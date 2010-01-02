@@ -7,3 +7,5 @@ class Home(RequestHandler):
             self.redirect('/')
             return
         self.render_template('home.html')
+        
+__all__ = ['Home']

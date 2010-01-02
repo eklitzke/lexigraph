@@ -25,9 +25,9 @@ class RequestHandler(_RequestHandler):
         template = self.get_template(name)
         self.response.out.write(template.render(**self.env))
 
-    def error(self, code):
-        super(RequestHandler, self).error(code)
-        raise ErrorSignal
+    #def error(self, code):
+    #    super(RequestHandler, self).error(code)
+    #    raise ErrorSignal
 
 def handle_error(func):
     @wraps(func)

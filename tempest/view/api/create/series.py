@@ -10,7 +10,7 @@ class CreateSeriesSchema(ApiRequestHandler):
         max_age = int(max_age) if max_age else None
 
         ds, = DataSet.all().filter('name =', data_set).fetch(1)
-        # ensure that the tuple (ds, inteval) is unique
+        # ensure that the tuple (ds, interval) is unique
         existing = SeriesSchema.all().filter('data_set =', ds).filter('interval =', interval).fetch(1)
         if existing:
             return {'status': StatusCodes.ALREADY_EXISTS}

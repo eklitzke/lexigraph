@@ -32,7 +32,7 @@ def to_python(obj):
 class TempestModel(db.Model):
 
     def to_python(self):
-        d = {}
+        d = {'id': self.key().id(), 'kind': self.__class__.__name__}
         for k in self.properties().iterkeys():
             d[k] = getattr(self, k)
         return to_python(d)
@@ -47,7 +47,7 @@ class SeriesSchema(TempestModel):
     interval = db.IntegerProperty(required=True)
     max_age = db.IntegerProperty()
 
-class DataSeries(TempestModel):
+class DataPoint(TempestModel):
     series = db.ReferenceProperty(SeriesSchema, required=True)
     value = db.FloatProperty(required=True)
     timestamp = db.DateTimeProperty(required=True, auto_now_add=True)

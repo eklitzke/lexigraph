@@ -15,7 +15,6 @@ class Schema(ApiRequestHandler):
         empty_sets = DataSet.all().fetch(limit=LIMIT)
         for es in (e for e in empty_sets if e not in groups):
             groups[es] = []
-        
         return to_python(groups.items())
 
 __all__ = ['Schema']

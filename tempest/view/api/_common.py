@@ -7,13 +7,21 @@ from tempest.model import *
 class ApiException(Exception):
     pass
 
+class StatusCodes(object):
+
+    OK = 0
+
+    ALREADY_EXISTS = 100
+
 class MissingApiParam(ApiException):
     pass
 
 def encode_json(func):
     @wraps(func)
     def inner(self):
-        self.response.out.write(simplejson.dumps(func(self)))
+        val = func(self)
+        self.log.info('returning json representation of %r' % (val,))
+        self.response.out.write(simplejson.dumps(val))
     return inner
 
 class ApiRequestHandler(RequestHandler):

@@ -1,4 +1,11 @@
 {% extends "base.html" %}
 {% block body_content %}
 <p>welcome to the tempest</p>
+<fieldset>
+  <form action="/api/create/dataset" method="post">
+    name: <input type="text" name="name" /><br />
+    aggregate: <input type="text" name="aggregate" /><br />
+    <input type="submit" />
+  </form>
+</fieldset>
 {% endblock %}

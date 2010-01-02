@@ -10,6 +10,8 @@ application = webapp.WSGIApplication(
     [(r'/', Home),
      (r'/api/insert', api.Insert),
      (r'/api/schema', api.Schema),
+     (r'/api/create/dataset', api.CreateDataSet),
+     (r'/api/create/series', api.CreateSeriesSchema),
      (r'/.*', Home) # fall-through case is to go to home, which redirects to /
     ], debug=True)
 

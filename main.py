@@ -8,6 +8,7 @@ from tempest.view import *
 
 application = webapp.WSGIApplication(
     [(r'/', Home),
+     (r'/api/csv', api.CSV),
      (r'/api/insert', api.Insert),
      (r'/api/schema', api.Schema),
      (r'/api/create/dataset', api.CreateDataSet),

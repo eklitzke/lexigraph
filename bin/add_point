@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+import os
+import sys
+import urllib
+
+def add_point(url, dataset, value):
+    fields = {'dataset': dataset, 'value': value}
+    resp = urllib.urlopen(url, urllib.urlencode(fields)).read()
+
+def main(domain, port):
+    url = 'http://%s'  % (domain,)
+    if port and port != 80:
+        url += ':%d' % (port,)
+    url += '/api/create/point'
+
+    while True:
+        line = sys.stdin.readline()
+        if not line:
+            break
+        dataset, value = line.strip().split()
+        value = float(value)
+        add_point(url, dataset, value)
+
+if __name__ == '__main__':
+    domain = os.environ.get('TEMPEST_HOST', 'the-tempest.appspot.com')
+    port = int(os.environ.get('TEMPEST_PORT', 0))
+    main(domain, port)

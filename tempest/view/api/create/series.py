@@ -9,7 +9,8 @@ class CreateSeriesSchema(ApiRequestHandler):
         max_age = self.request.get('max_age')
         max_age = int(max_age) if max_age else None
 
-        ds, = DataSet.all().filter('name =', data_set).fetch(1)
+        ds = DataSetCache.lookup(data_set)
+
         # ensure that the tuple (ds, interval) is unique
         existing = SeriesSchema.all().filter('data_set =', ds).filter('interval =', interval).fetch(1)
         if existing:

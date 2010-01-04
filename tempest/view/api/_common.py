@@ -22,7 +22,7 @@ def encode_json(func):
     @wraps(func)
     def inner(self):
         val = func(self)
-        self.log.info('returning json representation of %r' % (val,))
+        self.log.debug('returning json representation of %r' % (val,))
         self.response.out.write(simplejson.dumps(val))
     return inner
 
@@ -33,8 +33,16 @@ class ApiRequestHandler(RequestHandler):
         response.headers['Content-Type'] = 'application/json; charset=us-ascii'
 
     def get_series(self):
-        series = int(self.request.get('series'))
-        return SeriesSchema.get_by_id(series)
+        # if a series is specified, prefer that
+        series = self.request.get('series')
+        if series:
+            return SeriesCache.lookup(series)
+
+        # otherwise, try to do a dataset/interval combination
+        dataset = self.request.get('dataset')
+        interval = self.request.get('interval')
+        if dataset and interval:
+            return SeriesNamedCache.lookup(dataset, int(interval))
 
     def fetch_data_set(self):
         data_set_id = self.request.get('data_set_id')

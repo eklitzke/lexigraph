@@ -1,0 +1,4 @@
+cron:
+ - description: prune old DataPoints
+   url: /cron/trim
+   schedule: every 5 minutes

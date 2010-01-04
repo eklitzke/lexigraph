@@ -11,13 +11,15 @@ class CSV(ApiRequestHandler):
 
     def get(self):
         series = self.get_series()
-        self.log.info('series = %s' % (series,))
-        #q = DataPoint.all().filter('series =', series).order('timestamp').fetch(LIMIT)
-        q = DataPoint.all().filter('series =', series).fetch(LIMIT)
-        self.response.out.write('Timestamp,Value\n')
-        for point in q:
-            t = time.mktime(point.timestamp.timetuple())
+        if series is None:
+            self.response.headers['Content-Type'] = 'text/plain; charset=us-ascii'
+            self.response.out.write('No series was specified (try passing in series=XXX or dataset=XXX&interval=YYY)\n')
+            return
 
-            self.response.out.write('%s,%s\n' % (t, t.value))
+        # prefer the most recent data, so order by -timestapm and then use reversed() below
+        q = DataPoint.all().filter('series =', series).order('-timestamp').fetch(LIMIT)
+        self.response.out.write('Timestamp,Value\n')
+        for point in reversed(q):
+            self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%Y/%m/%d %H:%M:%S'), point.value))
 
 __all__ = ['CSV']

@@ -68,6 +68,17 @@ class SeriesSchema(TempestModel):
         last_point.coalesce_value(self.data_set.aggregate, value, timestamp)
         return last_point
 
+    def trim_points(self):
+        if not self.max_age:
+            return
+        max_age = datetime.datetime.now() - datetime.timedelta(seconds=self.max_age)
+        points = True
+        while points:
+            points = DataPoint.all().filter('series =', self).filter('timestamp <', max_age).fetch(LIMIT)
+            if points:
+                for point in points:
+                    point.delete()
+
 class DataPoint(TempestModel):
     series = db.ReferenceProperty(SeriesSchema, required=True)
     value = db.FloatProperty(required=True)

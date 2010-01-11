@@ -18,7 +18,7 @@ class AggregateType(object):
     def from_string(cls, s):
         return getattr(cls, s.upper())
 
-class TempestModel(db.Model):
+class LexigraphModel(db.Model):
 
     log = ClassLogger()
 
@@ -28,7 +28,16 @@ class TempestModel(db.Model):
             d[k] = getattr(self, k)
         return to_python(d)
 
-class DataSet(TempestModel):
+class ApiKey(db.Model):
+    user = db.UserProperty(required=True)
+    token = db.StringProperty(required=True)
+
+    @classmethod
+    def create_new(cls, user):
+        token = os.urandom(16).encode('hex')
+        return cls(user=user, token=token)
+
+class DataSet(LexigraphModel):
     name = db.StringProperty(required=True) # unique
     aggregate = db.IntegerProperty(required=True)
     attributes = db.StringListProperty() # optional
@@ -37,7 +46,7 @@ class DataSet(TempestModel):
         for schema in SeriesSchema.all().filter('data_set =', self):
             schema.add_point(value, timestamp)
 
-class SeriesSchema(TempestModel):
+class SeriesSchema(LexigraphModel):
     data_set = db.ReferenceProperty(DataSet, required=True)
     interval = db.IntegerProperty(required=True)
     max_age = db.IntegerProperty()
@@ -68,18 +77,18 @@ class SeriesSchema(TempestModel):
         last_point.coalesce_value(self.data_set.aggregate, value, timestamp)
         return last_point
 
-    def trim_points(self):
+    def trim_points(self, limit=1000):
         if not self.max_age:
             return
         max_age = datetime.datetime.now() - datetime.timedelta(seconds=self.max_age)
         points = True
         while points:
-            points = DataPoint.all().filter('series =', self).filter('timestamp <', max_age).fetch(LIMIT)
+            points = DataPoint.all().filter('series =', self).filter('timestamp <', max_age).fetch(limit)
             if points:
                 for point in points:
                     point.delete()
 
-class DataPoint(TempestModel):
+class DataPoint(LexigraphModel):
     series = db.ReferenceProperty(SeriesSchema, required=True)
     value = db.FloatProperty(required=True)
     timestamp = db.DateTimeProperty(required=True, auto_now_add=True)

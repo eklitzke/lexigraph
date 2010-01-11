@@ -14,9 +14,21 @@ class StatusCodes(object):
     ALREADY_EXISTS = 100
     MISSING_PARAM  = 101
     INVALID_FIELD  = 102
+    INVALID_TOKEN  = 103
 
 class MissingApiParam(ApiException):
     pass
+
+def requires_api_key(func):
+    @wraps(func)
+    def inner(self):
+        token = self.request.get('token')
+        if not token:
+            return self.make_error(MISSING_PARAM, {'field': 'token'})
+        keys = ApiKey.all().query('token =', token).fetch(1)
+        if not keys:
+            return self.make_error(INVALID_TOKEN, {'field': 'token'})
+        return func(self)
 
 def encode_json(func):
     @wraps(func)

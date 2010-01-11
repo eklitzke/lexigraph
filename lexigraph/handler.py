@@ -3,7 +3,7 @@ from functools import wraps
 from vendor.jinja2 import Environment, FileSystemLoader
 
 from google.appengine.ext.webapp import RequestHandler as _RequestHandler
-from tempest.log import ClassLogger
+from lexigraph.log import ClassLogger
 
 class ErrorSignal(Exception):
     pass

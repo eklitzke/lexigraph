@@ -3,8 +3,8 @@ import datetime
 
 from google.appengine.ext import db
 
-from tempest.log import ClassLogger
-from tempest.model.util import to_python
+from lexigraph.log import ClassLogger
+from lexigraph.model.util import to_python
 
 class AggregateType(object):
     MIN = 1

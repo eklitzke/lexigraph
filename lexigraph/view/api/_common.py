@@ -1,8 +1,8 @@
 from django.utils import simplejson
 from functools import wraps
 
-from tempest.handler import RequestHandler
-from tempest.model import *
+from lexigraph.handler import RequestHandler
+from lexigraph.model import *
 
 class ApiException(Exception):
     pass

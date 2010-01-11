@@ -1,5 +1,5 @@
-from tempest.view.api._common import *
-from tempest.model import *
+from lexigraph.view.api._common import *
+from lexigraph.model import *
 from collections import defaultdict
 
 LIMIT = 100

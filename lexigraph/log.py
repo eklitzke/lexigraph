@@ -1,6 +1,6 @@
 import logging
 
-LOG_PREFIX = 'tempest.'
+LOG_PREFIX = 'lexigraph.'
 
 def new_logger(name):
     return logging.getLogger(LOG_PREFIX + name)

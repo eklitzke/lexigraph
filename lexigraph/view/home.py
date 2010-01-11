@@ -1,4 +1,4 @@
-from tempest.handler import RequestHandler
+from lexigraph.handler import RequestHandler
 
 class Home(RequestHandler):
 

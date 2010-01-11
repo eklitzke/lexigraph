@@ -1,4 +1,4 @@
-from tempest.view.cron._common import *
+from lexigraph.view.cron._common import *
 
 LIMIT = 1000
 

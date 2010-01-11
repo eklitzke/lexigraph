@@ -1,5 +1,5 @@
-from tempest.model.db import *
-from tempest.cache import CacheDict
+from lexigraph.model.db import *
+from lexigraph.cache import CacheDict
 
 class RowCache(CacheDict):
 

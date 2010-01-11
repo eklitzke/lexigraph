@@ -1,5 +1,5 @@
 import time
-from tempest.view.api._common import *
+from lexigraph.view.api._common import *
 
 LIMIT = 1000
 

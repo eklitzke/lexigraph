@@ -1,10 +1,10 @@
 # fix up the environment before anything else
-from tempest import gae_tweaks
+from lexigraph import gae_tweaks
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-from tempest.view import *
+from lexigraph.view import *
 
 application = webapp.WSGIApplication(
     [(r'/', Home),

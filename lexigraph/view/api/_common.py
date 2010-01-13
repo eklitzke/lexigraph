@@ -4,7 +4,7 @@ from functools import wraps
 from lexigraph.handler import RequestHandler
 from lexigraph.model import *
 
-class ApiException(Exception):
+class ApiError(Exception):
     pass
 
 class StatusCodes(object):
@@ -12,12 +12,9 @@ class StatusCodes(object):
     OK = 0
 
     ALREADY_EXISTS = 100
-    MISSING_PARAM  = 101
+    MISSING_FIELD  = 101
     INVALID_FIELD  = 102
     INVALID_TOKEN  = 103
-
-class MissingApiParam(ApiException):
-    pass
 
 def requires_api_key(func):
     @wraps(func)
@@ -43,6 +40,9 @@ class ApiRequestHandler(RequestHandler):
     def initialize(self, request, response):
         super(RequestHandler, self).initialize(request, response)
         response.headers['Content-Type'] = 'application/json; charset=us-ascii'
+    
+    def process_form(self):
+        self.key = self.request.get('key')
 
     def get_series(self):
         # if a series is specified, prefer that
@@ -75,3 +75,8 @@ class ApiRequestHandler(RequestHandler):
         response['status'] = kw.copy()
     	response['status']['code'] = code
         return response
+
+    def get(self):
+        assert hasattr(self, 'get_worker')
+        self.process_form()
+        self.get_worker()

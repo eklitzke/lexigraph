@@ -3,6 +3,9 @@ from google.appengine.ext import db
 from lexigraph.log import ClassLogger
 from lexigraph.model.util import to_python
 
+class APIError(Exception):
+    pass
+
 class LexigraphModel(db.Model):
 
     log = ClassLogger()

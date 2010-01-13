@@ -2,6 +2,22 @@ import pickle
 import hashlib
 from google.appengine.api import memcache
 
+def surrogate_key(*args, **kwargs):
+    """Take args and kwargs (from a function take *args, **kwargs) and turn them
+    into a key suitable for usage with memcache.
+    """
+
+    def norm_surrogate_key(k):
+        if isinstance(k, db.Model):
+            surrogate_key.append(k.key().id())
+        else:
+            surrogate_key.append(k)
+
+    surrogate = [norm_surrogate_key(arg) for arg in args]
+    for k in sorted(kwargs.keys()):
+        surrogate.extend([k, norm_surrogate_key(kwargs[k])])
+    return surrogate
+
 class CacheDict(object):
 
     namespace = 'cachedict'

@@ -21,7 +21,29 @@ class DataSet(LexigraphModel):
     aggregate = db.IntegerProperty(required=True)
     attributes = db.StringListProperty() # optional
 
-    def add_points(self, value, timestamp):
+    def add_points(self, value, timestamp, user=None, api_key=None):
+        if user is None:
+            user = users.get_current_user()
+
+        assert not (user and api_key), 'Not allowed to have both user %r and api_key %r' % (user, api_key)
+
+        if user is None and api_key is None:
+            perms = DataACL.anonymous_acl(self)
+        elif user:
+            perms = DataACL.by_user(self, user)
+        elif api_key:
+            perms = DataACL.by_api_key(self, user)
+
+        if 'write' not in perms:
+            raise PermissionsError('user=%r api_key=%r lacked "write" capability for %s' % (user, api_key, self))
+
+        return self._add_points(value, timestamp)
+
+
+    def _add_points(self, value, timestamp):
+        """Add points to a DataSet. This is a private method; the authentication
+        to do the add should be done higher up.
+        """
         for schema in SeriesSchema.all().filter('dataset =', self):
             schema.add_point(value, timestamp)
 
@@ -52,6 +74,7 @@ class DataACL(LexigraphModel):
         return action in self.perms
 
     @classmethod
+    @permissions_cache
     def anonymous_acl(cls, dataset):
         """Fetch the anonymous ACL for a dataset (creating one with no
         permissions if no ACL exists).
@@ -91,13 +114,13 @@ class DataACL(LexigraphModel):
         return anon_acl
 
     @classmethod
-    def get_by_dataset_and_user(cls, dataset, user=None, check_current=True):
+    def by_user(cls, dataset, user=None, check_current=True):
         if user is None and check_current:
             user = users.get_current_user()
         return cls._combined_acls(dataset, user, 'user', ACLGroup.groups_for_user)
 
     @classmethod
-    def get_by_dataset_and_api_key(cls, dataset, api_key):
+    def by_api_key(cls, dataset, api_key):
         assert api_key
         return cls._combined_acls(dataset, api_key, 'api_key', ACLGroup.groups_for_api_key)
 

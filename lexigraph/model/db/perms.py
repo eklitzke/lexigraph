@@ -1,7 +1,10 @@
+from functools import wraps
+
 from google.appengine.ext import db
 from google.appengine.api import users
 
-from lexigraph.model.db import LexigraphModel
+from lexigraph.cache import surrogate_key, CacheDict
+from lexigraph.model.db import APIError, LexigraphModel
 
 #                            ,----> User
 #                           /
@@ -9,6 +12,27 @@ from lexigraph.model.db import LexigraphModel
 #                          \
 #                           `----> APIKey
 
+class PermissionsError(APIError):
+    pass
+
+class PermissionsCache(CacheDict):
+    namespace = 'permissions_cache'
+
+def permissions_cache(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        key = surrogate_key(*args, **kwargs)
+
+        cache = PermissionsCache()
+        cache.namespace += func.__name__
+        
+        val = cache[key]
+        if val is None:
+            val = func(*args, **kwargs)
+            if val is not None:
+                cache[key] = val
+        return val
+    return inner
 
 class ACLGroup(LexigraphModel):
     name = db.StringProperty(required=True) # unique
@@ -17,10 +41,12 @@ class ACLGroup(LexigraphModel):
     users = db.ListProperty(users.User)
 
     @classmethod
+    @permissions_cache
     def groups_for_user(cls, user):
         return cls.all().filter('users =', user).fetch(30)
 
     @classmethod
+    @permissions_cache
     def groups_for_api_key(cls, api_key):
         return APIKey.all().filter('group =', self).fetch(1)
 

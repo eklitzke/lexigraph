@@ -15,7 +15,10 @@ class RowCache(CacheDict):
         query = cls.model.all()
         for field_name, field_val in zip(cls.fields, fields):
             query = query.filter(field_name + ' =', field_val)
-        val, = query.fetch(1)
+        try:
+            val, = query.fetch(1)
+        except ValueError:
+            val = None
         cache_obj[fields] = val
         return val
 
@@ -50,6 +53,9 @@ class SeriesNamedCache(CacheDict):
             return series
 
         ds = DataSetCache.lookup(dataset_name)
-        val, = SeriesSchema.all().filter('data_set =', ds).filter('interval =', interval).fetch(1)
+        try:
+            val, = SeriesSchema.all().filter('data_set =', ds).filter('interval =', interval).fetch(1)
+        except ValueError:
+            return None
         cache_obj[(dataset_name, interval)] = val
         return val

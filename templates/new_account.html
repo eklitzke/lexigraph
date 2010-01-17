@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body_header %}
+<h1>create a new lexigraph account</h1>
+{% endblock %}
+
+{% block body_content %}
+<form action="/new/account" method="POST">
+  account name: <input type="text" name="account_name"> <input type="submit" value="create!">
+</form>
+{% endblock %}

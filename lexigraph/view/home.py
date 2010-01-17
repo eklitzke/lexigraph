@@ -1,3 +1,4 @@
+from lexigraph.view import add_route
 from lexigraph.handler import RequestHandler
 
 class Home(RequestHandler):
@@ -7,5 +8,5 @@ class Home(RequestHandler):
             self.redirect('/')
             return
         self.render_template('home.html')
-        
-__all__ = ['Home']
+
+add_route(Home, '/')

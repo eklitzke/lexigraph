@@ -1,5 +1,6 @@
 import time
 import math
+from lexigraph.view import add_route
 from lexigraph.view.api._common import *
 from lexigraph.model.query import *
 from lexigraph.model.db import *
@@ -85,5 +86,4 @@ class CSV(ApiRequestHandler):
         for point in reversed(points):
             self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%Y/%m/%d %H:%M:%S'), point.value))
 
-
-__all__ = ['CSV']
+add_route(CSV, '/api/csv')

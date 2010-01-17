@@ -1,6 +1,8 @@
 html { font-family: sans-serif; }
 
-body { border: 1px solid gray; }
+body {
+    border: 1px solid gray;
+}
 
 h1 {
 	font-size: 1.3em;
@@ -16,7 +18,19 @@ h2 {
 	margin-bottom: 0.25em;
 }
 
+.inline_header h2 { display: inline; }
+.inline_header a { font-size: 0.8em; }
+
 p {
 	margin-top: 0;
 	padding-left: 0.6em;
+}
+
+legend {
+	font-weight: bold;
+}
+
+fieldset {
+    border: 1px solid black;
+    border-radius: 5px;
 }

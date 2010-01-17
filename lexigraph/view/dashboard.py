@@ -1,0 +1,27 @@
+from lexigraph.view import add_route
+from lexigraph.handler import RequestHandler, requires_login
+from lexigraph import model
+from lexigraph.model.query import *
+
+class Dashboard(RequestHandler):
+
+    def all_datasets(self):
+        dataset_names = set()
+        for group in self.env['groups']:
+            rows = fetch_all(model.AccessControl.all().filter('access_group =', group).filter('readable =', True))
+            for row in rows:
+                dataset_names.add(row.dataset.name)
+        return sorted(dataset_names)
+
+    @requires_login
+    def get(self):
+        if self.current_account is None:
+            self.log.info('No accounts set up for user, redirecting')
+            self.redirect('/new/account')
+            return
+        self.env['account'] = self.current_account
+        self.env['groups'] = model.AccessGroup.groups_for_user(self.current_account)
+        self.env['datasets'] = self.all_datasets()
+        self.render_template('dashboard.html')
+        
+add_route(Dashboard, '/dashboard')

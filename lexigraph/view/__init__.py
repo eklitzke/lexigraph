@@ -1,3 +1,23 @@
-from lexigraph.view.home import *
+routing = []
+    # [(r'/', Home),
+    #  (r'/dashboard', Dashboard),
+    #  (r'/new_account', NewAccout),
+    #  (r'/cron/trim', cron.DataPointTrim),
+    #  (r'/api/csv', api.CSV),
+    #  (r'/api/insert', api.Insert),
+    #  (r'/api/schema', api.Schema),
+    #  (r'/api/create/dataset', api.CreateDataSet),
+    #  (r'/api/create/series', api.CreateSeriesSchema),
+    #  (r'/api/create/point', api.CreatePoint),
+    #  (r'/.*', Home) # fall-through case is to go to home, which redirects to /
+
+
+def add_route(cls, uri_regex):
+    routing.append((uri_regex, cls))
+
+from lexigraph.view.home import Home
+from lexigraph.view.new_account import NewAccount
+from lexigraph.view.new_dataset import NewDataSet
+from lexigraph.view.dashboard import Dashboard
+
 from lexigraph.view import api
-from lexigraph.view import cron

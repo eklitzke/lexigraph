@@ -1,23 +1,10 @@
 {% extends "base.html" %}
+
 {% block body_header %}
-<h1>one minute load on t500</h1>
+<h1>lexigraph; graphing &amp; trending</h1>
 {% endblock %}
+
 {% block body_content %}
-<h2>one data point per second</h2>
-<div id="load_sec"></div>
-<h2>one data point per minute</h2>
-<div id="load_min"></div>
-<script type="text/javascript">
-  g1 = new Dygraph(
-    document.getElementById("load_sec"),
-    "/api/csv?dataset=load1&interval=1",
-    {
-      rollPeriod: 30,
-      showRoller: true,
-    });
-  g2 = new Dygraph(
-    document.getElementById("load_min"),
-    "/api/csv?dataset=load1&interval=60",
-    {});
-</script>
+<p>maybe you want to go to the <a href="/dashboard">dashboard?</a></p>
+&copy; 2010 your mom
 {% endblock %}

@@ -38,7 +38,7 @@ def encode_json(func):
 class ApiRequestHandler(RequestHandler):
 
     def initialize(self, request, response):
-        super(RequestHandler, self).initialize(request, response)
+        super(ApiRequestHandler, self).initialize(request, response)
         response.headers['Content-Type'] = 'application/json; charset=us-ascii'
     
     def process_form(self):

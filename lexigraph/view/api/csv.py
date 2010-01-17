@@ -2,8 +2,9 @@ import time
 import math
 from lexigraph.view import add_route
 from lexigraph.view.api._common import *
+
+from lexigraph import model
 from lexigraph.model.query import *
-from lexigraph.model.db import *
 
 LIMIT = 1000
 
@@ -18,12 +19,12 @@ class CSV(ApiRequestHandler):
         dataset = self.request.get('dataset')
         if not dataset:
             return self.make_error(StatusCodes.MISSING_FIELD, field='dataset')
-        self.dataset = maybe_one(DataSet.all().filter('name =', dataset))
+        self.dataset = maybe_one(model.DataSet.all().filter('name =', dataset).filter('account =', self.current_account))
         if self.dataset is None:
             return self.make_error(StatusCodes.INVALID_FIELD, field='dataset')
-        
+
         # validate the permissions for the dataset
-        if not DataACL.by_api_key(self.dataset, self.key).is_allowed('read'):
+        if not self.dataset.is_allowed(api_key=self.key, read=True):
             return self.make_error(StatusCodes.PERMISSIONS_ERROR, field='dataset')
 
         # max points allowed in the CSV
@@ -32,8 +33,8 @@ class CSV(ApiRequestHandler):
         # hint on how many points to try to have in the CSV
         self.points = self.request.get('points', 400)
 
-        # timespan, in seconds
-        self.span = self.request.get('span', 86400)
+        # timespan, in seconds (default: four hours)
+        self.span = self.request.get('span', 4 * 3600)
 
     def get_worker(self):
 
@@ -52,11 +53,13 @@ class CSV(ApiRequestHandler):
             """
             # filter out candidates whose max_age is too small
             if candidate.max_age is not None and candidate.max_age < self.span:
+                self.log.debug('max age is too small')
                 return 0, -1
 
             points_required = int(math.ceil(self.span / candidate.interval))
 
             if points_required > self.max_points:
+                self.log.debug('takes too many points: %d' % (points_required,))
                 return 0, -1
 
             points_diff = points_required - self.points
@@ -66,14 +69,15 @@ class CSV(ApiRequestHandler):
                 return points_required, 0.5 * points_diff
 
             # too few points required
-            return points_required, float(points_diff)
+            return points_required, float(-points_diff)
 
         # candidates must have a positive score
         candidates = []
-        for c in SeriesSchema.all().filter('dataset =', self.dataset).fetch(1000):
+        for c in fetch_all(model.DataSeries.all().filter('dataset =', self.dataset)):
             points_required, score = score_candidate(c)
+            self.log.debug('considering %s; points_required = %s, score = %s' % (c, points_required, score))
             if score >= 0:
-                candidates.append(c, score, points_required)
+                candidates.append((c, score, points_required))
 
         if not candidates:
             self.log.info('No candidates could fulfill CSV request for %s' % (self.request.uri,))
@@ -81,7 +85,7 @@ class CSV(ApiRequestHandler):
 
         # pick the best candidate
         series, score, points_required = min(candidates, key=lambda (a, b, c): b)
-        self.log.debug('Chose series %s, score = %s, points_required = %d' % (series, score, points_required))
+        self.log.info('Chose series %s, score = %s, points_required = %d' % (series, score, points_required))
         points = DataPoint.all().filter('series =', series).order('-timestamp').fetch(points_required)
         for point in reversed(points):
             self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%Y/%m/%d %H:%M:%S'), point.value))

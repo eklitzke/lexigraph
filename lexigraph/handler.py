@@ -48,7 +48,9 @@ class RequestHandler(_RequestHandler):
         super(RequestHandler, self).initialize(request, response)
         response.headers['Content-Type'] = 'text/html; charset=utf-8'
         self.env = {'title': ''}
+
         self.user = users.get_current_user()
+        self.key = request.get('key') or None
 
     def form_required(self, name, uri=None):
         """Get a thing in the form, redirecting if it is missing."""
@@ -74,8 +76,7 @@ class RequestHandler(_RequestHandler):
     def current_account(self):
         """XXX: this is really just stubbed out."""
         assert self.user
-        row = maybe_one(model.Account.all().filter('owner =', self.user))
-        return row
+        return maybe_one(model.Account.all().filter('owner =', self.user))
 
     def get_template(self, name):
         return self.jinja_env.get_template(name)

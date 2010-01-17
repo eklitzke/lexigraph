@@ -1,4 +1,6 @@
 import os
+import time
+import datetime
 
 from google.appengine.ext import db
 from google.appengine.api import users
@@ -99,43 +101,35 @@ class DataSet(LexigraphModel):
             self.log.warning('No anonymous AccessControl configured for %s' % (self,))
             return AccessControl.new(None, self)
 
-    def add_points(self, value, timestamp, user=None, api_key=None):
-        if user is None:
-            user = users.get_current_user()
-
-        assert not (user and api_key), 'Not allowed to have both user %r and api_key %r' % (user, api_key)
+    def is_allowed(self, user=None, api_key=None, read=False, write=False, delete=False):
 
         def check_group(group):
-            if group is None:
+            if not group:
                 return False
-            access = maybe_one(AccessControl.all().filter('access_group =', group).filter('dataset =', dataset))
-            return access and access.is_allowed(write=True)
+            access = maybe_one(AccessControl.all().filter('access_group =', group).filter('dataset =', self))
+            return access and access.is_allowed(read=read, write=write, delete=delete)
 
-        # check the anonymous acl
-        result = None
-        if self.anonymous_permission().is_allowed(write=True):
-            result = self._add_points(value, timestamp)
-        elif user:
-            groups = AccessGroup.groups_for_user(self.account, user)
-            for group in groups:
-                if check_group(group):
-                    result = self._add_points(value, timestamp)
-                    break
-        elif api_key:
-            group = AccessGroup.group_for_api_key(api_key)
-            if check_group(group):
-                result = self._add_points(value, timestamp)
+        if self.anonymous_permission().is_allowed(read=read, write=write, delete=delete):
+            return True
 
-        if result is None:
-            raise PermissionsError
-        return result
+        if api_key:
+            return check_group(AccessGroup.group_for_api_key(api_key))
 
-    def _add_points(self, value, timestamp):
-        """Add points to a DataSet. This is a private method; the authentication
-        to do the add should be done higher up.
+        if user:
+            return any(check_group(g) for g in AccessGroup.get_groups_for_user(self.account, user))
+
+        return False
+
+    def add_points(self, value, timestamp=None):
+        """Add points to a DataSet. Authentication to do the add should be done
+        higher up.
         """
-        for schema in self.series():
+        if timestamp is None:
+            timestamp = datetime.datetime.now()
+        series = self.series()
+        for schema in series:
             schema.add_point(value, timestamp)
+        self.log.info('added points to %d series' % (len(series),))
 
 class AccessControl(LexigraphModel):
     # The primary key is (access_group, dataset). The access_group may be None,
@@ -224,15 +218,17 @@ class DataPoint(LexigraphModel):
             self.timestamp = new_timestamp
             self.put()
 
-        if aggregate == AggregateType.MIN:
+        if aggregate == 'min':
             update_value(min(self.value, new_value))
-        elif aggregate == AggregateType.MAX:
+        elif aggregate == 'max':
             update_value(max(self.value, new_value))
-        elif aggregate == AggregateType.SUM:
+        elif aggregate == 'sum':
             update_value(self.value + new_value)
-        elif aggregate == AggregateType.AVG:
-            raise NotImplementedError
-        elif aggregate == AggregateType.OLD:
+        #elif aggregate == AggregateType.AVG:
+        #    raise NotImplementedError
+        elif aggregate == 'old':
             update_value(self.value) # i.e. just update the timestamp
-        elif aggregate == AggregateType.NEW:
+        elif aggregate == 'new':
             update_value(new_value)
+        else:
+            raise NotImplementedError

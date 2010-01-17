@@ -18,6 +18,8 @@ def add_route(cls, uri_regex):
 from lexigraph.view.home import Home
 from lexigraph.view.new_account import NewAccount
 from lexigraph.view.new_dataset import NewDataSet
+from lexigraph.view.new_dataseries import NewDataSeries
+from lexigraph.view.new_datapoint import NewDataPoint
 from lexigraph.view.dashboard import Dashboard
 
 from lexigraph.view import api

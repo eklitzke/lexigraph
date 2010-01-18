@@ -11,7 +11,17 @@
   <body>
     {% block body %}
 	{% block body_header %}<h1>graphs, graphs, graphs!</h1>{% endblock %}
+    {% block topnav %}
+    <div id="topnav">
+      <a href="/">home</a> <a href="/dashboard">dashboard</a> <a href="/prefs">preferences</a>
+    </div>
+    {% endblock %}
+    <div id="content_padding">
     {% block body_content %}{% endblock %}
     {% endblock %}
+    </div>
+    <div id="footer">
+      &copy;2010 the lexicographers
+    </div>
   </body>
 </html>

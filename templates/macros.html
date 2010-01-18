@@ -1,0 +1,40 @@
+<!-- jinja macros -->
+{% macro label_with_input(label_name, id, name, value='', type='text', size=20, br=True) -%}
+<label for="{{id}}">{{label_name}}: </label><input id="{{id}}" type="{{type}}" name="{{name}}" value="{{value|e}}" size="{{size}}">
+{% if br %}
+<br />
+{% endif %}
+{%- endmacro %}
+
+{% macro aggregate_dropdown(label_name='aggregate function', name='aggregate', id='aggregate_dropdown', br=True) -%}
+<label for="{{id}}">{{label_name}}: </label>
+<select name="{{name}}">
+  <option name="min">min</option>
+  <option name="max">max</option>
+  <option name="sum">sum</option>
+  <option name="old">oldest</option>
+  <option name="new">newest</option>
+</select>
+{% if br %}
+<br />
+{% endif %}
+{%- endmacro %}
+
+{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True) -%}
+{% if dataset and not dataset_name %}
+{% set dataset_name = dataset.name %}
+{% endif %}
+{% if show_edit %}
+<div class="inline_header"><h2>{{ dataset_name }}</h2>&nbsp;<a href="/edit/dataset?name={{dataset_name}}">edit</a></div>
+{% else %}
+<h2>{{ dataset_name }}</h2>
+{% endif %}
+
+<div id="graph_dataset_{{dataset_name}}"></div>
+<script type="text/javascript">
+  g = new Dygraph(
+      document.getElementById("graph_dataset_{{dataset_name}}"),
+      "/api/csv?dataset={{dataset_name}}"
+  )
+</script>
+{%- endmacro %}

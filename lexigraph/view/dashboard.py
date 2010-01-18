@@ -10,7 +10,10 @@ class Dashboard(RequestHandler):
         for group in self.env['groups']:
             rows = fetch_all(model.AccessControl.all().filter('access_group =', group).filter('readable =', True))
             for row in rows:
-                dataset_names.add(row.dataset.name)
+                try:
+                    dataset_names.add(row.dataset.name)
+                except model.Error:
+                    pass
         return sorted(dataset_names)
 
     @requires_login

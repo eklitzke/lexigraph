@@ -1,0 +1,70 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+
+{% block body_header %}
+<h1>{{dataset.name}} details</h1>
+{% endblock %}
+
+{% block body_content %}
+{{ macros.draw_graph(dataset, show_edit=False) }}
+{% if dataset.description %}
+<strong>description:</strong> {{dataset.description }}
+{% else %}
+(sorry, no description for this dataset)
+{% endif %}
+
+{% if series %}
+<form action="/edit/dataseries" method="POST">
+  <fieldset>
+    <legend>edit existing data series</legend>
+
+    the checkboxes control the "delete" button. the "update" buttons control the
+    individual data series elements, and don't have anything to do with the
+    checkboxes. sorry, this was the best i could do with my html/js skillz.
+    <br />
+
+    {% for s in series %}
+    {% set s_id = s.key().id() %}
+    <input type=checkbox name="series_{{s_id}}">
+    {{ macros.label_with_input("interval", "ival_{{s_id}}", "ival_{{s_id}}", value=s.interval, size=5, br=False) }}
+    {{ macros.label_with_input("max age", "max_age_{{s_id}}", "max_age_{{s_id}}", value=s.max_age, size=5, br=False) }}
+    <!--interval: {{s.interval}} max_age: hi ther-->
+    <input type="submit" name="update_{{s_id}}" value="update">
+    <br/>
+    {% endfor %}
+    <input type="submit" value="delete" />
+  </fieldset>
+</form>
+{% endif %}
+<form action="/new/dataseries" method="POST">
+  <fieldset>
+    <legend>create a new data series</legend>
+    interval (seconds): <input type="text" name="interval"> <br />
+    max age (seconds): <input type="text" name="max_age"> <br />
+    <input type="submit" value="submit" />
+  </fieldset>
+</form>
+
+{% if series %}
+<form action="/new/datapoint" method="POST">
+  <fieldset>
+    <legend>add an ad-hoc data point</legend>
+
+    add a new ad-hoc data point to this dataset (should be a float). useful for
+    testing and shit. the timestamp will be Rite-Now&trade;.<br />
+
+    value: <input type="text" name="value"> <br />
+    <input type="submit" value="submit" />
+  </fieldset>
+</form>
+{% endif %}
+
+{% if can_delete %}
+<form action="/delete/dataset" method="POST">
+  <fieldset>
+    <legend>delete this dataset</legend>
+    <input type=checkbox name="delete_confirm" id="delete_confirm"><label for="delete_confirm">yes, i really want to permanently and irreversible delete <q>{{dataset.name}}</q></label><br />
+    <input type="hidden" name="name" value="{{dataset.name}}" />
+    <input type="submit" value="delete it" />
+{% endif %}
+{% endblock %}

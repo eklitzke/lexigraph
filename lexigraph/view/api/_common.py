@@ -72,6 +72,7 @@ class ApiRequestHandler(RequestHandler):
         return self.add_status({}, code, **kw)
 
     def add_status(self, response, code, **kw):
+        response.headers['X-API-Status'] = str(code)
         response['status'] = kw.copy()
     	response['status']['code'] = code
         return response

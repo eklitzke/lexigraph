@@ -6,12 +6,15 @@ class CreatePoint(ApiRequestHandler):
     @encode_json
     def post(self):
 
+        dataset = self.get_dataset(self.form_required('name'))
+
         dataset = self.request.get('dataset')
         if not dataset:
             return self.make_error(StatusCodes.MISSING_PARAM, missing='dataset')
-        dataset = DataSetCache.lookup(dataset)
-        if not dataset:
-            return self.make_error(StatusCodes.INVALID_FIELD, field='dataset')
+        try:
+            dataset = self.get_dataset(dataset)
+        except PermissionsError:
+            raise
 
         value = float(self.request.get('value'))
         timestamp = self.request.get('timestamp')

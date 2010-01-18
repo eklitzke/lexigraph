@@ -9,6 +9,8 @@ from lexigraph.log import ClassLogger
 from lexigraph.model.query import maybe_one, fetch_all
 from lexigraph.model.util import to_python
 
+Error = db.Error
+
 class APIError(Exception):
     pass
 
@@ -166,6 +168,7 @@ class DataSeries(LexigraphModel):
     dataset = db.ReferenceProperty(DataSet, required=True)
     interval = db.IntegerProperty(required=True)
     max_age = db.IntegerProperty()
+    description = db.TextProperty()
 
     def to_epoch(self, timestamp):
         """timestamp: a unix timestamp"""

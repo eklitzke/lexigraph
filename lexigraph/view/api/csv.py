@@ -19,12 +19,10 @@ class CSV(ApiRequestHandler):
         dataset = self.request.get('dataset')
         if not dataset:
             return self.make_error(StatusCodes.MISSING_FIELD, field='dataset')
-        self.dataset = maybe_one(model.DataSet.all().filter('name =', dataset).filter('account =', self.current_account))
-        if self.dataset is None:
-            return self.make_error(StatusCodes.INVALID_FIELD, field='dataset')
 
-        # validate the permissions for the dataset
-        if not self.dataset.is_allowed(api_key=self.key, read=True):
+        try:
+            self.dataset = self.get_dataset(dataset)
+        except PermissionsError:
             return self.make_error(StatusCodes.PERMISSIONS_ERROR, field='dataset')
 
         # max points allowed in the CSV

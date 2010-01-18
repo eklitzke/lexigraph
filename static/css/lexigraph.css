@@ -2,6 +2,8 @@ html { font-family: sans-serif; }
 
 body {
     border: 1px solid gray;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 h1 {
@@ -10,20 +12,55 @@ h1 {
 	background-color: #EEE;
 	margin-top: 0;
 	padding-left: 0.6em;
+    margin-bottom: 0;
 }
+
+#content_padding {
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+}
+
+#topnav {
+    margin-top: 0;
+    padding-left: 0.6em;
+    font-weight: bold;
+    border-bottom: 1px solid grey;
+}
+
+#topnav a {
+    text-decoration: none;
+    color: #555;
+    /*color: black;*/
+}
+
+#topnav a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+#footer {
+    /*background-color: #EFEFEF;*/
+    padding-left: 0.4em;
+    font-size: 0.7em;
+    color: #555;
+    margin-top: 0.6em;
+    }
 
 h2 {
 	font-size: 1.1em;
-	padding-left: 0.6em;
 	margin-bottom: 0.25em;
 }
+
+h3 {
+    /*font-size: 0.9em;*/
+	margin-bottom: 0.25em;
+    }
 
 .inline_header h2 { display: inline; }
 .inline_header a { font-size: 0.8em; }
 
 p {
 	margin-top: 0;
-	padding-left: 0.6em;
 }
 
 legend {
@@ -31,6 +68,6 @@ legend {
 }
 
 fieldset {
-    border: 1px solid black;
+    border: 1px solid grey;
     border-radius: 5px;
 }

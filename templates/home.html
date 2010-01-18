@@ -1,12 +1,33 @@
 {% extends "base.html" %}
 
 {% block body_header %}
+<div id="head_block">
 <h1>lexigraph; graphing &amp; trending</h1>
+</div>
+{% endblock %}
+
+{% block topnav %}
 {% endblock %}
 
 {% block body_content %}
-<p>copy about lexigraph goes here. but since there ain't any, maybe you want to
-go to the <a href="/dashboard">dashboard?</a></p>
+<p>lexigraph is a simple and reliable graphing and trending system.</p>
+<h3>key features</h3>
 
-&copy; 2010 your mom
+lexigraph is designed as an alternative to similar software like cacti or
+ganglia. for sysadmins, we wanted something with dynamics charts that would be
+more reliable, scale better, and be easier to configure and maintain. for
+developers we wanted to more something that was attractive, easy to use, and had
+a simple http api.
+
+<ul>
+  <li>simple &amp; fun &mdash; easy to set up, with an attractive and dynamic js interface</li>
+  <li>hosted remotely &mdash; nothing to install, and we're up even if you're not</li>
+  <li>reliable &amp; scalable &mdash; two characteristics we leverage from appengine</li>
+  <li>secure &mdash; available over https, and supports fined-grained access controls</li>
+  <li>developer friendly &mdash; access and manipulate data with a simple, restful api</li>
+</ul>
+
+<h3>check it out</h3>
+you can start using lexigraph immediately; just go to
+the <a href="/dashboard">dashboard</a>.
 {% endblock %}

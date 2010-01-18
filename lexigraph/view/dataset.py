@@ -22,10 +22,10 @@ class NewDataSet(RequestHandler):
             self.log.warning('User ID %s not present in group %s' % (self.user.user_id(), group_name))
             self.redirect('/dashboard')
 
-        description = self.request.get('description')
+        description = self.request.get('description') or None
 
         # create the dataset
-        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.current_account)
+        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.current_account, description=description)
         ds.put()
         self.log.debug('created new dataset with id %s' % (ds.key().id(),))
 
@@ -36,4 +36,37 @@ class NewDataSet(RequestHandler):
 
         self.redirect('/dashboard')
 
+class EditDataSet(RequestHandler):
+
+    @requires_login
+    def get(self):
+        dataset = self.get_dataset(self.form_required('name'))
+        self.env['dataset'] = dataset
+        self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
+        self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
+        self.render_template('edit_dataset.html')
+
+class DeleteDataSet(RequestHandler):
+
+    @requires_login
+    def post(self):
+        dataset = self.get_dataset(self.form_required('name'))
+        assert dataset.is_allowed(self.user, delete=True)
+
+        # delete all of the data points
+        for s in dataset.series():
+            while True:
+                points = fetch_all(model.DataPoint.all().filter('series =', s))
+                if not points:
+                    break
+                for p in points:
+                    p.delete()
+            s.delete()
+        for ac in fetch_all(model.AccessControl.all().filter('datset =', dataset)):
+            ac.delete()
+        dataset.delete()
+        self.redirect('/dashboard')
+
 add_route(NewDataSet, '/new/dataset')
+add_route(EditDataSet, '/edit/dataset')
+add_route(DeleteDataSet, '/delete/dataset')

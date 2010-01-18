@@ -1,3 +1,4 @@
+{% import "macros.html" as macros %}
 {% extends "base.html" %}
 {% block body_header %}
 <h1><span style="font-style: italic;">{{account.name}}</span> dashboard</h1>
@@ -8,26 +9,15 @@
 {% endif %}
 
 {% for dataset_name in datasets %}
-<div class="inline_header"><h2>{{ dataset_name }}</h2>&nbsp;<a href="/edit/dataset?name={{dataset_name}}">edit</a></div>
-<div id="graph_dataset_{{dataset_name}}"></div>
-<script type="text/javascript">
-  g = new Dygraph(
-      document.getElementById("graph_dataset_{{dataset_name}}"),
-      "/api/csv?dataset={{dataset_name}}"
-  )
-</script>
+{{ macros.draw_graph(dataset_name=dataset_name) }}
 {% endfor %}
 
 <form action="/new/dataset" method="POST">
   <fieldset>
     <legend>create a new dataset</legend>
-    dataset name: <input type="text" name="dataset"> <br />
-    aggregate function:
-    <select name="aggregate">
-      <option name="min">min</option>
-      <option name="max">max</option>
-      <option name="sum">sum</option>
-    </select> <br />
+    <!--dataset name: <input type="text" name="dataset"> <br />-->
+    {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset") }}
+    {{ macros.aggregate_dropdown() }}
     initial group: <select name="group">
       {% for group in groups %}
       <option name="{{ group.name }}">{{ group.name }}</option>
@@ -39,33 +29,4 @@
   </fieldset>
 </form>
 
-{% if datasets %}
-<form action="/new/dataseries" method="POST">
-  <fieldset>
-    <legend>create a new data series</legend>
-    dataset name: <select name="dataset">
-      {% for ds in datasets %}
-      <option name="{{ds}}">{{ds}}</option>
-      {% endfor %}
-      </select> <br />
-    interval (seconds): <input type="text" name="interval"> <br />
-    max age (seconds): <input type="text" name="max_age"> <br />
-    <input type="submit" value="submit" />
-  </fieldset>
-</form>
-
-<form action="/new/datapoint" method="POST">
-  <fieldset>
-    <legend>add an ad-hoc data point</legend>
-    dataset name: <select name="dataset">
-      {% for ds in datasets %}
-      <option name="{{ds}}">{{ds}}</option>
-      {% endfor %}
-    </select> <br />
-    value: <input type="text" name="value"> <br />
-    <input type="submit" value="submit" />
-  </fieldset>
-</form>
-
-{% endif %}
 {% endblock %}

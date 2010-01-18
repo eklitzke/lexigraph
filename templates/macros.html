@@ -25,7 +25,7 @@
 {% set dataset_name = dataset.name %}
 {% endif %}
 {% if show_edit %}
-<div class="inline_header"><h2>{{ dataset_name }}</h2>&nbsp;<a href="/edit/dataset?name={{dataset_name}}">edit</a></div>
+<div class="inline_header"><h2>{{ dataset_name }}</h2>&nbsp;<span class="mini_link"><a href="/edit/dataset?name={{dataset_name}}">edit</a></span></div>
 {% else %}
 <h2>{{ dataset_name }}</h2>
 {% endif %}
@@ -40,10 +40,20 @@
 </script>
 {%- endmacro %}
 
-{% macro draw_topnav(items, id='topnav') -%}
+{% macro draw_topnav(items, id='topnav', account=None, accounts=[]) -%}
 <div id="{{id}}">
   {% for (link, name) in items %}
-  <span class="topnav_link"><a href="{{link}}">{{name}}</a></span>
+  <span class="topnav_link"> <a href="{{link}}">{{name}}</a></span>
   {% endfor %}
+  <span class="topnav_select">
+    {% if account %}
+    account: {{account.name}}
+    {% if accounts|length > 1 %}
+    <span class="mini_link"><a href="/choose/account"><span style="font-weight: normal">edit</span></a></span>
+    {% endif %}
+    {% else %}
+    <a href="/choose/account">select an account</a>
+    {% endif %}
+  </span>
 </div>
 {%- endmacro %}

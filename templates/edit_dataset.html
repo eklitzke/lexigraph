@@ -39,6 +39,7 @@
 <form action="/new/dataseries" method="POST">
   <fieldset>
     <legend>create a new data series</legend>
+    <input type="hidden" name="dataset" value="{{dataset.name}}"/>
     interval (seconds): <input type="text" name="interval"> <br />
     max age (seconds): <input type="text" name="max_age"> <br />
     <input type="submit" value="submit" />

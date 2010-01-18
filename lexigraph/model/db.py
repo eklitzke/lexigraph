@@ -37,6 +37,14 @@ class Account(LexigraphModel):
     owner = db.UserProperty(required=True)
 
     @classmethod
+    def by_user(cls, user):
+        user_id = user.user_id()
+        accounts = set()
+        for row in fetch_all(AccessGroup.all().filter('users =', user_id)):
+            accounts.add(row.account)
+        return sorted(accounts, key=lambda x: x.name)
+
+    @classmethod
     def create(cls, name, owner):
         # ensure that the name is unique
         existing = maybe_one(cls.all().filter('name =', name))

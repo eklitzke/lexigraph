@@ -13,7 +13,7 @@
     {% block body %}
 	{% block body_header %}<h1>graphs, graphs, graphs!</h1>{% endblock %}
     {% block topnav %}
-    {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/logout', 'logout')]) }}
+    {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/logout', 'logout')], account=account, accounts=accounts) }}
     {% endblock %}
     <div id="content_padding">
       {% block show_messages%}

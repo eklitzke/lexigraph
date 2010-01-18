@@ -14,7 +14,7 @@ class NewDataSet(RequestHandler):
         dataset_name = self.form_required('dataset')
         aggregate = self.form_required('aggregate')
         group_name = self.form_required('group')
-        group = maybe_one(model.AccessGroup.all().filter('account =', self.current_account).filter('name =', group_name))
+        group = maybe_one(model.AccessGroup.all().filter('account =', self.account).filter('name =', group_name))
         if group is None:
             self.session['message'] = 'No such group %r existed' % (group_name,)
             self.redirect('/dashboard')
@@ -25,7 +25,7 @@ class NewDataSet(RequestHandler):
         description = self.request.get('description') or None
 
         # create the dataset
-        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.current_account, description=description)
+        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.account, description=description)
         ds.put()
         self.log.debug('created new dataset, with id %s' % (ds.key().id(),))
 
@@ -40,7 +40,7 @@ class EditDataSet(RequestHandler):
 
     @requires_login
     def get(self):
-        dataset = self.get_dataset(self.form_required('name'))
+        dataset = self.get_dataset(self.form_required('name', uri='/dashboard'))
         self.env['dataset'] = dataset
         self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)

@@ -18,13 +18,13 @@ class Dashboard(RequestHandler):
 
     @requires_login
     def get(self):
-        if self.current_account is None:
+        if self.account is None:
             self.log.info('No accounts set up for user, redirecting')
             self.redirect('/new/account')
             return
         import time
-        self.env['account'] = self.current_account
-        self.env['groups'] = model.AccessGroup.groups_for_user(self.current_account)
+        self.env['account'] = self.account
+        self.env['groups'] = model.AccessGroup.groups_for_user(self.account)
         self.env['datasets'] = self.all_datasets()
         self.render_template('dashboard.html')
         

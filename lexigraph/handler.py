@@ -56,9 +56,13 @@ class RequestHandler(_RequestHandler):
         self.user = users.get_current_user()
 
         self.session = None
+        self.accounts = []
         if self.user:
             self.session = lexigraph.session.SessionState(self.user)
+            self.accounts = model.Account.by_user(self.user)
+        self.env['accounts'] = self.accounts
         self.env['session'] = self.session
+        self.env['account'] = self.account
 
         self.key = request.get('key') or None
 
@@ -67,6 +71,8 @@ class RequestHandler(_RequestHandler):
         thing = self.request.get(name)
         if not thing:
             self.log.warning('form was missing field %s' % (name,))
+            self.session['message'] = 'Form was missing field %s' % (name,)
+            self.log.warning('uir = %r' % (uri,))
             self.redirect(uri or getattr(self, 'error_uri', self.request.uri))
         else:
             return thing
@@ -74,7 +80,7 @@ class RequestHandler(_RequestHandler):
     @cache_per_request
     def get_dataset(self, name, check_read=True, check_write=False, check_delete=False):
         assert name
-        ds = maybe_one(model.DataSet.all().filter('name =', name).filter('account =', self.current_account))
+        ds = maybe_one(model.DataSet.all().filter('name =', name).filter('account =', self.account))
         if ds is not None and not ds.is_allowed(self.user, self.key, read=check_read, write=check_write, delete=check_delete):
             raise PermissionsError
         return ds
@@ -89,22 +95,24 @@ class RequestHandler(_RequestHandler):
             pass
         else:
             return super(RequestHandler, self).handle_exception(exception, debug_mode)
-    
+
     @property
-    def current_account(self):
+    def account(self):
+        if not self.user:
+            return None
         account = self.session['account']
         if account is None:
-            accounts = fetch_all(model.Account.all().filter('owner =', self.user))
-            self.log.info('accounts = %s' % (accounts,))
+            accounts = model.Account.by_user(self.user)
             if not accounts:
                 self.session['message'] = 'You must create an account first.'
-                self.redirect('/new/account')
+                account = None
             elif len(accounts) == 1:
                 account = accounts[0]
                 self.session['account'] = account
             else:
                 self.session['message'] = 'Select an account.'
-                self.redirect('/choose/account')
+                #self.redirect('/choose/account')
+                account = None
         else:
             self.log.info('hit account = %s in session' % (account,))
         return account

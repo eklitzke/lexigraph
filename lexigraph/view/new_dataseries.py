@@ -17,7 +17,7 @@ class NewDataSeries(RequestHandler):
         if max_age:
             max_age = int(max_age)
 
-        dataset = maybe_one(model.DataSet.all().filter('name =', dataset_name).filter('account =', self.current_account))
+        dataset = maybe_one(model.DataSet.all().filter('name =', dataset_name).filter('account =', self.account))
         if not dataset:
             self.log.warning('no such dataset')
             self.redirect('/dashboard')

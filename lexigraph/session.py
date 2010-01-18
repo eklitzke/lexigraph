@@ -2,6 +2,7 @@ import datetime
 import pickle
 from google.appengine.ext import db
 
+from lexigraph.log import ClassLogger
 from lexigraph.model import LexigraphModel
 from lexigraph.model.query import *
 from lexigraph.cache import CacheDict
@@ -9,7 +10,7 @@ from lexigraph.cache import CacheDict
 class SessionStorage(LexigraphModel):
     user_id = db.StringProperty(required=True)
     item_name = db.StringProperty(required=True)
-    pickle = db.TextProperty(required=True)
+    pickle = db.BlobProperty(required=True)
     timestamp = db.DateTimeProperty(required=True, auto_now_add=True)
 
     @classmethod
@@ -48,6 +49,8 @@ class SessionCache(CacheDict):
 
 class SessionState(object):
 
+    log = ClassLogger()
+
     def __init__(self, user):
         self.user_id = user.user_id()
         self.cache = SessionCache(self.user_id)
@@ -61,7 +64,9 @@ class SessionState(object):
             return val
         result = self.query(key)
         if result is not None:
-            raw = pickle.loads(result)
+            self.log.info('unpickling from session stroage, result.pickle = %r' % (result.pickle,))
+            raw = pickle.loads(result.pickle)
+            self.log.info('done unpickling from session stroage')
             self.cache[key] = raw
             return raw
 
@@ -75,5 +80,6 @@ class SessionState(object):
         del self[k]
 
     def __setitem__(self, key, val):
-        SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val)).put()
+        self.log.info('pickling %s' % (val,))
+        SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val, protocol=pickle.HIGHEST_PROTOCOL)).put()
         self.cache[key] = val

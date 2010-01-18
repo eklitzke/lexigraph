@@ -1,0 +1,24 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+
+{% block body_header %}
+<h1>your groups</h1>
+{% endblock %}
+
+{% block body_content %}
+{% if not groups %}
+well this is certainly strange... you don't appear to belong to any groups. contact your administrator (or support, if you are an administrator).
+{% else %}
+You are a member of the following groups:
+<table>
+  <tr><th>group</th><th>members</th><th>key</th></tr>
+  {% for group in groups %}
+  <tr>
+    <td>{{group.name}}</td>
+    <td>{{group.users|length}}</td>
+    <td>{{group.api_token}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

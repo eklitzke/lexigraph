@@ -1,0 +1,4 @@
+cron:
+ - description: trim old session rows
+   url: /cron/trim_sessions
+   schedule: every 30 minutes

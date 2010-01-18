@@ -1,5 +1,5 @@
 import datetime
-from django.utils import simplejson 
+import pickle
 from google.appengine.ext import db
 
 from lexigraph.model import LexigraphModel
@@ -9,21 +9,32 @@ from lexigraph.cache import CacheDict
 class SessionStorage(LexigraphModel):
     user_id = db.StringProperty(required=True)
     item_name = db.StringProperty(required=True)
-    json = db.TextProperty(required=True)
+    pickle = db.TextProperty(required=True)
     timestamp = db.DateTimeProperty(required=True, auto_now_add=True)
 
     @classmethod
-    def remove_expired(cls, expiration=3600):
-        cutoff = datetime.datetime.now() - datetime.timedelta(seconds=expiration)
+    def _remove_all(cls, worker):
         count = 0
         while True:
-            rows = fetch_all(cls.all().filter('timestamp <', cutoff))
+            rows = worker()
             if not rows:
                 break
             count += len(rows)
             for row in rows:
                 row.delete()
         return count
+
+    @classmethod
+    def remove_expired(cls, expiration=3600):
+        """Remove all expired rows."""
+        cutoff = datetime.datetime.now() - datetime.timedelta(seconds=expiration)
+        return cls._remove_all(lambda: fetch_all(cls.all().filter('timestamp <', cutoff)))
+
+    @classmethod
+    def remove_by_user(cls, user):
+        """Remove all rows for a user."""
+        user_id = user.user_id()
+        return cls._remove_all(lambda: fetch_all(cls.all().filter('user_id =', user_id)))
 
 class SessionCache(CacheDict):
     namespace = 'session'
@@ -38,7 +49,7 @@ class SessionCache(CacheDict):
 class SessionState(object):
 
     def __init__(self, user):
-        self.user_id = user.key().id()
+        self.user_id = user.user_id()
         self.cache = SessionCache(self.user_id)
 
     def query(self, key):
@@ -50,7 +61,7 @@ class SessionState(object):
             return val
         result = self.query(key)
         if result is not None:
-            raw = simplejson.loads(result)
+            raw = pickle.loads(result)
             self.cache[key] = raw
             return raw
 
@@ -60,6 +71,9 @@ class SessionState(object):
         if row:
             row.delete()
 
+    def delete(self, k):
+        del self[k]
+
     def __setitem__(self, key, val):
-        SessionStorage(user_id=self.user_id, item_name=key, json=simplejson.dumps(val)).put()
+        SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val)).put()
         self.cache[key] = val

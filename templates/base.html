@@ -16,6 +16,12 @@
     {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/logout', 'logout')]) }}
     {% endblock %}
     <div id="content_padding">
+      {% block show_messages%}
+      {% if session and session.message %}
+      <div id="session_messages">{{session.message|e}}</div>
+      {{ session.delete('message') or '' }}
+      {% endif %}
+      {% endblock %}
     {% block body_content %}{% endblock %}
     {% endblock %}
     </div>

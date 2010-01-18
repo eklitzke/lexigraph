@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block body_header %}
+<h1>choose your account</h1>
+{% endblock %}
+
+{% block body_content %}
+<form action="/choose/account" method="POST">
+  choose account: <select name="account">
+    {% for account in accounts %}
+    <option value="{{account.name}}">{{account.name}}</option>
+    {% endfor %}
+    </select>
+  <input type="submit" value="submit"/>
+</form>
+{% endblock %}

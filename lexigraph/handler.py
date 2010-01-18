@@ -8,6 +8,7 @@ from vendor.jinja2 import Environment, FileSystemLoader
 from google.appengine.ext.webapp import RequestHandler as _RequestHandler
 from lexigraph.log import ClassLogger
 from lexigraph import model
+import lexigraph.session
 from lexigraph.model.query import *
 
 class ErrorSignal(Exception):
@@ -53,6 +54,12 @@ class RequestHandler(_RequestHandler):
         self.env = {'title': ''}
 
         self.user = users.get_current_user()
+
+        self.session = None
+        if self.user:
+            self.session = lexigraph.session.SessionState(self.user)
+        self.env['session'] = self.session
+
         self.key = request.get('key') or None
 
     def form_required(self, name, uri=None):
@@ -84,11 +91,23 @@ class RequestHandler(_RequestHandler):
             return super(RequestHandler, self).handle_exception(exception, debug_mode)
     
     @property
-    @cache_per_request
     def current_account(self):
-        """XXX: this is really just stubbed out."""
-        assert self.user
-        return maybe_one(model.Account.all().filter('owner =', self.user))
+        account = self.session['account']
+        if account is None:
+            accounts = fetch_all(model.Account.all().filter('owner =', self.user))
+            self.log.info('accounts = %s' % (accounts,))
+            if not accounts:
+                self.session['message'] = 'You must create an account first.'
+                self.redirect('/new/account')
+            elif len(accounts) == 1:
+                account = accounts[0]
+                self.session['account'] = account
+            else:
+                self.session['message'] = 'Select an account.'
+                self.redirect('/choose/account')
+        else:
+            self.log.info('hit account = %s in session' % (account,))
+        return account
 
     def get_template(self, name):
         return self.jinja_env.get_template(name)

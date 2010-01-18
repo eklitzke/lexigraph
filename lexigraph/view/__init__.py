@@ -16,9 +16,10 @@ def add_route(cls, uri_regex):
     routing.append((uri_regex, cls))
 
 from lexigraph.view.home import Home
-from lexigraph.view.new_account import NewAccount
+import lexigraph.view.account
 import lexigraph.view.dataset
 import lexigraph.view.logout
+import lexigraph.view.prefs
 import lexigraph.view.cron.trim_sessions
 from lexigraph.view.new_dataseries import NewDataSeries
 from lexigraph.view.new_datapoint import NewDataPoint

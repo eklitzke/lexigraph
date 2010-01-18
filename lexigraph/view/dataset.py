@@ -16,10 +16,10 @@ class NewDataSet(RequestHandler):
         group_name = self.form_required('group')
         group = maybe_one(model.AccessGroup.all().filter('account =', self.current_account).filter('name =', group_name))
         if group is None:
-            self.log.warning('No such group existed where account = %s, name = %s' % (self.current_account.name, group_name))
+            self.session['message'] = 'No such group %r existed' % (group_name,)
             self.redirect('/dashboard')
         if self.user.user_id() not in group.users:
-            self.log.warning('User ID %s not present in group %s' % (self.user.user_id(), group_name))
+            self.session['message'] = "You're not a member of that group"
             self.redirect('/dashboard')
 
         description = self.request.get('description') or None
@@ -27,7 +27,7 @@ class NewDataSet(RequestHandler):
         # create the dataset
         ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.current_account, description=description)
         ds.put()
-        self.log.debug('created new dataset with id %s' % (ds.key().id(),))
+        self.log.debug('created new dataset, with id %s' % (ds.key().id(),))
 
         # add an access control for it
         access = model.AccessControl.new(group, ds, read=True, write=True, delete=True)

@@ -22,6 +22,7 @@ class Dashboard(RequestHandler):
             self.log.info('No accounts set up for user, redirecting')
             self.redirect('/new/account')
             return
+        import time
         self.env['account'] = self.current_account
         self.env['groups'] = model.AccessGroup.groups_for_user(self.current_account)
         self.env['datasets'] = self.all_datasets()

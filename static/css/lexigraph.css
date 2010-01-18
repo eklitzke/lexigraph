@@ -76,3 +76,13 @@ fieldset {
     margin-left: 0.2em;
     margin-right: 0.2em;
 }
+
+#session_messages {
+    border: solid #00c300 2px;
+    background-color: #eeffee;
+    width: 20em;
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}

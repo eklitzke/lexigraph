@@ -58,8 +58,9 @@ class RequestHandler(_RequestHandler):
     def form_required(self, name, uri=None):
         """Get a thing in the form, redirecting if it is missing."""
         thing = self.request.get(name)
-        if thing is None:
-            self.redirect(uri or self.request.uri)
+        if not thing:
+            self.log.warning('form was missing field %s' % (name,))
+            self.redirect(uri or getattr(self, 'error_uri', self.request.uri))
         else:
             return thing
 

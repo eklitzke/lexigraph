@@ -20,7 +20,7 @@
 {% endif %}
 {%- endmacro %}
 
-{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True) -%}
+{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, roll_period=None) -%}
 {% if dataset and not dataset_name %}
 {% set dataset_name = dataset.name %}
 {% endif %}
@@ -35,6 +35,15 @@
   g = new Dygraph(
       document.getElementById("graph_dataset_{{dataset_name}}"),
       "/api/csv?dataset={{dataset_name}}"
+  {% if roll_period %} , rollPeriod: {{roll_period}} {% endif %}
   )
 </script>
+{%- endmacro %}
+
+{% macro draw_topnav(items, id='topnav') -%}
+<div id="{{id}}">
+  {% for (link, name) in items %}
+  <span class="topnav_link"><a href="{{link}}">{{name}}</a></span>
+  {% endfor %}
+</div>
 {%- endmacro %}

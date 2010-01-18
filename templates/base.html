@@ -1,3 +1,4 @@
+{% import "macros.html" as macros %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
@@ -12,9 +13,7 @@
     {% block body %}
 	{% block body_header %}<h1>graphs, graphs, graphs!</h1>{% endblock %}
     {% block topnav %}
-    <div id="topnav">
-      <a href="/">home</a> <a href="/dashboard">dashboard</a> <a href="/prefs">preferences</a>
-    </div>
+    {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/logout', 'logout')]) }}
     {% endblock %}
     <div id="content_padding">
     {% block body_content %}{% endblock %}

@@ -10,5 +10,6 @@ clean:
 	find . -name '*.py[co]' -delete
 	find . -name '*.o' -delete
 	rm -f src/add_point
+	rm -f src/dev_add_point
 
 .PHONY: clean

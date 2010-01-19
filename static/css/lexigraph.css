@@ -9,8 +9,12 @@ body {
     border: 1px solid gray;
 }
 
-#hd {
+#hd h1 {
     font-size: 197%;
+}
+
+#topnav {
+    font-size: 138.5%;
 }
 
 ul { padding-top: 0.35em; }
@@ -20,6 +24,12 @@ ul { padding-top: 0.35em; }
  */
 ul li:before {
     content: "\00BB \0020";
+}
+
+fieldset {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    padding-bottom: 0.4em;
 }
 
 #bd { font-size: 138.5%; }
@@ -75,7 +85,7 @@ h3 {
 
 #ft {
     padding-left: 0.4em;
-    font-size: 77%;
+    font-size: 85%;
     color: #555;
     margin-top: 0.6em;
 }

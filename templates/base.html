@@ -15,13 +15,15 @@
   </head>
   <body>
     <div id="doc3" class="yui-t7">
-      <div id="hd"><h1>{% block body_header %}lexigraph{% endblock %}</h1></div>
+      <div id="hd">
+        <h1>{% block body_header %}lexigraph{% endblock %}</h1>
     {% block body %}
-      <div id="bd" role="main">
-        <div class="yui-g">
     {% block topnav %}
     {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/groups', 'groups'), ('/logout', 'logout')], account=account, accounts=accounts) }}
     {% endblock %}
+      </div> <!-- hd -->
+      <div id="bd" role="main">
+        <div class="yui-g">
     <div id="real_content">
       {% block show_messages%}
       {% if session and session.message %}

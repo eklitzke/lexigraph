@@ -14,4 +14,9 @@ indexes:
   properties:
   - name: series
   - name: timestamp
+
+- kind: DataPoint
+  properties:
+  - name: series
+  - name: timestamp
     direction: desc

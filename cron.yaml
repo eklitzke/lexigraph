@@ -1,4 +1,7 @@
 cron:
  - description: trim old session rows
-   url: /cron/trim_sessions
+   url: /cron/trim/sessions
    schedule: every 30 minutes
+ - description: trim old datapoints
+   url: /cron/trim/datapoints
+   schedule: every 20 minutes

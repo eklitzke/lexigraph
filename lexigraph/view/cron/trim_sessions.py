@@ -8,4 +8,4 @@ class TrimSessions(CronRequestHandler):
         rowcount = SessionStorage.remove_expired()
         self.response.out.write('Trimmed %d rows' % (rowcount,))
 
-add_route(TrimSessions, '/cron/trim_sessions')
+add_route(TrimSessions, '/cron/trim/sessions')

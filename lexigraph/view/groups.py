@@ -2,6 +2,13 @@ from lexigraph.view import add_route
 from lexigraph.handler import RequestHandler, requires_login
 from lexigraph import model
 
+class EditGroups(RequestHandler):
+
+    @requires_login
+    def get(self):
+        self.env['groups'] = model.AccessGroup.groups_for_user(self.account, self.user)
+        self.render_template('edit_groups.html')
+
 class NewGroup(RequestHandler):
 
     @requires_login
@@ -24,4 +31,4 @@ class NewGroup(RequestHandler):
             model.Account.create(account_name, self.user)
             self.redirect('/dashboard')
 
-add_route(NewDataset, '/new/dataset')
+add_route(EditGroups, '/groups')

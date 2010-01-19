@@ -1,21 +1,28 @@
 {% import "macros.html" as macros %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
   <head>
     {% block head %}
     <title>lexigraph</title>
     <link rel="shortcut icon" href="/images/cat.png" type="image/png" />
-    <link rel="stylesheet" href="/css/lexigraph.css" type="text/css" />
+    <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css"> 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css"> 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-context-min.css">  -->
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
+    <link rel="stylesheet" type="text/css" href="/css/lexigraph.css" />
     <script type="text/javascript" src="/js/dygraph-combined.js"></script>
     {% endblock %}
   </head>
   <body>
+    <div id="doc3" class="yui-t7">
+      <div id="hd"><h1>{% block body_header %}lexigraph{% endblock %}</h1></div>
     {% block body %}
-	{% block body_header %}<h1>graphs, graphs, graphs!</h1>{% endblock %}
+      <div id="bd" role="main">
+        <div class="yui-g">
     {% block topnav %}
-    {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/logout', 'logout')], account=account, accounts=accounts) }}
+    {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/groups', 'groups'), ('/logout', 'logout')], account=account, accounts=accounts) }}
     {% endblock %}
-    <div id="content_padding">
+    <div id="real_content">
       {% block show_messages%}
       {% if session and session.message %}
       <div id="session_messages">{{session.message|e}}</div>
@@ -23,10 +30,12 @@
       {% endif %}
       {% endblock %}
     {% block body_content %}{% endblock %}
-    {% endblock %}
-    </div>
-    <div id="footer">
-      &copy;2010 the lexicographers
-    </div>
+      {% endblock %}
+    </div> <!-- real_content -->
+
+        </div> <!-- yui-g -->
+      </div> <!-- bd -->
+    <div id="ft"><p>&copy;2010 the lexicographers</p></div>
+    </div> <!-- doc3 -->
   </body>
 </html>

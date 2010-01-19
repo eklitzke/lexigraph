@@ -1,24 +1,59 @@
-html { font-family: sans-serif; }
-
 body {
+    width: 90%;
+    min-width: 600px;
+    margin: auto;
+}
+
+#doc3 {
+    margin: 1em;
     border: 1px solid gray;
-    margin-left: 1em;
-    margin-right: 1em;
+}
+
+#hd {
+    font-size: 197%;
+}
+
+ul { padding-top: 0.35em; }
+
+/* This is super ghetto, but right now only the home page uses it. If fixing
+ * this, fix the splash page too.
+ */
+ul li:before {
+    content: "\00BB \0020";
+}
+
+#bd { font-size: 138.5%; }
+
+#real_content {
+    padding-top: 0.5em;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
 }
 
 h1 {
-	font-size: 1.3em;
+	/*font-size: 1.3em;*/
+    font-weight: bold;
 	border-bottom: 1px solid gray;
 	background-color: #EEE;
 	margin-top: 0;
 	padding-left: 0.6em;
+	padding-right: 1em;
+    margin-left: 0;
     margin-bottom: 0;
 }
 
-#content_padding {
-    padding-left: 0.6em;
-    padding-right: 0.6em;
+h2 {
+	font-size: 108%;
+    font-weight: bold;
+	margin-top: 0.25em;
+	margin-bottom: 0.20em;
 }
+
+h3 {
+    /*font-size: 0.9em;*/
+    font-weight: bold;
+	margin-bottom: 0.25em;
+    }
 
 #topnav {
     margin-top: 0;
@@ -38,23 +73,13 @@ h1 {
     color: black;
 }
 
-#footer {
-    /*background-color: #EFEFEF;*/
+#ft {
     padding-left: 0.4em;
-    font-size: 0.7em;
+    font-size: 77%;
     color: #555;
     margin-top: 0.6em;
-    }
-
-h2 {
-	font-size: 1.1em;
-	margin-bottom: 0.25em;
 }
 
-h3 {
-    /*font-size: 0.9em;*/
-	margin-bottom: 0.25em;
-    }
 
 .inline_header h1 { display: inline; }
 .inline_header h2 { display: inline; }
@@ -80,6 +105,7 @@ fieldset {
 
 .topnav_select {
     float: right;
+    padding-right: 0.4em;
 }
 
 .mini_link { font-size: 0.8em; }

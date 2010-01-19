@@ -64,9 +64,7 @@ class SessionState(object):
             return val
         result = self.query(key)
         if result is not None:
-            self.log.info('unpickling from session stroage, result.pickle = %r' % (result.pickle,))
             raw = pickle.loads(result.pickle)
-            self.log.info('done unpickling from session stroage')
             self.cache[key] = raw
             return raw
 
@@ -80,6 +78,5 @@ class SessionState(object):
         del self[k]
 
     def __setitem__(self, key, val):
-        self.log.info('pickling %s' % (val,))
         SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val, protocol=pickle.HIGHEST_PROTOCOL)).put()
         self.cache[key] = val

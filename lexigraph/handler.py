@@ -54,6 +54,7 @@ class RequestHandler(_RequestHandler):
         self.env = {'title': ''}
 
         self.user = users.get_current_user()
+        self.key = request.get('key') or None
 
         self.session = None
         self.accounts = []
@@ -64,7 +65,6 @@ class RequestHandler(_RequestHandler):
         self.env['session'] = self.session
         self.env['account'] = self.account
 
-        self.key = request.get('key') or None
 
     def form_required(self, name, uri=None):
         """Get a thing in the form, redirecting if it is missing."""
@@ -98,8 +98,15 @@ class RequestHandler(_RequestHandler):
 
     @property
     def account(self):
-        if not self.user:
+        if not (self.user or self.key):
             return None
+        if self.key:
+            group = maybe_one(model.AccessGroup.all().filter('api_token =', self.key))
+            if not group:
+                self.log.info('No AccessGroup associated with key %s' % (self.key,))
+                return None
+            return group.account
+
         account = self.session['account']
         if account is None:
             accounts = model.Account.by_user(self.user)

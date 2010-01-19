@@ -2,7 +2,9 @@
 #include <string.h>
 #include <curl/curl.h>
 
+#ifndef LEXIGRAPH_DATAPOINT_URL
 #define LEXIGRAPH_DATAPOINT_URL "http://localhost:8080/api/new/datapoint"
+#endif
 
 #ifdef WITH_SSL
 #define LEXIGRAPH_CURL_OPTS CURL_GLOBAL_SSL

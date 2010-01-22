@@ -150,6 +150,8 @@ table {
     padding-right: 0.5em;
 }
 
+#bd p { padding-bottom: 0.4em; }
+
 code {
     margin-left: 1em;
     background-color: #EFEFEF;

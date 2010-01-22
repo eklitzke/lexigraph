@@ -1,9 +1,9 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler
+from lexigraph.handler import RequestHandler, requires_login
 
 class Doc(RequestHandler):
 
-    # no login required!
+    @requires_login
     def get(self):
         self.render_template('doc.html')
 

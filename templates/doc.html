@@ -10,7 +10,10 @@ welcome to the documentation. no guarantees about the accuracy of the
 documentation at this point.
 
 <h2>security model</h2>
-it uses access controls. https support is planned, but not yet implemented.
+
+it uses access controls, and has been thought out pretty well. more
+documentation about the details goes here. https support is planned, but not yet
+implemented.
 
 <h2>uploading data</h2>
 send an http post request to <tt>/api/new/datapoint</tt>. the following fields have meaning: <br/>
@@ -29,18 +32,21 @@ send an http post request to <tt>/api/new/datapoint</tt>. the following fields h
     <td>the value for the data point, should be a float</td>
   </tr>
   <tr>
-    <td>timestamp</td><td>optional</td>
+    <td>timestamp</td><td>(optional)</td>
     <td>the timestamp (as an integer unixtime value)</td>
   </tr>
 </table>
 
 <h3>add_point</h3>
+
 <p>there's a simple C program called <tt>add_point</tt> that you can use as a
 command line utility. <tt>add_point</tt> links against libcurl, and should work
-on any unix system.</p>
+on any unix system. you can compile it like this
+(grab <a href="/files/add_point.c">add_point.c</a> first):<br />
 
-<p>you can compile it like this (grab <a href="/files/add_point.c">add_point.c</a> first):</p>
 <code>gcc $(curl-config --cflags --libs) -o add_point add_point.c</code>
-<p>once you've compiled <tt>add_point</tt>, the usage is like this:</p>
+</p>
+<p>once you've compiled <tt>add_point</tt>, the usage is like this:<br />
 <code>add_point &lt;api_key&gt; &lt;series_name&gt; &lt;float_value&gt;</code>
+</p>
 {% endblock %}

@@ -8,9 +8,9 @@ handlers:
       static_files: static/images/favicon.ico
       upload: static/images/favicon.ico
 
-    - url: /(css|js|images)/(.+)
+    - url: /(css|js|images|files)/(.+)
       static_files: static/\1/\2
-      upload: static/(css|js|images)/(.+)
+      upload: static/(css|js|images|files)/(.+)
    
     - url: /cron/.*
       script: main.py

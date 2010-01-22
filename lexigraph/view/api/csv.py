@@ -110,7 +110,7 @@ class CSV(ApiRequestHandler):
         # pick the best candidate
         series, score, points_required = min(candidates, key=lambda (a, b, c): b)
         self.log.info('Chose series %s, score = %s, points_required = %d' % (series, score, points_required))
-        for point in self.fetch_ordered_points(span=self.span, limit=points_required, python_order=True):
+        for point in self.fetch_ordered_points(series, span=self.span, limit=points_required, python_order=True):
             self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%Y/%m/%d %H:%M:%S'), point.value))
 
 add_route(CSV, '/api/csv')

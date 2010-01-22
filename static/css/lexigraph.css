@@ -134,3 +134,23 @@ fieldset {
     margin-top: 0.25em;
     margin-bottom: 0.25em;
 }
+
+table {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border-collapse: collapse;
+}
+
+.api_table th {
+    border-bottom: 1px solid black;
+    font-style: italic;
+}
+
+.api_table th,td {
+    padding-right: 0.5em;
+}
+
+code {
+    margin-left: 1em;
+    background-color: #EFEFEF;
+    }

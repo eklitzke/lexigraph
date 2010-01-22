@@ -19,7 +19,13 @@
         <h1>{% block body_header %}lexigraph{% endblock %}</h1>
     {% block body %}
     {% block topnav %}
-    {{ macros.draw_topnav([('/', 'home'), ('/dashboard', 'dashboard'), ('/prefs', 'preferences'), ('/groups', 'groups'), ('/logout', 'logout')], account=account, accounts=accounts) }}
+    {{ macros.draw_topnav(
+        [('/', 'home'),
+        ('/dashboard', 'dashboard'),
+        ('/prefs', 'preferences'),
+        ('/groups', 'groups'),
+        ('/doc', 'docs'),
+        ('/logout', 'logout')], account=account, accounts=accounts) }}
     {% endblock %}
       </div> <!-- hd -->
       <div id="bd" role="main">

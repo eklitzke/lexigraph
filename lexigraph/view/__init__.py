@@ -10,6 +10,7 @@ import lexigraph.view.groups
 import lexigraph.view.logout
 import lexigraph.view.prefs
 import lexigraph.view.cron
+import lexigraph.view.doc
 
 from lexigraph.view.new_dataseries import NewDataSeries
 from lexigraph.view.new_datapoint import NewDataPoint

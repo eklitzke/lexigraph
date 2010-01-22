@@ -44,9 +44,7 @@ class SessionCache(CacheDict):
         self.user_id = user_id
         
     def _mangle(self, k):
-        m = '%s:%s' % (self.user_id, k)
-        self.log.info('mangled %r to %r' % (k, m))
-        return m
+        return '%s:%s' % (self.user_id, k)
 
 class SessionState(object):
 
@@ -66,17 +64,14 @@ class SessionState(object):
     def __getitem__(self, key):
         val = self.cache[key]
         if val is not None:
-            self.log.info('HIT memcached for %s' % (key,))
             return val
         result = self.query(key)
-        self.log.info('getitem query returned %s' % (result,))
         if result is not None:
             raw = pickle.loads(result.pickle)
             self.cache[key] = raw
             return raw
 
     def __delitem__(self, key):
-        self.log.info('deleting %s' % (key,))
         del self.cache[key]
         db.delete(self.query(key, many=True))
 
@@ -84,6 +79,5 @@ class SessionState(object):
         del self[k]
 
     def __setitem__(self, key, val):
-        self.log.info('setting: %s = %s' % (key, val))
         SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val, protocol=pickle.HIGHEST_PROTOCOL)).put()
         self.cache[key] = val

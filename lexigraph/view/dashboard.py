@@ -20,7 +20,7 @@ class Dashboard(RequestHandler):
     def get(self):
         if self.account is None:
             self.log.info('No accounts set up for user, redirecting')
-            self.redirect('/new/account')
+            self.redirect('/account')
             return
         import time
         self.env['account'] = self.account

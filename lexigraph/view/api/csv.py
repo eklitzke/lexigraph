@@ -34,6 +34,32 @@ class CSV(ApiRequestHandler):
         # timespan, in seconds (default: four hours)
         self.span = self.request.get('span', 4 * 3600)
 
+    def fetch_ordered_points(self, series, span=None, limit=None, python_order=False):
+        """Fetch the points. This takes a bunch of different permutations of
+        arguments, for easy of experimenting with what is most efficient. Here's
+        what they mean:
+
+        span: if not None, add a clause to the query like "timestamp >= now() -
+              span"
+
+        limit: the limit of points to fetch (well be self.max_points if not
+              specified)
+        
+        python_order: if True, run sorted() in the Python code. if False, do an
+              order by query.
+        """
+        if limit is None:
+            limit = self.max_points
+        if python_order:
+            assert span
+        query = DataPoint.all().filter('series =', series)
+        if span is not None:
+            query = query.filter('timestamp >=', datetime.datetime.now() - datetime.timedelta(seconds=span))
+        if python_order:
+            return sorted(query.fetch(limit), key=lambda x: x.timestamp)
+        else:
+            return reversed(query.order('-timestamp').fetch(limit))
+
     def get_worker(self):
 
         # Figure out the best series to use. We're trying to achieve a chart
@@ -84,8 +110,7 @@ class CSV(ApiRequestHandler):
         # pick the best candidate
         series, score, points_required = min(candidates, key=lambda (a, b, c): b)
         self.log.info('Chose series %s, score = %s, points_required = %d' % (series, score, points_required))
-        points = DataPoint.all().filter('series =', series).order('-timestamp').fetch(points_required)
-        for point in reversed(points):
+        for point in self.fetch_ordered_points(span=self.span, limit=points_required, python_order=True):
             self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%Y/%m/%d %H:%M:%S'), point.value))
 
 add_route(CSV, '/api/csv')

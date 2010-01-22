@@ -1,6 +1,7 @@
 import pickle
 import hashlib
 from google.appengine.api import memcache
+from lexigraph.log import ClassLogger
 
 def surrogate_key(*args, **kwargs):
     """Take args and kwargs (from a function take *args, **kwargs) and turn them
@@ -22,6 +23,8 @@ class CacheDict(object):
 
     namespace = 'cachedict'
     ttl = 0
+
+    log = ClassLogger()
 
     def _mangle(self, k):
         k = self.normalize_key(k)

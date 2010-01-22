@@ -10,6 +10,7 @@ from lexigraph.log import ClassLogger
 from lexigraph import model
 import lexigraph.session
 from lexigraph.model.query import *
+from lexigraph import config
 
 class ErrorSignal(Exception):
     pass
@@ -63,7 +64,9 @@ class RequestHandler(_RequestHandler):
             self.accounts = model.Account.by_user(self.user)
         self.env['accounts'] = self.accounts
         self.env['session'] = self.session
-        self.env['account'] = self.account
+        if self.user:
+            self.env['account'] = self.account
+        self.env['config'] = config
 
 
     def form_required(self, name, uri=None):
@@ -98,6 +101,8 @@ class RequestHandler(_RequestHandler):
 
     @property
     def account(self):
+        #import traceback
+        #self.log.info('tb = %s' % (traceback.format_stack(),))
         if not (self.user or self.key):
             return None
         if self.key:

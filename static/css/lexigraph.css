@@ -26,6 +26,9 @@ ul li:before {
     content: "\00BB \0020";
 }
 
+q:before { content: open-quote; }
+q:after { content: close-quote; }
+
 fieldset {
     padding-left: 0.8em;
     padding-right: 0.8em;
@@ -41,7 +44,6 @@ fieldset {
 }
 
 h1 {
-	/*font-size: 1.3em;*/
     font-weight: bold;
 	border-bottom: 1px solid gray;
 	background-color: #EEE;

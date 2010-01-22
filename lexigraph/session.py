@@ -21,8 +21,7 @@ class SessionStorage(LexigraphModel):
             if not rows:
                 break
             count += len(rows)
-            for row in rows:
-                row.delete()
+            db.delete(rows)
         return count
 
     @classmethod
@@ -45,7 +44,9 @@ class SessionCache(CacheDict):
         self.user_id = user_id
         
     def _mangle(self, k):
-        return '%s:%s' % (self.user_id, k)
+        m = '%s:%s' % (self.user_id, k)
+        self.log.info('mangled %r to %r' % (k, m))
+        return m
 
 class SessionState(object):
 
@@ -55,28 +56,34 @@ class SessionState(object):
         self.user_id = user.user_id()
         self.cache = SessionCache(self.user_id)
 
-    def query(self, key):
-        return maybe_one(SessionStorage.all().filter('user_id =', self.user_id).filter('item_name =', key))
+    def query(self, key, many=False):
+        q = SessionStorage.all().filter('user_id =', self.user_id).filter('item_name =', key)
+        if many:
+            return fetch_all(q)
+        else:
+            return maybe_one(q)
 
     def __getitem__(self, key):
         val = self.cache[key]
         if val is not None:
+            self.log.info('HIT memcached for %s' % (key,))
             return val
         result = self.query(key)
+        self.log.info('getitem query returned %s' % (result,))
         if result is not None:
             raw = pickle.loads(result.pickle)
             self.cache[key] = raw
             return raw
 
     def __delitem__(self, key):
+        self.log.info('deleting %s' % (key,))
         del self.cache[key]
-        row = self.query(key)
-        if row:
-            row.delete()
+        db.delete(self.query(key, many=True))
 
     def delete(self, k):
         del self[k]
 
     def __setitem__(self, key, val):
+        self.log.info('setting: %s = %s' % (key, val))
         SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val, protocol=pickle.HIGHEST_PROTOCOL)).put()
         self.cache[key] = val

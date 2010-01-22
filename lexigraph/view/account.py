@@ -2,13 +2,10 @@ from lexigraph.view import add_route
 from lexigraph.handler import RequestHandler, requires_login
 from lexigraph import model
 from lexigraph.model.query import *
+from lexigraph import config
 
 class NewAccount(RequestHandler):
 
-    @requires_login
-    def get(self):
-        self.render_template('new_account.html')
-    
     @requires_login
     def post(self):
         account_name = self.request.get('account_name')
@@ -19,11 +16,6 @@ class NewAccount(RequestHandler):
             self.redirect('/dashboard')
 
 class ChooseAccount(RequestHandler):
-
-    @requires_login
-    def get(self):
-        self.env['accounts'] = fetch_all(model.Account.all().filter('owner =', self.user))
-        self.render_template('choose_account.html')
 
     @requires_login
     def post(self):
@@ -37,5 +29,18 @@ class ChooseAccount(RequestHandler):
             self.session['message'] = 'invalid choice'
             self.redirect('/choose/account')
 
+class UpdateAccount(RequestHandler):
+
+    @requires_login
+    def get(self):
+        mail = self.user.email()
+        if config.whitelisted_emails and mail not in config.whitelisted_emails:
+            self.session['message'] = 'Sorry, your email (%s) hasn\'t been whitelisted. Ask Evan if you need access.' % (mail,)
+            self.redirect('/')
+        self.env['accounts'] = fetch_all(model.Account.all().filter('owner =', self.user))
+        self.render_template('account.html')
+
+
 add_route(NewAccount, '/new/account')
 add_route(ChooseAccount, '/choose/account')
+add_route(UpdateAccount, '/account')

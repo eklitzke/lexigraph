@@ -26,7 +26,7 @@ class NewGroup(RequestHandler):
         max_age = self.request.get('max_age')
 
         if not account_name:
-            self.redirect('/new/account')
+            self.redirect('/account')
         else:
             model.Account.create(account_name, self.user)
             self.redirect('/dashboard')

@@ -26,8 +26,14 @@ with, and had a simple http api.
   <li>secure &mdash; available over https, and supports fined-grained access controls</li>
   <li>developer friendly &mdash; access and manipulate data with a simple, restful api</li>
 </ul>
-
+{% if not config.whitelisted_emails %}
 <h2>check it out</h2>
 you can start using lexigraph immediately; just go to
 the <a href="/dashboard">dashboard</a>.
+{% else %}
+<h2>coming soon</h2>
+lexigraph is not publicly available yet, but a read-only demo account is
+coming <q>soon</q>. in the meantime, ask evan if you want your google account
+whitelisted.
+{% endif %}
 {% endblock %}

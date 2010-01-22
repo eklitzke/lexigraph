@@ -212,8 +212,7 @@ class DataSeries(LexigraphModel):
         while points:
             points = DataPoint.all().filter('series =', self).filter('timestamp <', max_age).fetch(limit)
             if points:
-                for point in points:
-                    point.delete()
+                db.delete(points)
 
 class DataPoint(LexigraphModel):
     series = db.ReferenceProperty(DataSeries, required=True)

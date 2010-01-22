@@ -15,6 +15,30 @@ it uses access controls, and has been thought out pretty well. more
 documentation about the details goes here. https support is planned, but not yet
 implemented.
 
+<h2>api basics</h2>
+
+<p>
+the api consists of a series of pages whose paths start with <tt>/api</tt>. the
+model for the api is that read requests are always http <q>get</q> requests, and
+write requests are always <q>post</q> requests. the api doesn't make use of
+esoteric http methods like <q>put</q> or <q>delete</q> (because you can't put
+or delete actual uri entities).
+</p>
+
+<p>
+all api requests require a <tt>key</tt> parameter specificying the api
+key, <strong>or</strong> the request can be made by a logged in user. if you
+want to share access to the api with an external entity (say, you'd like a
+contractor to be able to download csv data, but otherwise not have access to
+your lexigraph account) you can create a read-only account and share that api
+key.
+</p>
+
+<p>a general convention adopted by most api servlets is that posted data is sent
+as normal form encoded data, and data returned is returned as json. servlets
+that have a different convention will explicitly specify otherwise.
+</p>
+
 <h2>uploading data</h2>
 send an http post request to <tt>/api/new/datapoint</tt>. the following fields have meaning: <br/>
 <table class="api_table">

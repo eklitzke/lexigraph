@@ -3,7 +3,7 @@
 #include <curl/curl.h>
 
 #ifndef LEXIGRAPH_DATAPOINT_URL
-#define LEXIGRAPH_DATAPOINT_URL "http://localhost:8080/api/new/datapoint"
+#define LEXIGRAPH_DATAPOINT_URL "http://lexigraph.appspot.com/api/new/datapoint"
 #endif
 
 #ifdef WITH_SSL

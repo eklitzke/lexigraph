@@ -1,10 +1,10 @@
 all: src/add_point src/dev_add_point
 
 src/add_point: src/add_point.c
-	gcc $$(curl-config --cflags) $$(curl-config --libs) -DLEXIGRAPH_DATAPOINT_URL=\"http://lexigraph.appspot.com/api/new/datapoint\" -o $@ $^
+	gcc $$(curl-config --cflags --libs) -o $@ $^
 
 src/dev_add_point: src/add_point.c
-	gcc $$(curl-config --cflags) $$(curl-config --libs) -o $@ $^
+	gcc $$(curl-config --cflags --libs) -DLEXIGRAPH_DATAPOINT_URL=\"http://localhost:8080/api/new/datapoint\" -o $@ $^
 
 clean:
 	find . -name '*.py[co]' -delete

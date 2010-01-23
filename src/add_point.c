@@ -57,17 +57,18 @@ void main(int argc, char **argv)
     char *postdata;
     char *endptr;
     double val;
+    FILE *devnull;
 
     if (argc != 4) {
         print_usage();
-        goto error_case;
+        exit(EXIT_FAILURE);
     }
 
     /* sanity check the api key */
     if (strlen(argv[1]) != 32) {
         print_usage();
         fprintf(stderr, "\nerror: invalid api key \"%s\"\n", argv[1]);
-        goto error_case;
+        exit(EXIT_FAILURE);
     }
 
     /* sanity check the value we've been given */
@@ -75,12 +76,19 @@ void main(int argc, char **argv)
     if (!val && (argv[3] == endptr)) {
         print_usage();
         fprintf(stderr, "\nerror: invalid value \"%s\"\n", argv[3]);
-        goto error_case;
+        exit(EXIT_FAILURE);
     }
 
     /* set up curl */
     curl_global_init(LEXIGRAPH_CURL_OPTS);
     handle = curl_easy_init();
+    curl_easy_setopt(handle, CURLOPT_NOPROGRESS, 1);
+    devnull = fopen("/dev/null", "w"); /* let this implicitly close */
+    if (devnull == NULL) {
+        perror("fopen() /dev/null");
+        goto error_case;
+    }
+    curl_easy_setopt(handle, CURLOPT_WRITEDATA, devnull);
 
     /* construct the POST payload */
     postdata = malloc(1);

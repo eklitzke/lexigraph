@@ -21,7 +21,7 @@ body {
     border-bottom: 1px solid grey;
 }
 
-#topnav ul, li {
+#topnav ul, #topnav li {
     margin: 0;
     padding-left: 0.5em;
     display: inline;
@@ -40,13 +40,9 @@ body {
     color: black;
 }
 
+ul.arrow_list { padding-top: 0.35em; }
 
-ul { padding-top: 0.35em; }
-
-/* This is super ghetto, but right now only the home page uses it. If fixing
- * this, fix the splash page too.
- */
-.arrow_list ul li:before {
+ul.arrow_list li:before {
     content: "\00BB \0020";
 }
 

@@ -6,6 +6,7 @@
 {% endif %}
 {%- endmacro %}
 
+<!-- draw the aggregate function dropdown -->
 {% macro aggregate_dropdown(label_name='aggregate function', name='aggregate', id='aggregate_dropdown', br=True) -%}
 <label for="{{id}}">{{label_name}}: </label>
 <select name="{{name}}">
@@ -20,7 +21,28 @@
 {% endif %}
 {%- endmacro %}
 
-{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, width=None, roll_period=None) -%}
+<!-- initialize graphs -->
+{% macro initialize_graphs(prefs) -%}
+<script type="text/javascript">
+function draw_lexigraph(ds_name) {
+    var d = new Date();
+    var offset = d.getTimezoneOffset();
+    d.setSeconds(d.getSeconds() - {{ prefs.default_timespan }});
+    var g = new Dygraph(
+        document.getElementById("graph_dataset_" + ds_name),
+        "/api/csv?dataset=" + ds_name + "&tz=" + offset,
+        {
+            includeZero: true,
+            dateWindow: [
+                d.valueOf(),
+                (new Date()).valueOf()
+            ],
+        });
+}
+</script>
+{%- endmacro %}
+
+{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, width=None) -%}
 {% if dataset and not dataset_name %}
 {% set dataset_name = dataset.name %}
 {% endif %}
@@ -38,13 +60,7 @@
      >
 </div>
 <script type="text/javascript">
-  g = new Dygraph(
-      document.getElementById("graph_dataset_{{dataset_name}}"),
-      "/api/csv?dataset={{dataset_name}}",
-  {
-  {% if roll_period %} rollPeriod: {{roll_period}}, {% endif %}
-  }
-  )
+  draw_lexigraph("{{dataset_name}}");
 </script>
 {%- endmacro %}
 

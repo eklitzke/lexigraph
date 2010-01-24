@@ -8,4 +8,5 @@ except ImportError:
 def mkvar(name, default):
     globals()[name] = getattr(level, name, default)
 
+mkvar('default_timespan', 4 * 3600)
 mkvar('whitelisted_emails', ['evan@eklitzke.org', 'test@example.com'])

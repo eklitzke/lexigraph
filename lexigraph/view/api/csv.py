@@ -1,13 +1,13 @@
 import time
 import math
+
+from lexigraph import config
 from lexigraph.view import add_route
 from lexigraph.view.api._common import *
 from lexigraph.handler import SessionHandler
 
 from lexigraph import model
 from lexigraph.model.query import *
-
-LIMIT = 1000
 
 class CSV(ApiRequestHandler, SessionHandler):
 
@@ -26,14 +26,17 @@ class CSV(ApiRequestHandler, SessionHandler):
         except PermissionsError:
             return self.make_error(StatusCodes.PERMISSIONS_ERROR, field='dataset')
 
+        # the timezone offset
+        self.tz_offset = int(self.request.get('tz', 0)) * 60
+
         # max points allowed in the CSV
         self.max_points = self.request.get('max_points', 750)
 
         # hint on how many points to try to have in the CSV
         self.points = self.request.get('points', 400)
 
-        # timespan, in seconds (default: four hours)
-        self.span = self.request.get('span', 4 * 3600)
+        # timespan for the graph
+        self.span = self.request.get('span', config.default_timespan)
 
     def fetch_ordered_points(self, series, span=None, limit=None, python_order=False):
         """Fetch the points. This takes a bunch of different permutations of
@@ -112,6 +115,7 @@ class CSV(ApiRequestHandler, SessionHandler):
         series, score, points_required = min(candidates, key=lambda (a, b, c): b)
         self.log.info('Chose series %s, score = %s, points_required = %d' % (series, score, points_required))
         for point in self.fetch_ordered_points(series, span=self.span, limit=points_required, python_order=True):
-            self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%Y/%m/%d %H:%M:%S'), point.value))
+            t = point.timestamp - datetime.timedelta(seconds=self.tz_offset)
+            self.response.out.write('%s,%s\n' % (t.strftime('%Y/%m/%d %H:%M:%S'), point.value))
 
 add_route(CSV, '/api/csv')

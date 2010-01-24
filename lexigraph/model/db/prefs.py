@@ -1,6 +1,7 @@
 from django.utils import simplejson
 from google.appengine.ext import db
 
+from lexigraph import config
 from lexigraph.model.query import maybe_one, fetch_all
 from lexigraph.model.db import LexigraphModel
 
@@ -31,6 +32,7 @@ class Preference(object):
         return dict((p.name, p.default) for p in cls.all_prefs)
 
 # Declared preferences go here
+Preference.new('Default Timespan', 'default_timespan', 'int', config.default_timespan)
 Preference.new('Show Rollbar', 'show_rollbar', 'bool', False)
 Preference.new('Graph Width (large)', 'large_width', 'int', 800)
 Preference.new('Graph Width (small)', 'small_width', 'int', 400)

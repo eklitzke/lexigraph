@@ -5,6 +5,7 @@
 <p>you don't have any datasets defined, nothing to see here.</p>
 {% endif %}
 
+{{ macros.initialize_graphs(prefs) }}
 {% for dataset_name in datasets %}
 {{ macros.draw_graph(dataset_name=dataset_name, width=prefs.large_width) }}
 {% endfor %}

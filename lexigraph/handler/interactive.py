@@ -3,7 +3,9 @@ from functools import wraps
 
 from google.appengine.api import users
 
+from google.appengine.ext.webapp import RequestHandler as _RequestHandler
 from lexigraph.handler import RequestHandler
+from lexigraph.handler.errors import *
 from lexigraph import model
 from lexigraph.model.query import *
 import lexigraph.session
@@ -29,9 +31,22 @@ class AccountHandler(RequestHandler):
     requires_login = False
 
     def initialize(self, request, response):
-        super(AccountHandler, self).initialize(request, response)
-        if self.requires_login:
-            self.enforce_login()
+        try:
+            super(AccountHandler, self).initialize(request, response)
+            if self.requires_login:
+                self.enforce_login()
+        except RedirectError:
+            pass
+
+    def initialize_redirect(self, *args, **kwargs):
+        """Hack to allow us to redirect from the initialize() stage of a
+        handler. This overwrites the bound get() instancemethod to a dummy
+        method that just calls redirect().
+        """
+        def immediately_redirect():
+            _RequestHandler.redirect(self, *args, **kwargs)
+        self.get = immediately_redirect
+        raise RedirectError
 
     def initialize_env(self):
         super(AccountHandler, self).initialize_env()
@@ -43,8 +58,8 @@ class AccountHandler(RequestHandler):
 
     def enforce_login(self):
         if self.user is None:
-            self.log.info('login required, redirecting') 
-            self.redirect(users.create_login_url(self.request.uri))
+            self.log.info('login required, redirecting')
+            self.initialize_redirect(users.create_login_url(self.request.uri))
 
     @property
     def account(self):
@@ -111,15 +126,13 @@ class InteractiveHandler(SessionHandler):
         super(InteractiveHandler, self).initialize_env()
 
         self.env['accounts'] = self.accounts
-        if self.user:
-            self.env['account'] = self.account
 
         if self.session:
             self.env['info_message'] = self.session.get_once('info_message')
             self.env['error_message'] = self.session.get_once('error_message')
         else:
             self.env['info_message'] = self.env['error_message'] = None
-        
+
         # used for the copyright date on the footer
         self.env['copyright_year'] = datetime.date.today().year
 

@@ -10,15 +10,8 @@ from lexigraph.log import ClassLogger
 from lexigraph import model
 from lexigraph.model.query import *
 from lexigraph import config
+from lexigraph.handler.errors import *
 
-class ErrorSignal(Exception):
-    pass
-
-class RedirectError(Exception):
-    pass
-
-class PermissionsError(Exception):
-    pass
 
 def cache_per_request(func):
     @wraps(func)
@@ -53,11 +46,10 @@ class RequestHandler(_RequestHandler):
             self.log.warning('form was missing field %s' % (name,))
             if hasattr(self, 'session'):
                 self.session['error_message'] = 'Form was missing field %s' % (name,)
-            self.log.warning('uir = %r' % (uri,))
+            self.log.warning('uri = %r' % (uri,))
             self.redirect(uri or getattr(self, 'error_uri', self.request.uri))
         else:
             return thing
-
 
     def redirect(self, url, permanent=False):
         """Overriden to redirect RightNow using exceptions."""

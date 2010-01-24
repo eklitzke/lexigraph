@@ -140,7 +140,6 @@ class DataSet(LexigraphModel):
         series = self.series()
         for schema in series:
             schema.add_point(value, timestamp)
-        self.log.info('added points to %d series' % (len(series),))
 
 class AccessControl(LexigraphModel):
     # The primary key is (access_group, dataset). The access_group may be None,

@@ -104,8 +104,8 @@ class SessionHandler(AccountHandler):
                 account = accounts[0]
                 self.session['account'] = account
             else:
-                if self.requires_login:
-                    self.session['info_message'] = 'Select an account.'
+                if self.requires_login and not self.uri.startswith('/account'):
+                    self.session['info_message'] = 'You must select an account first.'
                     self.redirect('/account')
                 account = None
         else:

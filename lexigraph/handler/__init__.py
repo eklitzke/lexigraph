@@ -32,6 +32,7 @@ class RequestHandler(_RequestHandler):
 
     def initialize(self, request, response):
         super(RequestHandler, self).initialize(request, response)
+        self.uri = request.environ['PATH_INFO']
         response.headers['Content-Type'] = 'text/html; charset=utf-8'
         self.key = request.get('key') or None
         self.initialize_env()

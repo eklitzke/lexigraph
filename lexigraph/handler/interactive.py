@@ -125,6 +125,7 @@ class InteractiveHandler(SessionHandler):
     def initialize_env(self):
         super(InteractiveHandler, self).initialize_env()
 
+        self.env['account'] = self.account
         self.env['accounts'] = self.accounts
 
         if self.session:

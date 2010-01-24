@@ -38,9 +38,9 @@ from google.appengine.api import memcache
 
 # settings
 try:
-    import settings
+    from vendor.gaeutilities import settings
 except:
-    import settings_default as settings
+    from vendor.gaeutilities import settings_default as settings
     
 class _AppEngineUtilities_Cache(db.Model):
     cachekey = db.StringProperty()

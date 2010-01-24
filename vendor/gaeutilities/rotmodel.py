@@ -31,9 +31,9 @@ from google.appengine.ext import db
 
 # settings
 try:
-    import settings
+    from vendor.gaeutilities import settings
 except:
-    import settings_default as settings
+    from vendor.gaeutilities import settings_default as settings
 
 class ROTModel(db.Model):
     """

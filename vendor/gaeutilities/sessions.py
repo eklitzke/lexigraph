@@ -48,9 +48,9 @@ from rotmodel import ROTModel
 
 # settings
 try:
-    import settings
+    from vendor.gaeutilities import settings
 except:
-    import settings_default as settings
+    from vendor.gaeutilities import settings_default as settings
 
 
 class _AppEngineUtilities_Session(ROTModel):

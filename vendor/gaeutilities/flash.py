@@ -33,9 +33,9 @@ from django.utils import simplejson
 
 # settings
 try:
-    import settings
+    from vendor.gaeutilities import settings
 except:
-    import settings_default as settings
+    from vendor.gaeutilities import settings_default as settings
 
 COOKIE_NAME = settings.flash["COOKIE_NAME"]
 

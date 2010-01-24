@@ -1,4 +1,6 @@
 import datetime
+from functools import wraps
+
 from google.appengine.api import users
 
 from lexigraph.handler import RequestHandler
@@ -6,10 +8,30 @@ from lexigraph import model
 from lexigraph.model.query import *
 import lexigraph.session
 
+def requires_login(func):
+    """Enforce that a user is logged in before calling a method.
+
+    N.B. this is *only* required if a servlet mixes methods that require login
+    and don't require login. If all methods require that a user is logged in,
+    then just set the requires_login attribute on the the class.
+    """
+    @wraps(func)
+    def requires_login_inner(self):
+        self.enforce_login()
+        return func(self)
+    return requires_login_inner
+
 class AccountHandler(RequestHandler):
     """A request handler that knows about logged in users and API keys. Nearly
     all handlers should subclass from this (or a subclass of this).
     """
+
+    requires_login = False
+
+    def initialize(self, request, response):
+        super(AccountHandler, self).initialize(request, response)
+        if self.requires_login:
+            self.enforce_login()
 
     def initialize_env(self):
         super(AccountHandler, self).initialize_env()
@@ -18,6 +40,11 @@ class AccountHandler(RequestHandler):
         self.accounts = []
         if self.user:
             self.accounts = model.Account.by_user(self.user)
+
+    def enforce_login(self):
+        if self.user is None:
+            self.log.info('login required, redirecting') 
+            self.redirect(users.create_login_url(self.request.uri))
 
     @property
     def account(self):
@@ -47,7 +74,7 @@ class SessionHandler(AccountHandler):
     def initialize_env(self):
         super(SessionHandler, self).initialize_env()
         if self.user:
-            self.session = lexigraph.session.SessionState(self.user)
+            self.session = lexigraph.session.SessionState(self.user_id)
         else:
             self.session = None
 
@@ -62,8 +89,9 @@ class SessionHandler(AccountHandler):
                 account = accounts[0]
                 self.session['account'] = account
             else:
-                self.session['info_message'] = 'Select an account.'
-                #self.redirect('/choose/account')
+                if self.requires_login:
+                    self.session['info_message'] = 'Select an account.'
+                    self.redirect('/account')
                 account = None
         else:
             self.log.info('hit account = %s in session' % (account,))

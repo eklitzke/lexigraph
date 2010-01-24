@@ -30,12 +30,6 @@ class SessionStorage(LexigraphModel):
         cutoff = datetime.datetime.now() - datetime.timedelta(seconds=expiration)
         return cls._remove_all(lambda: fetch_all(cls.all().filter('timestamp <', cutoff)))
 
-    @classmethod
-    def remove_by_user(cls, user):
-        """Remove all rows for a user."""
-        user_id = user.user_id()
-        return cls._remove_all(lambda: fetch_all(cls.all().filter('user_id =', user_id)))
-
 class SessionCache(CacheDict):
     namespace = 'session'
     ttl = 90
@@ -50,9 +44,9 @@ class SessionState(object):
 
     log = ClassLogger()
 
-    def __init__(self, user):
-        self.user_id = user.user_id()
-        self.cache = SessionCache(self.user_id)
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.cache = SessionCache(user_id)
 
     def query(self, key, many=False):
         q = SessionStorage.all().filter('user_id =', self.user_id).filter('item_name =', key)
@@ -71,7 +65,9 @@ class SessionState(object):
         """
         val = self.cache[key]
         if val is not None:
+            self.log.info('hit cache')
             self.delete(key, delete_cache=True)
+            self.log.info('cache says: %s' % (self.cache[key],))
             return val
 
         # XXX: the use case for this is really just for the "flash" messages, so
@@ -80,6 +76,7 @@ class SessionState(object):
 
         result = self.query(key)
         if result is not None:
+            self.log.info('hit db')
             raw = pickle.loads(result.pickle)
             result.delete()
             return raw
@@ -107,3 +104,9 @@ class SessionState(object):
     def __setitem__(self, key, val):
         SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val, protocol=pickle.HIGHEST_PROTOCOL)).put()
         self.cache[key] = val
+
+    def clear_all(self):
+        rows = fetch_all(SessionStorage.all().filter('user_id =', self.user_id))
+        for row in rows:
+            del self.cache[row.item_name]
+        db.delete(rows)

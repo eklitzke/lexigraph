@@ -1,12 +1,13 @@
 from lexigraph.view import add_route
-from lexigraph.handler import AccountHandler, SessionHandler, InteractiveHandler, requires_login
+from lexigraph.handler import AccountHandler, SessionHandler, InteractiveHandler
 from lexigraph import model
 from lexigraph.model.query import *
 from lexigraph import config
 
 class NewAccount(AccountHandler):
 
-    @requires_login
+    requires_login = True
+
     def post(self):
         account_name = self.request.get('account_name')
         if not account_name:
@@ -17,7 +18,8 @@ class NewAccount(AccountHandler):
 
 class ChooseAccount(SessionHandler):
 
-    @requires_login
+    requires_login = True
+
     def post(self):
         # XXX: no security here!
         name = self.form_required('account')
@@ -31,7 +33,8 @@ class ChooseAccount(SessionHandler):
 
 class UpdateAccount(InteractiveHandler):
 
-    @requires_login
+    requires_login = True
+
     def get(self):
         mail = self.user.email()
         if config.whitelisted_emails and mail not in config.whitelisted_emails:

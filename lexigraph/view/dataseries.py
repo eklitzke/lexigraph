@@ -1,11 +1,12 @@
 from lexigraph.view import add_route
-from lexigraph.handler import AccountHandler, requires_login
+from lexigraph.handler import AccountHandler
 from lexigraph import model
 from lexigraph.model.query import *
 
 class NewDataSeries(AccountHandler):
 
-    @requires_login
+    requires_login = True
+
     def post(self):
         dataset_name = self.form_required('dataset')
         interval = int(self.form_required('interval'))

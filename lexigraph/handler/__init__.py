@@ -20,17 +20,6 @@ class RedirectError(Exception):
 class PermissionsError(Exception):
     pass
 
-def requires_login(func):
-    logger = logging.getLogger('lexigraph.handler')
-    @wraps(func)
-    def requires_login_inner(self):
-        if self.user is None:
-            logger.info('URI for %s requires login, redirecting' % (self,))
-            self.redirect(users.create_login_url(self.request.uri))
-        else:
-            return func(self)
-    return requires_login_inner
-
 def cache_per_request(func):
     @wraps(func)
     def cache_per_request_inner(self, *args):

@@ -1,9 +1,11 @@
 from lexigraph.view import add_route
-from lexigraph.handler import InteractiveHandler, requires_login
+from lexigraph.handler import InteractiveHandler
 from lexigraph import model
 from lexigraph.model.query import *
 
 class Dashboard(InteractiveHandler):
+
+    requires_login = True
 
     def all_datasets(self):
         dataset_names = set()
@@ -16,7 +18,6 @@ class Dashboard(InteractiveHandler):
                     pass
         return sorted(dataset_names)
 
-    @requires_login
     def get(self):
         if self.account is None:
             self.log.info('No accounts set up for user, redirecting')

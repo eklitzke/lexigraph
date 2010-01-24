@@ -1,10 +1,11 @@
 from lexigraph.view import add_route
-from lexigraph.handler import InteractiveHandler, requires_login
+from lexigraph.handler import InteractiveHandler
 from lexigraph.model.db.prefs import Preference
 
 class Prefs(InteractiveHandler):
 
-    @requires_login
+    requires_login = True
+
     def get(self):
         my_prefs = self.load_prefs()
         defined_prefs = sorted(Preference.all_prefs, key=lambda x: x.display)

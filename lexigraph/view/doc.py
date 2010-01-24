@@ -1,9 +1,10 @@
 from lexigraph.view import add_route
-from lexigraph.handler import InteractiveHandler, requires_login
+from lexigraph.handler import InteractiveHandler
 
 class Doc(InteractiveHandler):
 
-    @requires_login
+    requires_login = True
+
     def get(self):
         self.render_template('doc.html')
 

@@ -169,3 +169,7 @@ dfn { font-style: italic; }
 .lexigraph_chart div{
     width: 100px;
 }
+
+strong {
+    font-weight: bold;
+}

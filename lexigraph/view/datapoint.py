@@ -1,13 +1,9 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler, requires_login
+from lexigraph.handler import AccountHandler, requires_login
 from lexigraph import model
 from lexigraph.model.query import *
 
-class NewDataPoint(RequestHandler):
-
-    @requires_login
-    def get(self):
-        self.redirect('/dashboard')
+class NewDataPoint(AccountHandler):
 
     @requires_login
     def post(self):

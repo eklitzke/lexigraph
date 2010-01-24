@@ -1,0 +1,19 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+
+{% block body_content %}
+<strong>
+  sorry, you can't alter any of these yet
+</strong>
+
+<form method="POST" action="/prefs">
+  {% for p in all_prefs -%}
+  {{ p.ref.display }}:
+  {% if p.ref.kind in ('string', 'int') %}
+  <input type="text" name="{{p.ref.name}}" value="{{p.mine}}" /><br />
+  {% elif p.ref.kind == 'bool' %}
+  <input type="checkbox" name="{{p.ref.name}}" {% if p.mine %}checked="checked"{% endif %} />
+  {% endif %}
+  {% endfor %}
+</form>
+{% endblock %}

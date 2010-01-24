@@ -2,13 +2,14 @@ import time
 import math
 from lexigraph.view import add_route
 from lexigraph.view.api._common import *
+from lexigraph.handler import SessionHandler
 
 from lexigraph import model
 from lexigraph.model.query import *
 
 LIMIT = 1000
 
-class CSV(ApiRequestHandler):
+class CSV(ApiRequestHandler, SessionHandler):
 
     def initialize(self, request, response):
         super(CSV, self).initialize(request, response)

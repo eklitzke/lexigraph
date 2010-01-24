@@ -1,7 +1,7 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler
+from lexigraph.handler import InteractiveHandler
 
-class Home(RequestHandler):
+class Home(InteractiveHandler):
 
     def get(self):
         if self.request.path != '/':

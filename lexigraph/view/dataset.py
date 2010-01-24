@@ -1,13 +1,9 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler, requires_login
+from lexigraph.handler import AccountHandler, InteractiveHandler, requires_login
 from lexigraph import model
 from lexigraph.model.query import *
 
-class NewDataSet(RequestHandler):
-
-    @requires_login
-    def get(self):
-        self.redirect('/dashboard')
+class NewDataSet(AccountHandler):
 
     @requires_login
     def post(self):
@@ -36,17 +32,18 @@ class NewDataSet(RequestHandler):
 
         self.redirect('/dashboard')
 
-class EditDataSet(RequestHandler):
+class EditDataSet(InteractiveHandler):
 
     @requires_login
     def get(self):
         dataset = self.get_dataset(self.form_required('name', uri='/dashboard'))
+        self.load_prefs()
         self.env['dataset'] = dataset
         self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
         self.render_template('edit_dataset.html')
 
-class DeleteDataSet(RequestHandler):
+class DeleteDataSet(AccountHandler):
 
     @requires_login
     def post(self):

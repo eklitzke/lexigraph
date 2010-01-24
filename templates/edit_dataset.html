@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body_content %}
-{{ macros.draw_graph(dataset, show_edit=False) }}
+{{ macros.draw_graph(dataset, show_edit=False, width=prefs.large_width) }}
 {% if dataset.description %}
 <strong>description:</strong> {{dataset.description }}
 {% else %}

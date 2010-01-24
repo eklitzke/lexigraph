@@ -1,9 +1,9 @@
 import lexigraph.session
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler, requires_login
+from lexigraph.handler import SessionHandler, requires_login
 from google.appengine.api.users import create_logout_url
 
-class Logout(RequestHandler):
+class Logout(SessionHandler):
 
     @requires_login #heh
     def get(self):

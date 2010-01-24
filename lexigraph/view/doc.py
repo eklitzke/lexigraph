@@ -1,7 +1,7 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler, requires_login
+from lexigraph.handler import InteractiveHandler, requires_login
 
-class Doc(RequestHandler):
+class Doc(InteractiveHandler):
 
     @requires_login
     def get(self):

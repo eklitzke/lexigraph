@@ -6,7 +6,7 @@
 {% endif %}
 
 {% for dataset_name in datasets %}
-{{ macros.draw_graph(dataset_name=dataset_name) }}
+{{ macros.draw_graph(dataset_name=dataset_name, width=prefs.large_width) }}
 {% endfor %}
 
 <form action="/new/dataset" method="POST">

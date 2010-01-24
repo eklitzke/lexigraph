@@ -1,9 +1,9 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler, requires_login
+from lexigraph.handler import InteractiveHandler, requires_login
 from lexigraph import model
 from lexigraph.model.query import *
 
-class Dashboard(RequestHandler):
+class Dashboard(InteractiveHandler):
 
     def all_datasets(self):
         dataset_names = set()
@@ -22,8 +22,7 @@ class Dashboard(RequestHandler):
             self.log.info('No accounts set up for user, redirecting')
             self.redirect('/account')
             return
-        import time
-        self.env['account'] = self.account
+        self.load_prefs()
         self.env['groups'] = model.AccessGroup.groups_for_user(self.account)
         self.env['datasets'] = self.all_datasets()
         self.render_template('dashboard.html')

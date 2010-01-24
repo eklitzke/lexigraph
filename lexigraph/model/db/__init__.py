@@ -9,7 +9,6 @@ from vendor.gaeutilities.rotmodel import ROTModel
 from lexigraph.log import ClassLogger
 from lexigraph.model.query import maybe_one, fetch_all
 from lexigraph.model.util import to_python
-from lexigraph import simplejson
 
 Error = db.Error
 
@@ -245,41 +244,4 @@ class DataPoint(LexigraphModel):
         else:
             raise NotImplementedError
 
-class UserPrefs(LexigraphModel):
-    user_id = db.StringProperty(required=True)
-    pref_name = db.StringProperty(required=True)
-    value = db.StringProperty(required=True) # encoded as JSON
-
-    # defines valid preferences, along with their default value
-    all_prefs = {
-        'show_rollbar': False,
-        'large_height': 800
-    }
-
-    @classmethod
-    def pref_query(cls, user_id, pref_name):
-        assert pref_name in cls.all_prefs
-        return cls.all().filter('user_id =', user_id).filter('pref_name =', pref_name)
-
-    @classmethod
-    def store_preference(cls, user_id, pref_name, value):
-        # need to clear any existing rows
-        db.delete(fetch_all(cls.pref_query(user_id, pref_name)))
-        serialized = simplejson.dumps(value)
-        cls(user_id=user_id, pref_name=pref_name, value=serialized).put()
-
-    @classmethod
-    def get_preference(cls, user_id, pref_name):
-        row = maybe_one(cls.pref_query(user_id, pref_name))
-        if row:
-            return simplejson.loads(row.value)
-        else:
-            return cls.all_prefs[pref_name]
-
-    @classmethod
-    def load_by_user_id(cls, user_id):
-        pref_dict = cls.all_prefs.copy()
-        if user_id:
-            for row in fetch_all(cls.all().filter('user_id =', user_id)):
-                pref_dict[str(row.pref_name)] = simplejson.loads(row.value)
-        return pref_dict
+from lexigraph.model.db.prefs import *

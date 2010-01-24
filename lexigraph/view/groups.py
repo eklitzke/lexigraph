@@ -1,20 +1,16 @@
 from lexigraph.view import add_route
-from lexigraph.handler import RequestHandler, requires_login
+from lexigraph.handler import AccountHandler, InteractiveHandler, requires_login
 from lexigraph import model
 
-class EditGroups(RequestHandler):
+class EditGroups(InteractiveHandler):
 
     @requires_login
     def get(self):
         self.env['groups'] = model.AccessGroup.groups_for_user(self.account, self.user)
         self.render_template('edit_groups.html')
 
-class NewGroup(RequestHandler):
+class NewGroup(AccountHandler):
 
-    @requires_login
-    def get(self):
-        self.redirect('/groups')
-    
     @requires_login
     def post(self):
         dataset_name = self.request.get('dataset_name')

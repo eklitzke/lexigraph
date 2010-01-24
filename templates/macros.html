@@ -20,7 +20,7 @@
 {% endif %}
 {%- endmacro %}
 
-{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, roll_period=None) -%}
+{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, width=800, roll_period=10) -%}
 {% if dataset and not dataset_name %}
 {% set dataset_name = dataset.name %}
 {% endif %}
@@ -30,21 +30,27 @@
 <h2>{{ dataset_name }}</h2>
 {% endif %}
 
-<div id="graph_dataset_{{dataset_name}}"></div>
+<div class="lexigraph_chart" id="graph_dataset_{{dataset_name}}"
+     {% set height = width / 1.618 -%}
+     style="width: {{width}}px; height: {{height | int}}px;"></div>
 <script type="text/javascript">
   g = new Dygraph(
       document.getElementById("graph_dataset_{{dataset_name}}"),
-      "/api/csv?dataset={{dataset_name}}"
-  {% if roll_period %} , rollPeriod: {{roll_period}} {% endif %}
+      "/api/csv?dataset={{dataset_name}}",
+  {
+  {% if roll_period %} rollPeriod: {{roll_period}}, {% endif %}
+  }
   )
 </script>
 {%- endmacro %}
 
 {% macro draw_topnav(items, id='topnav', account=None, accounts=[]) -%}
 <div id="{{id}}">
-  {% for (link, name) in items %}
-  <span class="topnav_link"> <a href="{{link}}">{{name}}</a></span>
+  <ul>
+    {% for (link, name) in items %}
+    <li><a href="{{link}}">{{name}}</a></li>
   {% endfor %}
+  </ul>
   <span class="topnav_select">
     {% if account %}
     account: {{account.name}}

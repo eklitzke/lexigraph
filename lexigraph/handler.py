@@ -1,5 +1,6 @@
 from functools import wraps
 import logging
+import datetime
 
 from google.appengine.api import users
 
@@ -55,8 +56,11 @@ class RequestHandler(_RequestHandler):
         self.env = {'title': ''}
 
         self.user = users.get_current_user()
+        self.user_id = self.user.user_id() if self.user else None
         self.key = request.get('key') or None
+        self.initialize_env()
 
+    def initialize_env(self):
         self.session = None
         self.accounts = []
         if self.user:
@@ -68,6 +72,8 @@ class RequestHandler(_RequestHandler):
             self.env['account'] = self.account
         self.env['config'] = config
 
+        # set the copyright date on the footers
+        self.env['copyright_year'] = datetime.date.today().year
 
     def form_required(self, name, uri=None):
         """Get a thing in the form, redirecting if it is missing."""
@@ -87,6 +93,14 @@ class RequestHandler(_RequestHandler):
         if ds is not None and not ds.is_allowed(self.user, self.key, read=check_read, write=check_write, delete=check_delete):
             raise PermissionsError
         return ds
+
+    def load_prefs(self):
+        """Load preferences for the current user. No work is done if this method
+        has already been called during this request.
+        """
+        if 'prefs' not in self.env:
+            self.env['prefs'] = model.UserPrefs.load_by_user_id(self.user_id)
+        return self.env['prefs']
 
     def redirect(self, url, permanent=False):
         """Overriden to redirect RightNow using exceptions."""

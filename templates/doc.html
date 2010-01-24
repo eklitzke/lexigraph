@@ -15,6 +15,22 @@ it uses access controls, and has been thought out pretty well. more
 documentation about the details goes here. https support is planned, but not yet
 implemented.
 
+<h2>the data model</h2>
+
+<p>the data model is very similar to rrd. it revolves around two
+concepts: datasets and data series.</p>
+
+<p>a <dfn>dataset</dfn> is something like <q>load5 on batch2</q> or <q>number of apache
+accesses on web8</q>. every dataset has an associated aggregation function,
+which is described below.</p>
+
+<p>a <dfn>data series</dfn> is a view of a dataset. it has two associated bits of
+information: an <q>interval</q> which is how frequent data is spaced, and
+optionally a max age which is the age of the oldest piece of data associated
+with it. usually a dataset will have many dataseries associated with it.</p>
+
+<p>(more stuff here)</p>
+
 <h2>api basics</h2>
 
 <p>

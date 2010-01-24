@@ -1,8 +1,8 @@
-from django.utils import simplejson
 from functools import wraps
 
 from lexigraph.handler import RequestHandler
 from lexigraph.model import *
+from lexigraph import simplejson
 
 class ApiError(Exception):
     pass

@@ -5,6 +5,7 @@ class Prefs(RequestHandler):
 
     @requires_login
     def get(self):
-        self.redirect('/dashboard')
+        self.load_prefs()
+        self.render_template('prefs.html')
 
 add_route(Prefs, '/prefs')

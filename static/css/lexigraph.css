@@ -15,14 +15,38 @@ body {
 
 #topnav {
     font-size: 138.5%;
+    margin-top: 0;
+    padding-left: 0.6em;
+    font-weight: bold;
+    border-bottom: 1px solid grey;
 }
+
+#topnav ul, li {
+    margin: 0;
+    padding-left: 0.5em;
+    display: inline;
+}
+
+#topnav li:first-child {
+    padding-left: 0;
+}
+
+#topnav a {
+    text-decoration: none;
+    color: #555;
+}
+
+#topnav a:hover {
+    color: black;
+}
+
 
 ul { padding-top: 0.35em; }
 
 /* This is super ghetto, but right now only the home page uses it. If fixing
  * this, fix the splash page too.
  */
-ul li:before {
+.arrow_list ul li:before {
     content: "\00BB \0020";
 }
 
@@ -67,23 +91,6 @@ h3 {
 	margin-bottom: 0.25em;
     }
 
-#topnav {
-    margin-top: 0;
-    padding-left: 0.6em;
-    font-weight: bold;
-    border-bottom: 1px solid grey;
-}
-
-#topnav a {
-    text-decoration: none;
-    color: #555;
-    /*color: black;*/
-}
-
-#topnav a:hover {
-    text-decoration: none;
-    color: black;
-}
 
 #ft {
     padding-left: 0.4em;
@@ -156,3 +163,9 @@ code {
     margin-left: 1em;
     background-color: #EFEFEF;
     }
+
+dfn { font-style: italic; }
+
+.lexigraph_chart div{
+    width: 100px;
+}

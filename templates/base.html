@@ -5,9 +5,6 @@
     {% block head %}
     <title>lexigraph</title>
     <link rel="shortcut icon" href="/images/cat.png" type="image/png" />
-    <!--<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css"> 
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-min.css"> 
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssfonts/fonts-context-min.css">  -->
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
     <link rel="stylesheet" type="text/css" href="/css/lexigraph.css" />
     <script type="text/javascript" src="/js/dygraph-combined.js"></script>
@@ -16,7 +13,7 @@
   <body>
     <div id="doc3" class="yui-t7">
       <div id="hd">
-        <h1>{% block body_header %}lexigraph{% endblock %}</h1>
+        <h1>{% block body_header %}lexigraph; graphing &amp; trending{% endblock %}</h1>
     {% block body %}
     {% block topnav %}
     {{ macros.draw_topnav(
@@ -43,7 +40,7 @@
 
         </div> <!-- yui-g -->
       </div> <!-- bd -->
-    <div id="ft"><p>&copy;2010 the lexicographers</p></div>
+    <div id="ft"><p>&copy;{{copyright_year}} the lexicographers</p></div>
     </div> <!-- doc3 -->
   </body>
 </html>

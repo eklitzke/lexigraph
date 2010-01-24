@@ -1,8 +1,5 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
-{% block body_header %}
-{{account.name}} dashboard
-{% endblock %}
 {% block body_content %}
 {% if not datasets %}
 <p>you don't have any datasets defined, nothing to see here.</p>

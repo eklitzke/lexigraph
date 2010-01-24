@@ -20,7 +20,7 @@
 {% endif %}
 {%- endmacro %}
 
-{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, width=None, roll_period=10) -%}
+{% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, width=None, roll_period=None) -%}
 {% if dataset and not dataset_name %}
 {% set dataset_name = dataset.name %}
 {% endif %}

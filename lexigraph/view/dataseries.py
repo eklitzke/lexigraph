@@ -1,9 +1,9 @@
 from lexigraph.view import add_route
-from lexigraph.handler import AccountHandler
+from lexigraph.handler import SessionHandler
 from lexigraph import model
 from lexigraph.model.query import *
 
-class NewDataSeries(AccountHandler):
+class NewDataSeries(SessionHandler):
 
     requires_login = True
 

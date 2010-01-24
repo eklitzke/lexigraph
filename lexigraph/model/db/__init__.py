@@ -5,6 +5,7 @@ import datetime
 from google.appengine.ext import db
 from google.appengine.api import users
 
+from vendor.gaeutilities.rotmodel import ROTModel
 from lexigraph.log import ClassLogger
 from lexigraph.model.query import maybe_one, fetch_all
 from lexigraph.model.util import to_python
@@ -15,7 +16,7 @@ Error = db.Error
 class APIError(Exception):
     pass
 
-class LexigraphModel(db.Model):
+class LexigraphModel(ROTModel):
 
     log = ClassLogger()
 

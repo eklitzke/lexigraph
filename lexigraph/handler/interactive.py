@@ -48,19 +48,21 @@ class SessionHandler(AccountHandler):
         super(SessionHandler, self).initialize_env()
         if self.user:
             self.session = lexigraph.session.SessionState(self.user)
+        else:
+            self.session = None
 
     def get_account_by_user(self):
         account = self.session['account']
         if account is None:
             accounts = model.Account.by_user(self.user)
             if not accounts:
-                self.session['message'] = 'You must create an account first.'
+                self.session['error_message'] = 'You must create an account first.'
                 account = None
             elif len(accounts) == 1:
                 account = accounts[0]
                 self.session['account'] = account
             else:
-                self.session['message'] = 'Select an account.'
+                self.session['info_message'] = 'Select an account.'
                 #self.redirect('/choose/account')
                 account = None
         else:
@@ -84,8 +86,11 @@ class InteractiveHandler(SessionHandler):
         if self.user:
             self.env['account'] = self.account
 
-        self.env['info_message'] = ''
-        self.env['error_message'] = ''
+        if self.session:
+            self.env['info_message'] = self.session.get_once('info_message')
+            self.env['error_message'] = self.session.get_once('error_message')
+        else:
+            self.env['info_message'] = self.env['error_message'] = None
         
         # used for the copyright date on the footer
         self.env['copyright_year'] = datetime.date.today().year

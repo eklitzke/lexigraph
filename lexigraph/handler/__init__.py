@@ -62,7 +62,8 @@ class RequestHandler(_RequestHandler):
         thing = self.request.get(name)
         if not thing:
             self.log.warning('form was missing field %s' % (name,))
-            self.session['message'] = 'Form was missing field %s' % (name,)
+            if hasattr(self, 'session'):
+                self.session['error_message'] = 'Form was missing field %s' % (name,)
             self.log.warning('uir = %r' % (uri,))
             self.redirect(uri or getattr(self, 'error_uri', self.request.uri))
         else:

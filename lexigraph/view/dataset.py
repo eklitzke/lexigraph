@@ -1,9 +1,9 @@
 from lexigraph.view import add_route
-from lexigraph.handler import AccountHandler, InteractiveHandler, requires_login
+from lexigraph.handler import AccountHandler, SessionHandler, InteractiveHandler, requires_login
 from lexigraph import model
 from lexigraph.model.query import *
 
-class NewDataSet(AccountHandler):
+class NewDataSet(SessionHandler):
 
     @requires_login
     def post(self):
@@ -12,10 +12,10 @@ class NewDataSet(AccountHandler):
         group_name = self.form_required('group')
         group = maybe_one(model.AccessGroup.all().filter('account =', self.account).filter('name =', group_name))
         if group is None:
-            self.session['message'] = 'No such group %r existed' % (group_name,)
+            self.session['error_message'] = 'No such group %r existed' % (group_name,)
             self.redirect('/dashboard')
         if self.user.user_id() not in group.users:
-            self.session['message'] = "You're not a member of that group"
+            self.session['error_message'] = "You're not a member of that group"
             self.redirect('/dashboard')
 
         description = self.request.get('description') or None

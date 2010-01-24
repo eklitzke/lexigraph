@@ -26,7 +26,7 @@ class ChooseAccount(SessionHandler):
             self.session['account'] = account
             self.redirect('/dashboard')
         else:
-            self.session['message'] = 'invalid choice'
+            self.session['error_message'] = 'invalid choice'
             self.redirect('/choose/account')
 
 class UpdateAccount(InteractiveHandler):
@@ -35,7 +35,7 @@ class UpdateAccount(InteractiveHandler):
     def get(self):
         mail = self.user.email()
         if config.whitelisted_emails and mail not in config.whitelisted_emails:
-            self.session['message'] = 'Sorry, your email (%s) hasn\'t been whitelisted. Ask Evan if you need access.' % (mail,)
+            self.session['error_message'] = 'Sorry, your email (%s) hasn\'t been whitelisted. Ask Evan if you need access.' % (mail,)
             self.redirect('/')
         self.env['accounts'] = fetch_all(model.Account.all().filter('owner =', self.user))
         self.render_template('account.html')

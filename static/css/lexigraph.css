@@ -130,12 +130,22 @@ fieldset {
 .mini_link { font-size: 0.8em; }
     
 
-#session_messages {
+#info_message {
     border: solid #00c300 2px;
     background-color: #eeffee;
     min-width: 10em;
     max-width: 30em;
-    /*width: 20em;*/
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+#error_message {
+    border: solid #c30000 2px;
+    background-color: #ffeeee;
+    min-width: 10em;
+    max-width: 30em;
     padding-left: 1em;
     padding-right: 1em;
     margin-top: 0.25em;

@@ -61,6 +61,31 @@ class SessionState(object):
         else:
             return maybe_one(q)
 
+    def get_once(self, key, default_value=None):
+        """Read a value out of the session state, and delete it if a value was
+        read. This is useful for "read once" data like the flash messages.
+
+        Logically this is equivalent to, but better optimized than:
+          val = session[key] or default_value
+          del session[key]
+        """
+        val = self.cache[key]
+        if val is not None:
+            self.delete(key, delete_cache=True)
+            return val
+
+        # XXX: the use case for this is really just for the "flash" messages, so
+        # really if the cache misses, we shouldn't even bother with the database
+        # work
+
+        result = self.query(key)
+        if result is not None:
+            raw = pickle.loads(result.pickle)
+            result.delete()
+            return raw
+
+        return default_value
+
     def __getitem__(self, key):
         val = self.cache[key]
         if val is not None:
@@ -71,12 +96,13 @@ class SessionState(object):
             self.cache[key] = raw
             return raw
 
-    def __delitem__(self, key):
-        del self.cache[key]
+    def delete(self, key, delete_cache=True):
+        if delete_cache:
+            del self.cache[key]
         db.delete(self.query(key, many=True))
 
-    def delete(self, k):
-        del self[k]
+    def __delitem__(self, key):
+        self.delete(key)
 
     def __setitem__(self, key, val):
         SessionStorage(user_id=self.user_id, item_name=key, pickle=pickle.dumps(val, protocol=pickle.HIGHEST_PROTOCOL)).put()

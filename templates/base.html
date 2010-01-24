@@ -28,12 +28,12 @@
       <div id="bd" role="main">
         <div class="yui-g">
     <div id="real_content">
-      {% block show_messages%}
-      {% if session and session.message %}
-      <div id="session_messages">{{session.message|e}}</div>
-      {{ session.delete('message') or '' }}
+      {% if error_message %}
+      <div id="error_message">{{error_message|e}}</div>
       {% endif %}
-      {% endblock %}
+      {% if info_message %}
+      <div id="info_message">{{info_message|e}}</div>
+      {% endif %}
     {% block body_content %}{% endblock %}
       {% endblock %}
     </div> <!-- real_content -->

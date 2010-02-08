@@ -11,11 +11,11 @@ body {
 }
 
 #hd h1 {
-    font-size: 197%;
+    font-size: 167%;
 }
 
 #topnav {
-    font-size: 138.5%;
+    font-size: 131%;
     margin-top: 0;
     padding-left: 0.6em;
     font-weight: bold;
@@ -24,8 +24,11 @@ body {
 
 #topnav ul, #topnav li {
     margin: 0;
-    padding-left: 0.5em;
     display: inline;
+}
+
+#topnav li {
+    padding-left: 0.5em;
 }
 
 #topnav li:first-child {
@@ -56,7 +59,7 @@ fieldset {
     padding-bottom: 0.4em;
 }
 
-#bd { font-size: 138.5%; }
+#bd { font-size: 123.1%; }
 
 #real_content {
     padding-top: 0.5em;
@@ -153,6 +156,11 @@ table {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
     border-collapse: collapse;
+}
+
+th {
+    padding-right: 1em;
+    font-weight: bold;
 }
 
 .api_table th {

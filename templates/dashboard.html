@@ -1,14 +1,16 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
 {% block body_content %}
-{% if not datasets %}
-<p>you don't have any datasets defined, nothing to see here.</p>
-{% endif %}
 
-{{ macros.initialize_graphs(prefs) }}
-{% for dataset_name in datasets %}
-{{ macros.draw_graph(dataset_name=dataset_name, width=prefs.large_width) }}
-{% endfor %}
+<form id="ajax_graphs_query">
+  <label for="tags_query"><strong>tag query: </strong></label>
+  <input id="tags_query" type="text" size="30" value="" name="tags"/>
+  <button type="button" onclick="LX.graph_query()">update</button>
+</form>
+<div id="query_results">graphs loading...</div>
+
+<!-- run the ajax query once with an empty field -->
+<script type="text/javascript">LX.graph_query("tags_query", "query_results");</script>
 
 <form action="/new/dataset" method="POST">
   <fieldset>
@@ -21,6 +23,7 @@
       <option name="{{ group.name }}">{{ group.name }}</option>
       {% endfor %}
     </select> <br />
+    tags (comma separated): <input type="text" name="tags" size=60 /><br />
     description: <br />
     <textarea name="description" cols=80 row=3></textarea> <br />
     <input type="submit" value="submit">

@@ -2,6 +2,7 @@ from functools import wraps
 import logging
 
 from google.appengine.api import users
+from django.utils import simplejson
 
 from vendor.jinja2 import Environment, FileSystemLoader
 
@@ -57,6 +58,9 @@ class RequestHandler(_RequestHandler):
         """Overriden to redirect RightNow using exceptions."""
         super(RequestHandler, self).redirect(url, permanent=permanent)
         raise RedirectError
+
+    def render_json(self, obj):
+        self.response.out.write(simplejson.dumps(obj))
 
     def handle_exception(self, exception, debug_mode):
         self.log.info('Handling exception %r (type is %s)' % (exception, type(exception)))

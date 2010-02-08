@@ -14,5 +14,6 @@ import lexigraph.view.logout
 import lexigraph.view.prefs
 import lexigraph.view.cron
 import lexigraph.view.doc
+import lexigraph.view.graph
 
 from lexigraph.view import api

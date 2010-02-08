@@ -21,33 +21,12 @@
 {% endif %}
 {%- endmacro %}
 
-<!-- initialize graphs -->
-{% macro initialize_graphs(prefs) -%}
-<script type="text/javascript">
-function draw_lexigraph(ds_name) {
-    var d = new Date();
-    var offset = d.getTimezoneOffset();
-    d.setSeconds(d.getSeconds() - {{ prefs.default_timespan }});
-    var g = new Dygraph(
-        document.getElementById("graph_dataset_" + ds_name),
-        "/api/csv?dataset=" + ds_name + "&tz=" + offset,
-        {
-            includeZero: true,
-            dateWindow: [
-                d.valueOf(),
-                (new Date()).valueOf()
-            ],
-        });
-}
-</script>
-{%- endmacro %}
-
 {% macro draw_graph(dataset=None, dataset_name=None, show_edit=True, width=None) -%}
 {% if dataset and not dataset_name %}
 {% set dataset_name = dataset.name %}
 {% endif %}
 {% if show_edit %}
-<div class="inline_header"><h2>{{ dataset_name }}</h2>&nbsp;<span class="mini_link"><a href="/edit/dataset?name={{dataset_name}}">edit</a></span></div>
+<div class="inline_header" id="graph_header_{{dataset_name}}"><h2>{{ dataset_name }}</h2>&nbsp;<span class="mini_link"><a href="/edit/dataset?name={{dataset_name}}">edit</a></span></div>
 {% else %}
 <h2>{{ dataset_name }}</h2>
 {% endif %}

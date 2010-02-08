@@ -37,11 +37,15 @@ body {
 
 #topnav a {
     text-decoration: none;
-    color: #555;
+    color: #444;
 }
 
 #topnav a:hover {
     color: black;
+}
+
+.topnav_select {
+    color: #444;
 }
 
 ul.arrow_list { padding-top: 0.35em; }

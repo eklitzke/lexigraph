@@ -2,10 +2,13 @@
 {% extends "base.html" %}
 {% block body_content %}
 
-<label for="tags_query"><strong>tag query: </strong></label>
+<span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
+<label for="tags_query">tag search: </label>
 <input id="tags_query" type="text" size="30" value="" name="tags"/>
+</span>
 <button type="button" onclick="LX.graph_query('tags_query', 'query_results')">update</button>
-<div id="query_results">graphs loading...</div>
+<br />
+<div id="query_results">graphs loading, be patient...</div>
 
 <!-- run the ajax query once with an empty field -->
 <script type="text/javascript">LX.graph_query("tags_query", "query_results");</script>

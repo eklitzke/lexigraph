@@ -64,35 +64,12 @@ LX.draw_graph = function (opts) {
         new Dygraph(div, csv_url, graph_opts);
     };
 
-    /* By default, defer the graph loading stuff until the page is fully
-     * loaded.
-     */
-    if (opts.onload !== false) {
-        LX.register_onload(draw_graph);
+    if (opts.onload === true) {
+        google.setOnLoadCallback(draw_graph);
     } else {
         draw_graph();
     }
 };
-
-/* Create an onload registry function. This also sets up window.onload to use
- * this registry.
- */
-LX.register_onload = (function () {
-    var onload_handlers = [];
-
-    window.onload = function () {
-        var k;
-        for (k in onload_handlers) {
-            if (onload_handlers.hasOwnProperty(k)) {
-                onload_handlers[k]();
-            }
-        }
-    };
-
-    return function (func) {
-        onload_handlers.push(func);
-    }
-})();
 
 LX.graph_query = function (input_id, div_id) {
     var input, graph_div, tag_list = [], tag, i;
@@ -117,7 +94,7 @@ LX.graph_query = function (input_id, div_id) {
             h_div.appendChild(h_tag);
 
             var h_link = document.createElement("a");
-            h_link.setAttribute("href", "/edit/dataset?dataset=" + dataset_name);
+            h_link.setAttribute("href", "/edit/dataset?name=" + dataset_name);
             h_link.className = "mini_link";
             h_link.appendChild(document.createTextNode("edit"));
             h_div.appendChild(h_link);

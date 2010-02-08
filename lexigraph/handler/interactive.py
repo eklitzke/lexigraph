@@ -2,6 +2,7 @@ import datetime
 from functools import wraps
 
 from google.appengine.api import users
+from django.utils import simplejson
 
 from google.appengine.ext.webapp import RequestHandler as _RequestHandler
 from lexigraph.handler import RequestHandler
@@ -120,6 +121,8 @@ class InteractiveHandler(SessionHandler):
         """
         if 'prefs' not in self.env:
             self.env['prefs'] = model.UserPrefs.load_by_user_id(self.user_id)
+            self.env['prefs_json'] = simplejson.dumps(self.env['prefs'])
+            self.log.info('prefs = %r' % (self.env['prefs'],))
         return self.env['prefs']
 
     def initialize_env(self):

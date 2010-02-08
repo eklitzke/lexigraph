@@ -11,6 +11,7 @@ from lexigraph import model
 from lexigraph.model.query import *
 from lexigraph import config
 from lexigraph.handler.errors import *
+from lexigraph.validate import ValidationError
 
 
 def cache_per_request(func):
@@ -58,8 +59,14 @@ class RequestHandler(_RequestHandler):
         raise RedirectError
 
     def handle_exception(self, exception, debug_mode):
+        self.log.info('Handling exception %r (type is %s)' % (exception, type(exception)))
         if isinstance(exception, RedirectError):
             pass
+        elif isinstance(exception, ValidationError):
+            if getattr(self.session, None):
+                self.session['error_message'] = str(exception)
+            else:
+                raise
         else:
             return super(RequestHandler, self).handle_exception(exception, debug_mode)
 

@@ -1,18 +1,16 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
 
-{% block body_header %}your groups{% endblock %}
-
 {% block body_content %}
 {% if not groups %}
-well this is certainly strange... you don't appear to belong to any groups. contact your administrator (or support, if you are an administrator).
+well this is certainly strange... you don't appear to belong to any groups. contact your administrator (or lexigraph support, if you are an administrator).
 {% else %}
 You are a member of the following groups:
 <table>
   <tr><th>group</th><th>members</th><th>key</th></tr>
   {% for group in groups %}
   <tr>
-    <td>{{group.name}}</td>
+    <td><a href="/edit/group/{{group.name}}">{{group.name}}</a></td>
     <td>{{group.users|length}}</td>
     <td>{{group.api_token}}</td>
   </tr>

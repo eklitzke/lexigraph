@@ -21,10 +21,12 @@ class CSV(ApiRequestHandler, SessionHandler):
         if not dataset:
             return self.make_error(StatusCodes.MISSING_FIELD, field='dataset')
 
+        self.log.info('AAA')
         try:
             self.dataset = self.get_dataset(dataset)
         except PermissionsError:
             return self.make_error(StatusCodes.PERMISSIONS_ERROR, field='dataset')
+        self.log.info('BBB')
 
         # the timezone offset
         self.tz_offset = int(self.request.get('tz', 0)) * 60

@@ -59,9 +59,7 @@ function draw_lexigraph(ds_name) {
      {%- endif %}
      >
 </div>
-<script type="text/javascript">
-  draw_lexigraph("{{dataset_name}}");
-</script>
+<script type="text/javascript">LX.draw_graph({"dataset_name": "{{ dataset_name }}"})</script>
 {%- endmacro %}
 
 {% macro draw_topnav(items, id='topnav', account=None, accounts=[]) -%}

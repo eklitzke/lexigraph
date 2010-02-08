@@ -2,11 +2,9 @@
 {% extends "base.html" %}
 {% block body_content %}
 
-<form id="ajax_graphs_query">
-  <label for="tags_query"><strong>tag query: </strong></label>
-  <input id="tags_query" type="text" size="30" value="" name="tags"/>
-  <button type="button" onclick="LX.graph_query()">update</button>
-</form>
+<label for="tags_query"><strong>tag query: </strong></label>
+<input id="tags_query" type="text" size="30" value="" name="tags"/>
+<button type="button" onclick="LX.graph_query('tags_query', 'query_results')">update</button>
 <div id="query_results">graphs loading...</div>
 
 <!-- run the ajax query once with an empty field -->

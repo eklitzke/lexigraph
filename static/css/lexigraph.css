@@ -1,7 +1,6 @@
 body {
     width: 90%;
-    min-wdith: 950px;
-    /*min-width: 600px;*/
+    min-width: 950px;
     margin: auto;
 }
 
@@ -131,7 +130,7 @@ fieldset {
     padding-right: 0.4em;
 }
 
-.mini_link { font-size: 0.8em; }
+.mini_link { padding-left: 0.4em; font-size: 0.8em; }
     
 
 #info_message {

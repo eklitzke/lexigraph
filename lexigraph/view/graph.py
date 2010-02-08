@@ -22,8 +22,6 @@ class GraphQuery(SessionHandler):
         # Filter out datasets to include only ones the user can read. Collect
         # only the names of the datasets.
         datasets = [d.name for d in datasets if d.is_allowed(self.user, read=True)]
-        self.log.info('selected datasets = %s' % (datasets,))
-
         self.render_json({'status': True, 'datasets': datasets})
 
 add_route(GraphQuery, '/graph/query')

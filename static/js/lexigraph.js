@@ -48,6 +48,8 @@ LX.draw_graph = function (opts) {
 
         setopt('includeZero', true);
         setopt('fillGraph', false);
+        setopt('colors', ['#5C7977', '#86997B', '#E8A03A', '#D24B14', '#2D292A']); //AIW pallet from colourlovers.com
+        setopt('strokeWidth', 2);
         setuseropt('showRoller', 'show_rollbar', false);
 
         // Set the date window. Check opts.intervalSeconds first, and fallback to LX.userPrefs
@@ -95,7 +97,7 @@ LX.register_onload = (function () {
 LX.graph_query = function (input_id, div_id) {
     var input, graph_div, tag_list = [], tag, i;
     input = document.getElementById(input_id);
-    $.getJSON("/graph/query?q=" + escape(input.value), function (data) {
+    $.getJSON("/graph/query?q=" + escape(input.value || ""), function (data) {
         graph_div = document.getElementById(div_id);
         var elt_list = [];
 
@@ -113,6 +115,13 @@ LX.graph_query = function (input_id, div_id) {
             var h_tag = document.createElement("h2");
             h_tag.appendChild(document.createTextNode(dataset_name));
             h_div.appendChild(h_tag);
+
+            var h_link = document.createElement("a");
+            h_link.setAttribute("href", "/edit/dataset?dataset=" + dataset_name);
+            h_link.className = "mini_link";
+            h_link.appendChild(document.createTextNode("edit"));
+            h_div.appendChild(h_link);
+
             elt_list.push(h_div);
 
 

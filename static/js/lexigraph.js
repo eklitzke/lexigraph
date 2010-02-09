@@ -15,22 +15,17 @@ LX.draw_graph = function (opts) {
         element_id = "graph_dataset_" + dataset_name;
     }
 
-    if (LX.tz_offset === undefined) {
-        LX.tz_offset = (new Date()).getTimezoneOffset();
-    }
-
     var draw_graph = function () {
-        console.info("drawing graph for " + dataset_name);
+        console.debug('LX: drawing graph for "' + dataset_name + '"');
         var lhs_time = new Date();
         var now = new Date();
         var div = document.getElementById(element_id);
         var csv_url = "/api/csv?dataset=" + dataset_name;
-        if (LX.tz_offset) {
-            csv_url += "&tz=" + LX.tz_offset;
-        }
 
         /* dygraphs options are mixed in with other options */
         var graph_opts = {};
+        graph_opts.xValueParser = Dygraph.unixTimestampParser;
+        graph_opts.xValueType = "date";
         var setopt = function (name, val) {
             if (opts[name] !== undefined) {
                 graph_opts[name] = opts[name];

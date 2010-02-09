@@ -13,9 +13,10 @@
 <!-- run the ajax query once with an empty field -->
 <script type="text/javascript">LX.graph_query("tags_query", "query_results");</script>
 
+<h2>add a new dataset</h2>
 <form action="/new/dataset" method="POST">
   <fieldset>
-    <legend>create a new dataset</legend>
+    <legend>dataset details</legend>
     <!--dataset name: <input type="text" name="dataset"> <br />-->
     {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset") }}
     {{ macros.aggregate_dropdown() }}
@@ -27,8 +28,14 @@
     tags (comma separated): <input type="text" name="tags" size=60 /><br />
     description: <br />
     <textarea name="description" cols=80 row=3></textarea> <br />
-    <input type="submit" value="submit">
   </fieldset>
+  <fieldset>
+    <legend>initial data series</legend>
+    {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval") }}
+    {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage") }}
+  </fieldset>
+  <br />
+  <input type="submit" value="submit">
 </form>
 
 {% endblock %}

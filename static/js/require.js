@@ -1,2 +1,9 @@
 goog.require('goog.net.XhrIo');
+goog.require('goog.ui.Button');
+goog.require('goog.ui.LabelInput');
+goog.require('goog.dom');
+goog.require('goog.events');
+goog.require('goog.events.EventType');
 goog.require('lexigraph');
+goog.require('soy');
+goog.require('soy.StringBuilder');

@@ -5,15 +5,28 @@
 
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
-<input id="tags_query" type="text" size="30" value="dashboard" name="tags"/>
+<input id="tags_query" class="label_input" type="text" size="50" label="dashboard" name="tags"/>
 </span>
-<button type="button" onclick="LX.graph_query('tags_query', 'query_results')">update</button>
+<span id="b1"></span>
+<script>
+  var li1 = new goog.ui.LabelInput();
+  li1.decorate(goog.dom.$('tags_query'));
+  var b1 = new goog.ui.Button('update graphs');
+  b1.render(goog.dom.$('b1'));
+  goog.events.listen(b1.getElement(), goog.events.EventType.CLICK, function (e) {
+      LX.graphQuery('tags_query', 'query_results');
+  });
+</script>
 <br />
 
 <div id="query_results">
+{% if graphs %}
+  <script>
 {% for ds in graphs %}
-{{ macros.draw_graph(ds) }}
+  LX.drawGraph({onload: false, dataset_name: "{{ds.name}}"});
 {% endfor %}
+  </script>
+{% endif %}
 </div>
 
 <h2>add a new dataset</h2>

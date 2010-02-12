@@ -4,8 +4,9 @@ var LX = {};
 
 /* This will be overridden by the servlet. */
 LX.userPrefs = {};
+//goog.exportProperty(LX, 'userPrefs', LX.userPrefs);
 
-LX.draw_graph = function (opts) {
+LX.drawGraph = function (opts) {
     var dataset_name = opts.dataset_name;
     if (dataset_name === undefined) {
         console.warn("failed to see dataset_name in call to LX.draw_graph");
@@ -68,7 +69,7 @@ LX.draw_graph = function (opts) {
     }
 };
 
-LX.graph_query = function (input_id, div_id) {
+LX.graphQuery = function (input_id, div_id) {
     var input, graph_div, tag_list = [], tag, i;
     input = document.getElementById(input_id);
 
@@ -121,7 +122,7 @@ LX.graph_query = function (input_id, div_id) {
 
         // last thing to do is to ask dygraphs to render everything
         for (i = 0; i < data.datasets.length; i++) {
-            LX.draw_graph({onload: false, dataset_name: data.datasets[i]});
+            LX.drawGraph({onload: false, dataset_name: data.datasets[i]});
         }
     });
 };

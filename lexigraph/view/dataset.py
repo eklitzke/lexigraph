@@ -11,6 +11,7 @@ class NewDataSet(SessionHandler):
         dataset_name = self.form_required('dataset')
         aggregate = self.form_required('aggregate')
         group_name = self.form_required('group')
+        tags = self.form_required('tags') 
         group = maybe_one(model.AccessGroup.all().filter('account =', self.account).filter('name =', group_name))
         if group is None:
             self.session['error_message'] = 'No such group %r existed' % (group_name,)
@@ -20,9 +21,10 @@ class NewDataSet(SessionHandler):
             self.redirect('/dashboard')
 
         description = self.request.get('description') or None
+        tags = [t.strip() for t in tags.split(',')]
 
         # create the dataset
-        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.account, description=description)
+        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.account, description=description, tags=tags)
         ds.put()
         self.log.debug('created new dataset, with id %s' % (ds.key().id(),))
 

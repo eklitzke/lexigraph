@@ -177,6 +177,7 @@ class DataSeries(LexigraphModel):
     interval = db.IntegerProperty(required=True)
     max_age = db.IntegerProperty()
     description = db.TextProperty()
+    has_points = db.BooleanProperty()
 
     def to_epoch(self, timestamp):
         """timestamp: a unix timestamp"""
@@ -201,6 +202,9 @@ class DataSeries(LexigraphModel):
         if last_epoch != curr_epoch:
             return DataPoint(series=self, value=value).put()
 
+        if not self.has_points:
+            self.has_points = True
+            self.put()
         last_point.coalesce_value(self.dataset.aggregate, value, timestamp)
         return last_point
 
@@ -213,6 +217,12 @@ class DataSeries(LexigraphModel):
             points = DataPoint.all().filter('series =', self).filter('timestamp <', max_age).fetch(limit)
             if points:
                 db.delete(points)
+        
+        # update whether we have points or not
+        has_points = maybe_one(DataPoint.all().filter('series =', self))
+        if has_points != self.has_points:
+            self.has_points = self.has_points
+            self.put()
 
 class DataPoint(LexigraphModel):
     series = db.ReferenceProperty(DataSeries, required=True)

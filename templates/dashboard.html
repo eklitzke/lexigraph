@@ -1,17 +1,20 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
+
 {% block body_content %}
 
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
-<input id="tags_query" type="text" size="30" value="" name="tags"/>
+<input id="tags_query" type="text" size="30" value="dashboard" name="tags"/>
 </span>
 <button type="button" onclick="LX.graph_query('tags_query', 'query_results')">update</button>
 <br />
-<div id="query_results">graphs loading, be patient...</div>
 
-<!-- run the ajax query once with an empty field -->
-<script type="text/javascript">LX.graph_query("tags_query", "query_results");</script>
+<div id="query_results">
+{% for ds in graphs %}
+{{ macros.draw_graph(ds) }}
+{% endfor %}
+</div>
 
 <h2>add a new dataset</h2>
 <form action="/new/dataset" method="POST">
@@ -26,7 +29,7 @@
       {% endfor %}
     </select> <br />
     tags (comma separated): <input type="text" name="tags" size=60 /><br />
-    description: <br />
+    desc
     <textarea name="description" cols=80 row=3></textarea> <br />
   </fieldset>
   <fieldset>

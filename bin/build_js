@@ -1,0 +1,4 @@
+#!/bin/bash
+CLOSURE_LIB=$HOME/svn/closure-library-read-only/closure
+
+python $CLOSURE_LIB/bin/calcdeps.py -p $CLOSURE_LIB -p static/js -i static/js/require.js -c bin/compiler.jar -o compiled > static/js/lexigraph.min.js

@@ -1,3 +1,5 @@
+goog.provide("lexigraph");
+
 var LX = {};
 
 /* This will be overridden by the servlet. */
@@ -69,7 +71,9 @@ LX.draw_graph = function (opts) {
 LX.graph_query = function (input_id, div_id) {
     var input, graph_div, tag_list = [], tag, i;
     input = document.getElementById(input_id);
-    $.getJSON("/graph/query?q=" + escape(input.value || ""), function (data) {
+
+    goog.net.XhrIo.send("/graph/query?q=" + escape(input.value || ""), function (e) {
+        data = this.getResponseJson();
         graph_div = document.getElementById(div_id);
         var elt_list = [];
 

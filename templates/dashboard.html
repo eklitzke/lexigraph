@@ -1,16 +1,16 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
 
-{% block body_content %}
+{% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dashboard.css">{% endblock %}
 
+
+{% block body_content %}
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
-<input id="tags_query" class="label_input" type="text" size="50" label="dashboard" name="tags"/>
+<input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags"/>
 </span>
 <span id="b1"></span>
 <script>
-  var li1 = new goog.ui.LabelInput();
-  li1.decorate(goog.dom.$('tags_query'));
   var b1 = new goog.ui.Button('update graphs');
   b1.render(goog.dom.$('b1'));
   goog.events.listen(b1.getElement(), goog.events.EventType.CLICK, function (e) {
@@ -20,13 +20,18 @@
 <br />
 
 <div id="query_results">
-{% if graphs %}
+  {% if dashboard_graphs %}
   <script>
-{% for ds in graphs %}
-  LX.drawGraph({onload: false, dataset_name: "{{ds.name}}"});
-{% endfor %}
+    var dashboard_graphs = {{dashboard_graphs}};
+    document.write(LX.soy.dashboard.graphsWithTitles({names: dashboard_graphs, dims: LX.getGraphDimensions()}));
   </script>
-{% endif %}
+  <script>
+    LX.drawGraphs(dashboard_graphs);
+  </script>
+  {% else %}
+  you don't have any dashboard graphs yet; try creating a new graph and giving
+  it the <q>dashboard</q> tag.
+  {% endif %}
 </div>
 
 <h2>add a new dataset</h2>

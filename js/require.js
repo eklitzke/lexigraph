@@ -4,6 +4,9 @@ goog.require('goog.ui.LabelInput');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('lexigraph');
-goog.require('soy');
-goog.require('soy.StringBuilder');
+//goog.require('lexigraph');
+//goog.require('soy');
+//goog.require('soy.StringBuilder');
+
+goog.require('LX');
+goog.require('LX.soy.dashboard');

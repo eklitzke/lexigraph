@@ -1,6 +1,7 @@
 from functools import wraps
 import logging
 
+import os
 from google.appengine.api import users
 from django.utils import simplejson
 
@@ -41,6 +42,10 @@ class RequestHandler(_RequestHandler):
 
     def initialize_env(self):
         self.env = {'config': config}
+        if hasattr(config.level, 'is_live'):
+            self.env['is_live'] = config.level.is_live
+        else:
+            self.env['is_live'] = not os.environ['SERVER_SOFTWARE'].startswith('Development')
 
     def form_required(self, name, uri=None):
         """Get a thing in the form, redirecting if it is missing."""

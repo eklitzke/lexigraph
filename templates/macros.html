@@ -44,19 +44,19 @@
 {% macro draw_topnav(items, id='topnav', account=None, accounts=[]) -%}
 <div id="{{id}}">
   <ul>
-    {% for (link, name) in items %}
+    {%- for (link, name) in items %}
     <li><a href="{{link}}">{{name}}</a></li>
-  {% endfor %}
+    {%- endfor %}
   </ul>
   <span class="topnav_select">
-    {% if account %}
+    {%- if account %}
     account: {{account.name}}
-    {% if accounts|length > 1 %}
+    {%- if accounts|length > 1 %}
     <span class="mini_link"><a href="/account"><span style="font-weight: normal">edit</span></a></span>
-    {% endif %}
+    {%- endif %}
     {% else %}
     <a href="/account">select an account</a>
-    {% endif %}
+    {%- endif %}
   </span>
 </div>
 {%- endmacro %}

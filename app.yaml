@@ -4,9 +4,13 @@ runtime: python
 api_version: 1
 
 handlers:
-    - url: /(css|js|images|files)/(.+)
+    - url: /(css|images|files)/(.+)
       static_files: static/\1/\2
-      upload: static/(css|js|images|files)/(.+)
+      upload: static/(css|images|files)/(.+)
+
+    - url: /js/(.+)
+      static_files: js/\1
+      upload: static/js/(.+)
    
     - url: /cron/.*
       script: main.py

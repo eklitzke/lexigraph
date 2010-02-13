@@ -2,4 +2,5 @@
 *~
 src/add_point
 src/dev_add_point
-static/js/*.min.js
+*.min.js
+.sconsign.dblite

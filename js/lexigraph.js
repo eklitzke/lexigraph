@@ -1,10 +1,10 @@
-goog.provide("lexigraph");
+goog.provide("LX");
 
 var LX = {};
 
 /* This will be overridden by the servlet. */
 LX.userPrefs = {};
-//goog.exportProperty(LX, 'userPrefs', LX.userPrefs);
+goog.exportProperty(LX, 'userPrefs', LX.userPrefs);
 
 LX.drawGraph = function (opts) {
     var dataset_name = opts.dataset_name;
@@ -68,6 +68,26 @@ LX.drawGraph = function (opts) {
         draw_graph();
     }
 };
+goog.exportSymbol('LX.drawGraph', LX.drawGraph);
+
+LX.getGraphDimensions = function () {
+    if (LX.userPrefs) {
+        return {width: LX.userPrefs.large_width,
+                height: parseInt(LX.userPrefs.large_width / 1.618, 10)};
+    }
+    return null;
+}
+goog.exportSymbol('LX.getGraphDimensions', LX.getGraphDimensions);
+
+LX.drawGraphs = function (datasets, onLoad) {
+    if (onLoad === undefined) {
+        onLoad = false;
+    }
+    for (var i = 0; i < datasets.length; i++) {
+        LX.drawGraph({onload: onLoad, dataset_name: datasets[i]});
+    }
+};
+goog.exportSymbol('LX.drawGraphs', LX.drawGraphs);
 
 LX.graphQuery = function (input_id, div_id) {
     var input, graph_div, tag_list = [], tag, i;
@@ -121,8 +141,6 @@ LX.graphQuery = function (input_id, div_id) {
         }
 
         // last thing to do is to ask dygraphs to render everything
-        for (i = 0; i < data.datasets.length; i++) {
-            LX.drawGraph({onload: false, dataset_name: data.datasets[i]});
-        }
+        LX.drawGraphs(data.datasets);
     });
 };

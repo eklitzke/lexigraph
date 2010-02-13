@@ -13,7 +13,7 @@
     </script>
     <script type="text/javascript" src="/js/dygraph-combined.js"></script>
     {% if is_live %}
-    <script type="text/javascript" src="/js/lexigraph.min.js"></script>
+    {{ macros.versioned_js(serials, "lexigraph.min.js") }}
     {% else %}
     <script type="text/javascript" src="/js/closure/goog/base.js"></script>
     <script type="text/javascript" src="/js/deps.js"></script>

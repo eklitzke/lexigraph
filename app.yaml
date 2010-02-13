@@ -8,9 +8,14 @@ handlers:
       static_files: static/\1/\2
       upload: static/(css|images|files)/(.+)
 
-    - url: /js/(.+)
-      static_files: js/\1
-      upload: static/js/(.+)
+    - url: /js/(.+)\.js
+      static_files: js/\1.js
+      upload: js/(.+)\.js
+
+    - url: /versioned_js/(.+)/(.+)\.js
+      static_files: js/\2.js
+      upload: js/(.+)\.js
+      expiration: 10d
    
     - url: /cron/.*
       script: main.py
@@ -18,3 +23,23 @@ handlers:
     
     - url: /.*
       script: main.py
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*)\.jar$
+- ^(.*)\.soy$
+- ^(.*/)?SConstruct
+- .git/
+- js/closure
+- js/closure-templates
+- vendor/closure
+- vendor/closure-templates
+- bin/

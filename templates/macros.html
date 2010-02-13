@@ -1,4 +1,17 @@
 <!-- jinja macros -->
+
+{% macro expand_serial(serials, prefix, filename) -%}
+{% if serials.get(filename) -%}
+{{prefix}}/{{serials[filename]}}/{{filename}}
+{%- else %}
+{{prefix}}/{{filename}}
+{%- endif %}
+{%- endmacro -%}
+
+{% macro versioned_js(serials, filename) -%}
+<script type="text/javascript" src="{{expand_serial(serials, '/versioned_js', filename)}}"></script>
+{%- endmacro -%}
+
 {% macro label_with_input(label_name, id, name, value='', type='text', size=20, br=True) -%}
 <label for="{{id}}">{{label_name}}: </label><input id="{{id}}" type="{{type}}" name="{{name}}" value="{{value|e}}" size="{{size}}">
 {% if br %}

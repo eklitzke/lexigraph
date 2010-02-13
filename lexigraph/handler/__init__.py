@@ -12,6 +12,7 @@ from lexigraph.log import ClassLogger
 from lexigraph import model
 from lexigraph.model.query import *
 from lexigraph import config
+from lexigraph.config import serials
 from lexigraph.handler.errors import *
 from lexigraph.validate import ValidationError
 
@@ -41,7 +42,8 @@ class RequestHandler(_RequestHandler):
         self.initialize_env()
 
     def initialize_env(self):
-        self.env = {'config': config}
+        self.env = {'config': config, 'serials': serials.hashes}
+        self.log.info('env = %s' % (self.env,))
         if hasattr(config.level, 'is_live'):
             self.env['is_live'] = config.level.is_live
         else:

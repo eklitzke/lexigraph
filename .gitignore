@@ -4,3 +4,4 @@ src/add_point
 src/dev_add_point
 *.min.js
 .sconsign.dblite
+lexigraph/config/serials.py

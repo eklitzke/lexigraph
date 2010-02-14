@@ -8,9 +8,13 @@ class NewDataSet(SessionHandler):
     requires_login = True
 
     def post(self):
+        self.log.info('making ds')
         dataset_name = self.form_required('dataset')
         aggregate = self.form_required('aggregate')
         group_name = self.form_required('group')
+        ds_interval = int(self.form_required('ds_interval', uri='/dashboard', message='You must provide an initial data series interval.'))
+        ds_maxage = int(self.form_required('ds_maxage', uri='/dashboard', message='You must provide an initial data series maxage.'))
+
         tags = self.form_required('tags') 
         group = maybe_one(model.AccessGroup.all().filter('account =', self.account).filter('name =', group_name))
         if group is None:
@@ -33,6 +37,9 @@ class NewDataSet(SessionHandler):
         access.put()
         self.log.debug('created new access control with id %s' % (access.key().id(),))
 
+        # create an initial data series
+        model.DataSeries(dataset=ds, interval=ds_interval, max_age=ds_maxage).put()
+
         self.redirect('/dashboard')
 
 class EditDataSet(InteractiveHandler):
@@ -45,15 +52,19 @@ class EditDataSet(InteractiveHandler):
         self.env['dataset'] = dataset
         self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
-        self.render_template('edit_dataset.html')
+        self.render_template('dataset.html')
 
-class DeleteDataSet(AccountHandler):
+class DeleteDataSet(SessionHandler):
 
     requires_login = True
 
     def post(self):
         dataset = self.get_dataset(self.form_required('name'))
         assert dataset.is_allowed(self.user, delete=True)
+
+        # XXX: this is racy (i.e. if someone creates points while we're deleting
+        # the dataset). This ought to be amended by a cron job that looks for
+        # abandoned points, or by implementing locking.
 
         # delete all of the data points
         for s in dataset.series():
@@ -64,7 +75,7 @@ class DeleteDataSet(AccountHandler):
                 for p in points:
                     p.delete()
             s.delete()
-        for ac in fetch_all(model.AccessControl.all().filter('datset =', dataset)):
+        for ac in fetch_all(model.AccessControl.all().filter('dataset =', dataset)):
             ac.delete()
         dataset.delete()
         self.redirect('/dashboard')

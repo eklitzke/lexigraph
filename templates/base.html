@@ -7,18 +7,18 @@
     <link rel="shortcut icon" href="/images/cat.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
     <link rel="stylesheet" type="text/css" href="/css/lexigraph.css" />
-    {% block extra_css %}{% endblock %}
-    <script type="text/javascript">
-      CLOSURE_BASE_PATH="./";
-    </script>
+    <script type="text/javascript">CLOSURE_BASE_PATH="/"</script>
     <script type="text/javascript" src="/js/dygraph-combined.js"></script>
+    {% block extra_css %}{% endblock %}
     {% if is_live %}
     {{ macros.versioned_js(serials, "lexigraph.min.js") }}
     {% else %}
+    <!-- <script type="text/javascript">CLOSURE_BASE_PATH="./"</script> -->
     <script type="text/javascript" src="/js/closure/goog/base.js"></script>
     <script type="text/javascript" src="/js/deps.js"></script>
     <script type="text/javascript" src="/js/require.js"></script>
     {% endif %}
+    {% block extra_js %}{% endblock %}
     {% endblock %}
   </head>
   <body>

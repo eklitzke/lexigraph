@@ -3,27 +3,20 @@
 
 {% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dashboard.css">{% endblock %}
 
-
 {% block body_content %}
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
 <input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags"/>
 </span>
 <span id="b1"></span>
-<script>
-  var b1 = new goog.ui.Button('update graphs');
-  b1.render(goog.dom.$('b1'));
-  goog.events.listen(b1.getElement(), goog.events.EventType.CLICK, function (e) {
-      LX.graphQuery('tags_query', 'query_results');
-  });
-</script>
+<script>LX.dashboard.draw_button();</script>
 <br />
 
 <div id="query_results">
   {% if dashboard_graphs %}
   <script>
     var dashboard_graphs = {{dashboard_graphs}};
-    document.write(LX.soy.dashboard.graphsWithTitles({names: dashboard_graphs, dims: LX.getGraphDimensions()}));
+    LX.dashboard.draw_initial_graphs(dashboard_graphs);
   </script>
   <script>
     LX.drawGraphs(dashboard_graphs);

@@ -49,14 +49,17 @@ class RequestHandler(_RequestHandler):
         else:
             self.env['is_live'] = not os.environ['SERVER_SOFTWARE'].startswith('Development')
 
-    def form_required(self, name, uri=None):
+    def form_required(self, name, uri=None, message=None):
         """Get a thing in the form, redirecting if it is missing."""
         thing = self.request.get(name)
         if not thing:
-            self.log.warning('form was missing field %s' % (name,))
             if hasattr(self, 'session'):
-                self.session['error_message'] = 'Form was missing field %s' % (name,)
-            self.log.warning('uri = %r' % (uri,))
+                if not message:
+                    message = 'Form was missing field %s' % (name,)
+                self.log.warning('form was missing field %s; setting error_message = %r' % (name, message))
+                self.session['error_message'] = message
+            else:
+                self.log.warning('form was missing field %s; no session provided' % (name,))
             self.redirect(uri or getattr(self, 'error_uri', self.request.uri))
         else:
             return thing

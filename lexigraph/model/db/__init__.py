@@ -98,6 +98,7 @@ class DataSet(LexigraphModel):
     name = db.StringProperty(required=True) # unique
     aggregate = db.StringProperty(required=True)
     account = db.ReferenceProperty(Account, required=True)
+    description = db.TextProperty();
     tags = db.StringListProperty() # optional
 
     def series(self):

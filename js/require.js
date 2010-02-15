@@ -10,3 +10,4 @@ goog.require('LX.dashboard');
 goog.require('LX.dataset');
 goog.require('LX.ui');
 goog.require('LX.soy.dashboard');
+goog.require('LX.soy.dataset');

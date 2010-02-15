@@ -2,6 +2,7 @@ from lexigraph.view import add_route
 from lexigraph.handler import AccountHandler, SessionHandler, InteractiveHandler
 from lexigraph import model
 from lexigraph.model.query import *
+from django.utils import simplejson
 
 class NewDataSet(SessionHandler):
 
@@ -51,6 +52,8 @@ class EditDataSet(InteractiveHandler):
         self.load_prefs()
         self.env['dataset'] = dataset
         self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
+        self.env['existing_series'] = simplejson.dumps([{'id': s.key().id(), 'interval': s.interval, 'max_age': s.max_age} for s in self.env['series']])
+        self.log.info('existing_series = %r' % (self.env['existing_series'],))
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
         self.render_template('dataset.html')
 

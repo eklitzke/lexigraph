@@ -36,10 +36,11 @@ skip_files:
 - ^(.*/)?\..*
 - ^(.*)\.jar$
 - ^(.*)\.soy$
-- ^(.*/)?SConstruct
+- ^(.*/)?SConstruct$
 - .git/
 - js/closure
 - js/closure-templates
 - vendor/closure
 - vendor/closure-templates
 - bin/
+- ^(.*/)?\.map$

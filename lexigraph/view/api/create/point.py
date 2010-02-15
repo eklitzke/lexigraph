@@ -18,7 +18,10 @@ class CreatePoint(ApiRequestHandler):
         except PermissionsError:
             raise
 
-        value = float(self.request.get('value'))
+        try:
+            value = float(self.request.get('value'))
+        except ValueError:
+            raise # FIXME
         timestamp = self.request.get('timestamp')
         if not timestamp:
             timestamp = datetime.datetime.now()

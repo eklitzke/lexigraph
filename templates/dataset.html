@@ -20,38 +20,21 @@
 <fieldset>
   <legend>edit data series</legend>
   <h3>existing</h3>
-  {% if series %}
-  {% for s in series %}
-  {% set s_id = s.key().id() %}
-  <div id="existing_series"
-       onmouseover="LX.dataset.show_delete('{{s_id}}')"
-       onmouseout="LX.dataset.hide_delete('{{s_id}}')">
-    <img id="delete_img_{{s_id}}"
-         src="/images/delete.png"
-         alt="delete this data series"
-         style="visibility: hidden"
-         onclick="LX.dataset.remove_series_xhr('{{s_id}}')"/>
-    interval: {{s.interval}}
-    max age: {{s.max_age}}
+  <div id="existing_series">
+  <script>
+  LX.dataset.draw_existing_series({{existing_series}});
+  </script>
   </div>
-  {% endfor %}
-  {% else %}
-  none yet &mdash; you ought to add some
-  {% endif %}
   <div 
      onmouseover="LX.dataset.show_add()"
      onmouseout="LX.dataset.hide_add()">
     <h3>add new</h3>
-    <img id="add_img" src="/images/add.png" alt="add a new data series" style="visibility: hidden"/>
+    <img id="add_img" src="/images/add.png" alt="add a new data series" class="alter_icon" onclick="LX.dataset.add_series_xhr()"/>
     <input type="hidden" id="ds_name" value="{{dataset.name}}"/>
     {{ macros.label_with_input('interval', 'new_ival', 'interval', size=5, br=False) }}
     <span style="padding-left: 1em;">
       {{ macros.label_with_input('max age', 'new_max_age', 'max_age', size=7, br=False)}} 
     </span>
-    <span id="add_new_button"></span>
-    <script>
-      LX.ui.draw_button('add_new_button', 'add', LX.dataset.add_series_xhr);
-    </script>
   </div>
 </fieldset>
 

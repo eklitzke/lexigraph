@@ -23,9 +23,7 @@
   </head>
   <body>
     {% if prefs_json is defined %}
-    <script type="text/javascript">
-      LX.userPrefs = {{prefs_json}};
-    </script>
+    <script type="text/javascript">LX.updatePrefs({{prefs_json}});</script>
     {% endif %}
     <div id="doc3" class="yui-t7">
       <div id="hd">

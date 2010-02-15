@@ -34,7 +34,7 @@ LX.dataset.hide_add = function () {
 }
 goog.exportSymbol("LX.dataset.hide_add", LX.dataset.hide_add);
 
-LX.dataset.add_series_xhr = function (e) {
+LX.dataset.add_series_xhr = function () {
     var n = goog.dom.$("ds_name").value;
     var i = parseInt(goog.dom.$("new_ival").value, 10);
     var m = parseInt(goog.dom.$("new_max_age").value, 10);
@@ -45,12 +45,20 @@ LX.dataset.add_series_xhr = function (e) {
     goog.events.listen(xhr, goog.net.EventType.COMPLETE, function (e) {
         var resp = this.getResponseJson();
         if (resp.success) {
+            /* Add the new series to the "existing series list" */
+            var s = {"id": resp["id"], "interval": i, "max_age": m};
+
+            /* Ugh, this creates an extra div (there's already a div created by drawExistingSeries) */
+            var d = document.createElement('div');
+            d.id = "container_" + resp["id"];
+            d.innerHTML = LX.soy.dataset.drawExistingSeries(s);
+            goog.dom.$("existing_series").appendChild(d);
+
             /* Clear the input form. */
             goog.dom.$("new_ival").value = "";
             goog.dom.$("new_max_age").value = "";
 
-            /* Add the new series to the "existing series list" */
-            alert("pretend like this just got ajaxed up north");
+
         } else {
             alert("got response: " + resp.success);
         }
@@ -59,10 +67,33 @@ LX.dataset.add_series_xhr = function (e) {
 }
 goog.exportSymbol('LX.dashboard.add_series_xhr', LX.dashboard.add_series_xhr);
 
-LX.dataset.remove_series_xhr = function (series_id) {
+LX.dataset.draw_existing_series = function (series) {
+    var i;
+    for (i = 0; i < series.length; i++) {
+        document.write(LX.soy.dataset.drawExistingSeries(series[i]));
+    }
+}
+
+LX.dataset.remove_series_xhr = function (series_key) {
     var xhr = new goog.net.XhrIo();
     goog.events.listen(xhr, goog.net.EventType.COMPLETE, function (e) {
         var resp = this.getResponseJson();
-
+        if (!resp.success) {
+            alert('failed');
+        } else {
+            /* Find the containing div. This is either container_$key or
+             * existing_$key (FIXME: this is stupid).
+             */
+            var div;
+            div = goog.dom.$("container_" + series_key);
+            if (div === null) {
+                div = goog.dom.$("existing_" + series_key);
+            }
+            if (div === null) {
+                throw {"message": "failed to find the div"};
+            }
+            div.parentNode.removeChild(div);
+        }
     });
+    xhr.send("/delete/dataseries", "POST", "series_id=" + escape(series_key));
 };

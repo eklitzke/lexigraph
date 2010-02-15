@@ -47,6 +47,7 @@ class TagQueryCache(CacheDict):
         if len(tag_list) <= 1:
             val = self[(account, user, tag_list)]
             use_memcache = True
+        val = use_memcache = None # FIXME
         if val is None:
             q = model.DataSet.all().filter('account =', account)
             for tag in tag_list:

@@ -5,7 +5,14 @@ import commands
 
 env = Environment()
 
-closure_min = Builder(action='python vendor/closure/bin/calcdeps.py -i js/require.js -p js -p js/closure-templates -p js/closure -c vendor/closure.jar -f --compilation_level -f ADVANCED_OPTIMIZATIONS -o compiled > $TARGET')
+closure_min_cmd = 'python vendor/closure/bin/calcdeps.py -i js/require.js -p js -p js/closure-templates -p js/closure -c vendor/closure.jar -f --compilation_level -f ADVANCED_OPTIMIZATIONS'
+if os.environ.get('LX_CREATE_SOURCE_MAP'):
+	closure_min_cmd += ' -f --create_source_map -f ./lexigraph.map'
+if os.environ.get('LX_PRETTY_JS'):
+	closure_min_cmd += ' -f --formatting -f PRETTY_PRINT'
+closure_min_cmd += ' -o compiled > $TARGET'
+
+closure_min = Builder(action=closure_min_cmd)
 closure_deps = Builder(action='python vendor/closure/bin/calcdeps.py -p js -p js/closure-templates -p js/closure -c vendor/closure.jar -o deps > $TARGET')
 env.Append(BUILDERS = {'ClosureMin': closure_min})
 env.Append(BUILDERS = {'ClosureDeps': closure_deps})

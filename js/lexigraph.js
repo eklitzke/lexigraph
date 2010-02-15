@@ -1,9 +1,26 @@
 goog.provide("LX");
 goog.require('goog.net.XhrIo');
 
-/* This will be overridden by the servlet. */
-LX.userPrefs = {};
+LX.userPrefs = {}
 goog.exportProperty(LX, 'userPrefs', LX.userPrefs);
+
+LX.getPref = function (name, value) {
+    if (name in LX.userPrefs) {
+        return LX.userPrefs[name];
+    } else {
+        return value;
+    }
+}
+
+LX.updatePrefs = function (map) {
+    var k;
+    for (k in map) {
+        if (map.hasOwnProperty(k)) {
+            LX.userPrefs[k] = map[k];
+        }
+    }
+};
+goog.exportSymbol('LX.updatePrefs', LX.updatePrefs);
 
 LX.drawGraph = function (opts) {
     var dataset_name = opts.dataset_name;
@@ -19,7 +36,7 @@ LX.drawGraph = function (opts) {
     var draw_graph = function () {
         var lhs_time = new Date();
         var now = new Date();
-        var div = document.getElementById(element_id);
+        var div = goog.dom.$(element_id);
         var csv_url = "/api/csv?dataset=" + dataset_name;
 
         /* dygraphs options are mixed in with other options */
@@ -27,12 +44,12 @@ LX.drawGraph = function (opts) {
         graph_opts['xValueParser'] = window['Dygraph']['unixTimestampParser'];
         graph_opts['xValueType'] = "date";
         var setopt = function (name, val) {
-            if (opts[name] !== undefined) {
+            if (name in opts) {
                 graph_opts[name] = opts[name];
             } else {
                 graph_opts[name] = val;
             }
-        };
+        }
         var setuseropt = function (dg_name, lx_name, val) {
             if (LX.userPrefs[lx_name] !== undefined) {
                 graph_opts[dg_name] = LX.userPrefs[lx_name];
@@ -52,25 +69,21 @@ LX.drawGraph = function (opts) {
         if (opts.intervalSeconds !== undefined) {
             lhs_time.setSeconds(lhs_time.getSeconds() - opts.intervalSeconds);
         } else {
-            lhs_time.setSeconds(lhs_time.getSeconds() - LX.userPrefs.default_timespan);
+            lhs_time.setSeconds(lhs_time.getSeconds() - LX.getPref('default_timespan'));
         }
         graph_opts['dateWindow'] = [lhs_time, now];
 
         new window['Dygraph'](div, csv_url, graph_opts);
     };
 
-    if (opts.onload === true) {
-        google.setOnLoadCallback(draw_graph);
-    } else {
-        draw_graph();
-    }
+    draw_graph();
 };
 goog.exportSymbol('LX.drawGraph', LX.drawGraph);
 
 LX.getGraphDimensions = function () {
     if (LX.userPrefs) {
-        return {width: LX.userPrefs.large_width,
-                height: parseInt(LX.userPrefs.large_width / 1.618, 10)};
+        return {width: LX.userPrefs['large_width'],
+                height: parseInt(LX.userPrefs['large_width'] / 1.618, 10)};
     }
     return null;
 }

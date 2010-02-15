@@ -1,0 +1,20 @@
+{namespace LX.soy.dataset}
+
+/**
+ * Makes a graph
+ * @param id the key of the series
+ * @param interval the interval for the series
+ * @param max_age the max age for the series
+ */
+{template .drawExistingSeries}
+  <div id="existing_{$id}"
+       onmouseover="LX.dataset.show_delete({$id})"
+       onmouseout="LX.dataset.hide_delete({$id})">
+  <img id="delete_img_{$id}"
+       src="/images/delete.png"
+       alt="delete this data series"
+       class="alter_icon"
+       onclick="LX.dataset.remove_series_xhr({$id})"/>
+  &nbsp;interval: {$interval}&nbsp;max age: {$max_age}
+  </div>
+{/template}

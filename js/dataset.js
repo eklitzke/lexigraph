@@ -44,9 +44,9 @@ LX.dataset.add_series_xhr = function () {
     var xhr = new goog.net.XhrIo();
     goog.events.listen(xhr, goog.net.EventType.COMPLETE, function (e) {
         var resp = this.getResponseJson();
-        if (resp.success) {
+        if (resp['success']) {
             /* Add the new series to the "existing series list" */
-            var s = {"id": resp["id"], "interval": i, "max_age": m};
+            var s = {id: resp["id"], interval: i, max_age: m};
 
             /* Ugh, this creates an extra div (there's already a div created by drawExistingSeries) */
             var d = document.createElement('div');
@@ -57,28 +57,29 @@ LX.dataset.add_series_xhr = function () {
             /* Clear the input form. */
             goog.dom.$("new_ival").value = "";
             goog.dom.$("new_max_age").value = "";
-
-
         } else {
-            alert("got response: " + resp.success);
+            alert("got response: " + resp['success']);
         }
     });
     xhr.send("/new/dataseries", "POST", "dataset=" + escape(n) + "&interval=" + escape(i) + "&max_age=" + escape(m));
 }
-goog.exportSymbol('LX.dashboard.add_series_xhr', LX.dashboard.add_series_xhr);
+goog.exportSymbol('LX.dataset.add_series_xhr', LX.dataset.add_series_xhr);
 
 LX.dataset.draw_existing_series = function (series) {
     var i;
     for (i = 0; i < series.length; i++) {
-        document.write(LX.soy.dataset.drawExistingSeries(series[i]));
+        var s = series[i];
+        var t = {id: s['id'], interval: s['interval'], max_age: s['max_age']}; /* hack for soy */
+        document.write(LX.soy.dataset.drawExistingSeries(t));
     }
 }
+goog.exportSymbol('LX.dataset.draw_existing_series', LX.dataset.draw_existing_series);
 
 LX.dataset.remove_series_xhr = function (series_key) {
     var xhr = new goog.net.XhrIo();
     goog.events.listen(xhr, goog.net.EventType.COMPLETE, function (e) {
         var resp = this.getResponseJson();
-        if (!resp.success) {
+        if (!resp['success']) {
             alert('failed');
         } else {
             /* Find the containing div. This is either container_$key or
@@ -97,3 +98,4 @@ LX.dataset.remove_series_xhr = function (series_key) {
     });
     xhr.send("/delete/dataseries", "POST", "series_id=" + escape(series_key));
 };
+goog.exportSymbol('LX.dataset.remove_series_xhr', LX.dataset.remove_series_xhr);

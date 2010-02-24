@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+import sys
+import urllib
+import pprint
+import optparse
+import simplejson
+
+CLOSURE_PARAMS = {
+	'compilation_level': 'WHITESPACE_ONLY',
+	'output_format': 'json',
+}
+
+CLOSURE_URL = 'http://closure-compiler.appspot.com/compile'
+
+def print_section(title, data):
+	print data
+	print >> sys.stderr, title.capitalize()
+	print >> sys.stderr, '=' * len(title)
+	print >> sys.stderr, pprint.pformat(data) + '\n'
+
+def main(opts, args):
+	combined_js = ''
+	for fname in args:
+		combined_js += open(fname).read() + '\n'
+	params = CLOSURE_PARAMS.copy()
+	params['js_code'] = combined_js
+
+	def load_info(kind):
+		params['output_info'] = kind
+		return simplejson.loads(urllib.urlopen(CLOSURE_URL, urllib.urlencode(params)).read())
+
+	if opts.do_errors:
+		errors = load_info('errors')
+		if errors:
+			print_section('errors', errors)
+			sys.exit(1)
+
+	if opts.do_warnings:
+		warnings = load_info('warnings')
+		if warnings:
+			print_section('warnings', warnings['warnings'])
+
+	if opts.do_statistics:
+		print_section('statistics', load_info('statistics')['statistics'])
+	
+	print load_info('compiled_code')['compiledCode']
+	
+if __name__ == '__main__':
+	parser = optparse.OptionParser()
+	parser.add_option('--no-errors', dest='do_errors', action='store_false', default=True)
+	parser.add_option('--no-warnings', dest='do_warnings', action='store_false', default=True)
+	parser.add_option('--statistics', dest='do_statistics', action='store_true', default=False)
+	main(*parser.parse_args())

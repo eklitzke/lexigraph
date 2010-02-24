@@ -1,4 +1,5 @@
 {% import "macros.html" as macros %}
+{% import "macros/graphs.html" as graphs %}
 {% extends "base.html" %}
 
 {% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dashboard.css">{% endblock %}
@@ -7,24 +8,12 @@
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
 <input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags"/>
+<button type="button" onclick="LX.graphQuery('tags_query', 'query_results')">update</button>
 </span>
-<span id="b1"></span>
-<script>LX.dashboard.draw_button();</script>
 <br />
 
 <div id="query_results">
-  {% if dashboard_graphs %}
-  <script>
-    var dashboard_graphs = {{dashboard_graphs}};
-    LX.dashboard.draw_initial_graphs(dashboard_graphs);
-  </script>
-  <script>
-    LX.drawGraphs(dashboard_graphs);
-  </script>
-  {% else %}
-  you don't have any dashboard graphs yet; try creating a new graph and giving
-  it the <q>dashboard</q> tag.
-  {% endif %}
+  {{ graphs.draw_graphs(dashboard_graphs) }}
 </div>
 
 <h2>add a new dataset</h2>

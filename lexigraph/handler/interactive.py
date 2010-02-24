@@ -139,9 +139,6 @@ class InteractiveHandler(SessionHandler):
         # used for the copyright date on the footer
         self.env['copyright_year'] = datetime.date.today().year
 
-    def get_template(self, name):
-        return self.jinja_env.get_template(name)
-
     def render_template(self, name):
         template = self.get_template(name)
         self.response.out.write(template.render(**self.env))

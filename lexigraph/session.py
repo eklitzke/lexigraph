@@ -25,7 +25,7 @@ class SessionStorage(LexigraphModel):
         return count
 
     @classmethod
-    def remove_expired(cls, expiration=3600):
+    def remove_expired(cls, expiration=6*3600):
         """Remove all expired rows."""
         cutoff = datetime.datetime.now() - datetime.timedelta(seconds=expiration)
         return cls._remove_all(lambda: fetch_all(cls.all().filter('timestamp <', cutoff)))

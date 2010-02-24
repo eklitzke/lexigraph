@@ -4,6 +4,32 @@
 {% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dataset.css">{% endblock %}
 
 {% block body_content %}
+<fieldset>
+  <legend>update tags</legend>
+  update your tags, mothafucka
+</fieldset>
+
+<fieldset>
+  <legend>edit data series</legend>
+  <h3>existing</h3>
+  <div id="existing_series">
+  <script>
+  LX.dataset.draw_existing_series({{existing_series}});
+  </script>
+  </div>
+  <div>
+     {# onmouseover="LX.dataset.show_add()"
+     onmouseout="LX.dataset.hide_add()"> #}
+    <h3>add new</h3>
+    <img id="add_img" src="/images/add.png" alt="add a new data series" onclick="LX.dataset.add_series_xhr()"/>
+    <input type="hidden" id="ds_name" value="{{dataset.name}}"/>
+    {{ macros.label_with_input('interval', 'new_ival', 'interval', size=5, br=False) }}
+    <span style="padding-left: 1em;">
+      {{ macros.label_with_input('max age', 'new_max_age', 'max_age', size=7, br=False)}} 
+    </span>
+  </div>
+</fieldset>
+
 <script>
   LX.dataset.write_graph("{{dataset.name}}");
 </script>
@@ -16,27 +42,6 @@
 {% else %}
 (sorry, no description for this dataset)
 {% endif %}
-
-<fieldset>
-  <legend>edit data series</legend>
-  <h3>existing</h3>
-  <div id="existing_series">
-  <script>
-  LX.dataset.draw_existing_series({{existing_series}});
-  </script>
-  </div>
-  <div 
-     onmouseover="LX.dataset.show_add()"
-     onmouseout="LX.dataset.hide_add()">
-    <h3>add new</h3>
-    <img id="add_img" src="/images/add.png" alt="add a new data series" class="alter_icon" onclick="LX.dataset.add_series_xhr()"/>
-    <input type="hidden" id="ds_name" value="{{dataset.name}}"/>
-    {{ macros.label_with_input('interval', 'new_ival', 'interval', size=5, br=False) }}
-    <span style="padding-left: 1em;">
-      {{ macros.label_with_input('max age', 'new_max_age', 'max_age', size=7, br=False)}} 
-    </span>
-  </div>
-</fieldset>
 
 {% if can_delete %}
 <form action="/delete/dataset" method="POST">

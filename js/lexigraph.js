@@ -1,8 +1,9 @@
-goog.provide("LX");
-goog.require('goog.net.XhrIo');
+var LX;
+if (LX === undefined) {
+    LX = {};
+}
 
 LX.userPrefs = {}
-goog.exportProperty(LX, 'userPrefs', LX.userPrefs);
 
 LX.getPref = function (name, value) {
     if (name in LX.userPrefs) {
@@ -20,7 +21,6 @@ LX.updatePrefs = function (map) {
         }
     }
 };
-goog.exportSymbol('LX.updatePrefs', LX.updatePrefs);
 
 LX.drawGraph = function (opts) {
     var dataset_name = opts.dataset_name;
@@ -36,13 +36,13 @@ LX.drawGraph = function (opts) {
     var draw_graph = function () {
         var lhs_time = new Date();
         var now = new Date();
-        var div = goog.dom.$(element_id);
+        var div = document.getElementById(element_id);
         var csv_url = "/api/csv?dataset=" + dataset_name;
 
         /* dygraphs options are mixed in with other options */
         var graph_opts = {};
-        graph_opts['xValueParser'] = window['Dygraph']['unixTimestampParser'];
-        graph_opts['xValueType'] = "date";
+        graph_opts.xValueParser = Dygraph.unixTimestampParser;
+        graph_opts.xValueType = "date";
         var setopt = function (name, val) {
             if (name in opts) {
                 graph_opts[name] = opts[name];
@@ -71,14 +71,12 @@ LX.drawGraph = function (opts) {
         } else {
             lhs_time.setSeconds(lhs_time.getSeconds() - LX.getPref('default_timespan'));
         }
-        graph_opts['dateWindow'] = [lhs_time, now];
-
-        new window['Dygraph'](div, csv_url, graph_opts);
+        graph_opts.dateWindow = [lhs_time, now];
+        new Dygraph(div, csv_url, graph_opts);
     };
 
     draw_graph();
 };
-goog.exportSymbol('LX.drawGraph', LX.drawGraph);
 
 LX.getGraphDimensions = function () {
     if (LX.userPrefs) {
@@ -87,7 +85,6 @@ LX.getGraphDimensions = function () {
     }
     return null;
 }
-goog.exportSymbol('LX.getGraphDimensions', LX.getGraphDimensions);
 
 LX.drawGraphs = function (datasets, onLoad) {
     if (onLoad === undefined) {
@@ -97,17 +94,14 @@ LX.drawGraphs = function (datasets, onLoad) {
         LX.drawGraph({onload: onLoad, dataset_name: datasets[i]});
     }
 };
-goog.exportSymbol('LX.drawGraphs', LX.drawGraphs);
 
 LX.graphQuery = function (input_id, div_id) {
     var input, graph_div, tag_list = [], tag, i;
     input = document.getElementById(input_id);
 
-    goog.net.XhrIo.send("/graph/query?q=" + escape(input.value || ""), function (e) {
-        data = this.getResponseJson();
-        graph_div = goog.dom.$(div_id);
-        graph_div.innerHTML = LX.soy.dashboard.graphsWithTitles({names: data.datasets, dims: LX.getGraphDimensions()});
-        LX.drawGraphs(data.datasets);
+    $.getJSON("/ajax/graphs?tags=" + escape(input.value), function (data) {
+        graph_div = document.getElementById(div_id);
+        graph_div.innerHTML = data.text;
+        LX.drawGraphs(data.names);
     });
 };
-goog.exportSymbol('LX.graphQuery', LX.graphQuery);

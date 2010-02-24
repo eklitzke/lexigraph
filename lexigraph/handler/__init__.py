@@ -68,7 +68,19 @@ class RequestHandler(_RequestHandler):
         super(RequestHandler, self).redirect(url, permanent=permanent)
         raise RedirectError
 
+    def get_template(self, name):
+        return self.jinja_env.get_template(name)
+
+    def render_ajax(self, template_name, code=0, extra={}):
+        template = self.get_template(template_name)
+        obj = {'text': template.render(**self.env), 'code': code}
+        if extra:
+            obj.update(extra)
+        self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
+        self.response.out.write(simplejson.dumps(obj))
+
     def render_json(self, obj):
+        self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
         self.response.out.write(simplejson.dumps(obj))
 
     def handle_exception(self, exception, debug_mode):

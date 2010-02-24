@@ -6,7 +6,7 @@ import optparse
 import simplejson
 
 CLOSURE_PARAMS = {
-	'compilation_level': 'WHITESPACE_ONLY',
+	'compilation_level': 'SIMPLE_OPTIMIZATIONS',
 	'output_format': 'json',
 }
 
@@ -18,12 +18,9 @@ def print_section(title, data):
 	print >> sys.stderr, '=' * len(title)
 	print >> sys.stderr, pprint.pformat(data) + '\n'
 
-def main(opts, args):
-	combined_js = ''
-	for fname in args:
-		combined_js += open(fname).read() + '\n'
+def minify(opts, args):
 	params = CLOSURE_PARAMS.copy()
-	params['js_code'] = combined_js
+	params['js_code'] = concatenate(args)
 
 	def load_info(kind):
 		params['output_info'] = kind
@@ -44,10 +41,22 @@ def main(opts, args):
 		print_section('statistics', load_info('statistics')['statistics'])
 	
 	print load_info('compiled_code')['compiledCode']
+
+def concatenate(args):
+	combined_js = ''
+	for fname in args:
+		combined_js += open(fname).read() + '\n'
+	return combined_js.strip()
 	
 if __name__ == '__main__':
 	parser = optparse.OptionParser()
 	parser.add_option('--no-errors', dest='do_errors', action='store_false', default=True)
 	parser.add_option('--no-warnings', dest='do_warnings', action='store_false', default=True)
 	parser.add_option('--statistics', dest='do_statistics', action='store_true', default=False)
-	main(*parser.parse_args())
+	parser.add_option('--concatenate-only', dest='concatenate', action='store_true', default=False)
+	opts, args = parser.parse_args()
+
+	if opts.concatenate:
+		print concatenate(args)
+	else:
+		minify(opts, args)

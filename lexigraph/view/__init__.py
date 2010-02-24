@@ -16,5 +16,6 @@ import lexigraph.view.cron
 import lexigraph.view.doc
 import lexigraph.view.graph
 
+import lexigraph.view.ajax
 import lexigraph.view.api
 import lexigraph.view.debug

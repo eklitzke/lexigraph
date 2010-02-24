@@ -37,6 +37,11 @@ LX.drawGraph = function (opts) {
         var lhs_time = new Date();
         var now = new Date();
         var div = document.getElementById(element_id);
+        if (!div.style.width || !div.style.height) {
+            var dims = LX.getGraphDimensions();
+            div.style.width = dims.width + "px";
+            div.style.height = dims.height + "px";
+        }
         var csv_url = "/api/csv?dataset=" + dataset_name;
 
         /* dygraphs options are mixed in with other options */

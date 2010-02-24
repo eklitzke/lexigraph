@@ -2,23 +2,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    {% block head %}
     <title>lexigraph</title>
     <link rel="shortcut icon" href="/images/cat.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
     <link rel="stylesheet" type="text/css" href="/css/lexigraph.css" />
-    <script type="text/javascript" src="/js/dygraph-combined.js"></script>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    {{ macros.versioned_js(serials, "dygraph-combined.js") }}
+    {{ macros.versioned_js(serials, "jquery-1.4.2.min.js") }}
     {% block extra_js %}{% endblock %}
-    {% endblock %}
   </head>
   <body>
-    <script type="text/javascript">
-      google.load("jquery", "1");
-      {% if prefs_json is defined %}
-      LX.updatePrefs({{prefs_json}});
-      {% endif %}
-    </script>
+    {% if prefs_json is defined %}
+    <script type="text/javascript">LX.updatePrefs({{prefs_json}});</script>
+    {% endif %}
     <div id="doc3" class="yui-t7">
       <div id="hd">
         <h1>{% block body_header %}lexigraph; graphing &amp; trending{% endblock %}</h1>

@@ -1,0 +1,12 @@
+{% macro draw_series(s) -%}
+<div id="existing_{{s.id}}"
+     onmouseover="LX.dataset.show_delete({{s.id}})"
+     onmouseout="LX.dataset.hide_delete({{s.id}})">
+  <img id="delete_img_{{s.id}}"
+       src="/images/delete.png"
+       alt="delete this data series"
+       class="alter_icon"
+       onclick="LX.dataset.remove_series_xhr({{s.id}})"/>
+  interval: {{s.interval}} max age: {{s.max_age}}
+</div>
+{%- endmacro -%}

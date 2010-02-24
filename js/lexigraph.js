@@ -37,6 +37,9 @@ LX.drawGraph = function (opts) {
         var lhs_time = new Date();
         var now = new Date();
         var div = document.getElementById(element_id);
+        if (!div) {
+            throw {"name": "no such element", args: element_id};
+        }
         if (!div.style.width || !div.style.height) {
             var dims = LX.getGraphDimensions();
             div.style.width = dims.width + "px";

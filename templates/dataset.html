@@ -1,4 +1,6 @@
 {% import "macros.html" as macros %}
+{% import "macros/graphs.html" as graph %}
+{% import "macros/series.html" as series %}
 {% extends "base.html" %}
 
 {% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dataset.css">{% endblock %}
@@ -13,13 +15,11 @@
   <legend>edit data series</legend>
   <h3>existing</h3>
   <div id="existing_series">
-  <script>
-  LX.dataset.draw_existing_series({{existing_series}});
-  </script>
+    {% for s in existing_series %}
+    {{ series.draw_series(s) }}
+    {% endfor %}
   </div>
   <div>
-     {# onmouseover="LX.dataset.show_add()"
-     onmouseout="LX.dataset.hide_add()"> #}
     <h3>add new</h3>
     <img id="add_img" src="/images/add.png" alt="add a new data series" onclick="LX.dataset.add_series_xhr()"/>
     <input type="hidden" id="ds_name" value="{{dataset.name}}"/>
@@ -30,12 +30,7 @@
   </div>
 </fieldset>
 
-<script>
-  LX.dataset.write_graph("{{dataset.name}}");
-</script>
-<script>
-  LX.drawGraphs(["{{dataset.name}}"]);
-</script>
+{{- graph.draw_graphs([dataset.name]) -}}
 
 {% if dataset.description %}
 <strong>description:</strong> {{dataset.description }}
@@ -51,4 +46,5 @@
     <input type="hidden" name="name" value="{{dataset.name}}" />
     <input type="submit" value="delete it" />
 {% endif %}
+
 {% endblock %}

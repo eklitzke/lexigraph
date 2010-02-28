@@ -20,18 +20,20 @@ class NewDataSeries(SessionHandler):
         dataset = maybe_one(model.DataSet.all().filter('name =', dataset_name).filter('account =', self.account))
         if not dataset:
             self.log.warning('no such dataset')
-            self.render_json({'success': False})
+            self.render_json({'code': 1})
             return
 
         if not dataset.is_allowed(user=self.user, write=True):
             self.log.warning('not allowed to write to this dataset')
-            self.render_json({'success': False})
+            self.render_json({'code': 2})
             return
 
         ds = model.DataSeries(dataset=dataset, interval=interval, max_age=max_age)
         ds.put()
         self.log.info('successfully created dataseries with id %s' % (ds.key().id(),))
-        self.render_json({'success': True, 'id': ds.key().id()})
+        ds.id = ds.key().id()
+        self.env['ds'] = ds
+        self.render_ajax('ajax/dataset.html')
 
 class DeleteDataSeries(SessionHandler):
 
@@ -54,7 +56,7 @@ class DeleteDataSeries(SessionHandler):
             for p in points:
                 p.delete()
         series.delete()
-        self.render_json({'success': True})
+        self.render_json({'code': 0})
 
 add_route(NewDataSeries, '/new/dataseries')
 add_route(DeleteDataSeries, '/delete/dataseries')

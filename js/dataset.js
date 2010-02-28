@@ -34,21 +34,21 @@ LX.dataset.add_series_xhr = function () {
         dataType: "json",
         data: {dataset: n, interval: i, max_age: m},
         success: function (data) {
-            if (data['success']) {
+            if (data['code'] === 0) {
                 /* Add the new series to the "existing series list" */
                 var s = {id: data.id, interval: i, max_age: m};
 
                 /* Ugh, this creates an extra div (there's already a div created by drawExistingSeries) */
                 var d = document.createElement('div');
                 d.id = "container_" + data.id;
-                d.innerHTML = LX.soy.dataset.drawExistingSeries(s); // XXX: FIXME
+                d.innerHTML = data['text']
                 document.getElementById("existing_series").appendChild(d);
 
                 /* Clear the input form. */
                 document.getElementById("new_ival").value = "";
                 document.getElementById("new_max_age").value = "";
             } else {
-                alert("failed");
+                alert("failed; code = " + data['code']);
             }
         }
     });
@@ -67,7 +67,7 @@ LX.dataset.remove_series_xhr = function (series_key) {
         data: {series_id: series_key},
         dataType: "json",
         success: function (data) {
-            if (!resp.success) {
+            if (data.code) {
                 alert("failed!");
             } else {
                 // Find the containing div. This is either container_$key or

@@ -17,9 +17,7 @@ class Dashboard(InteractiveHandler):
             return
         self.load_prefs()
         self.env['groups'] = model.AccessGroup.groups_for_user(self.account)
-
         self.env['dashboard_graphs'] = TagQueryCache().select_by_tags(self.account, self.user, ['dashboard'])
-
         self.render_template('dashboard.html')
         
 add_route(Dashboard, '/dashboard')

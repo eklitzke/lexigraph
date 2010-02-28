@@ -10,12 +10,20 @@
 <input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags"/>
 <button type="button" onclick="LX.graphQuery('tags_query', 'query_results')">update</button>
 </span>
-<br />
 
-<div id="query_results">
-  {{ graphs.draw_graphs(dashboard_graphs) }}
+<div id="layout_controls">
+  <label for="graph_width">graph width:</label>
+  <input id="graph_width" type="text" size=4 maxlength=4 value="400"
+         onchange="LX.dashboard.redraw_graphs(parseInt(this.value))" />
 </div>
 
+<br />
+
+<div id="query_results" class="row_container">
+  {{ graphs.draw_graphs(dashboard_graphs, columns=2, dims={'height': 300, 'width': 600}) }}
+</div>
+
+<div style="clear: both">
 <h2>add a new dataset</h2>
 <form action="/new/dataset" method="POST">
   <fieldset>
@@ -40,4 +48,5 @@
   <br />
   <input type="submit" value="submit">
 </form>
+<div>
 {% endblock %}

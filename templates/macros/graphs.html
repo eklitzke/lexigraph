@@ -1,21 +1,24 @@
 {% macro draw_graph(name, dims=None) -%}
 <div class="inline_header">
-  <h2>{{name}}</h2>
-  <a href="/edit/dataset?name={{name}}" class="mini_link">edit</a>
+  <a href="/edit/dataset?name={{name}}">
+    <h2>{{name}}</h2>
+    <!-- class="mini_link">edit</a> -->
+    <span class="mini_link">edit</span>
+  </a>
   <div id="graph_dataset_{{name}}" class="lexigraph_chart"
     {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
   ></div>
 </div>
 {%- endmacro -%}
 
-{% macro draw_graphs(names, add_script=True) -%}
+{% macro draw_graphs(names, dims=None, columns=2, add_script=True) -%}
   {% if names %}
     {% for name in names %}
-      {{ draw_graph(name) }}
+      {{ draw_graph(name, dims=dims) }}
     {% endfor %}
     {% if add_script %}
       <script type="text/javascript">
-      {% for name in names %}
+      {% for name in names -%}
         LX.drawGraph({dataset_name: "{{name}}"});
       {% endfor %}
       </script

@@ -1,3 +1,12 @@
 .label_input { color: #444; }
 .label_input:focus { color: black; }
 .label_input:hover { color: black; }
+
+#layout_controls {
+   float: right; 
+   text-align: right;
+}
+
+.inline_header {
+    float: left;
+}

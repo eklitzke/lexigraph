@@ -103,9 +103,13 @@ h3 {
 }
 
 
-.inline_header h1 { display: inline; }
-.inline_header h2 { display: inline; }
-.inline_header h3 { display: inline; }
+.inline_header { display: inline }
+.inline_header h1,h2,h3 { display: inline; }
+.inline_header a {
+    color: #444;
+    text-decoration: none;
+}
+.inline_header a:hover { color: black; }
 
 p {
 	margin-top: 0;
@@ -130,7 +134,7 @@ fieldset {
     padding-right: 0.4em;
 }
 
-.mini_link { padding-left: 0.4em; font-size: 0.8em; }
+.mini_link { padding-left: 0.2em; font-size: 0.8em; }
     
 
 #info_message {

@@ -8,12 +8,16 @@
     <link rel="stylesheet" type="text/css" href="/css/lexigraph.css" />
     {% block extra_css %}{% endblock %}
     {{ macros.versioned_js(serials, "dygraph-combined.js") }}
+    {%- if config.remote_jquery %}
+    <script type="text/javascript" src=" http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    {% else %}
     {{ macros.versioned_js(serials, "jquery-1.4.2.min.js") }}
-    {% if is_live %}
+    {% endif -%}
+    {%- if is_live %}
     {{ macros.versioned_js(serials, "lexigraph.min.js") }}
     {% else %}
     <script type="text/javascript" src="/js/lexigraph.dev.js"></script>
-    {% endif %}
+    {% endif -%}
     {% block extra_js %}{% endblock %}
   </head>
   <body>

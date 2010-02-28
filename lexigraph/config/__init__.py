@@ -10,3 +10,6 @@ def mkvar(name, default):
 
 mkvar('default_timespan', 4 * 3600)
 mkvar('whitelisted_emails', ['evan@eklitzke.org', 'test@example.com'])
+
+# set this to false to load jquery locally
+mkvar('remote_jquery', True)

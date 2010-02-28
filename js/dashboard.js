@@ -6,6 +6,7 @@ LX.dashboard.redraw_graphs = function (width) {
     if (!query_results) {
         throw "failed to find 'query_results'"
     }
+    LX.updatePref("small_width", width);
     for (i = 0; i < query_results.childNodes.length; i++) {
         c = query_results.childNodes[i];
         if (c.className == "inline_header") {

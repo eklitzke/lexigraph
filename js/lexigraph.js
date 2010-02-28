@@ -113,3 +113,18 @@ LX.graphQuery = function (input_id, div_id) {
         LX.drawGraphs(data.names);
     });
 };
+
+LX.updatePref = function (name, value) {
+    $.ajax({
+        url: "/ajax/prefs",
+        type: "POST",
+        dataType: "json",
+        data: {"name": name, "value": value},
+        success: function (data) {
+            if (data['status'] != 0) {
+                alert(data);
+            }
+        }
+    });
+
+};

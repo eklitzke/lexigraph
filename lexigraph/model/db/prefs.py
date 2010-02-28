@@ -12,12 +12,21 @@ class Preference(object):
 
     all_prefs = []
     pref_names = set()
+    pref_map = {}
 
     def __init__(self, display, name, kind, default):
         self.display = display
         self.name = name
         self.kind = kind
         self.default = default
+       
+    def normalize(self, value):
+        if self.kind == 'int':
+            return int(value)
+        elif self.kind == 'bool':
+            return bool(value)
+        else:
+            raise KeyError
 
     @classmethod
     def new(cls, display, name, kind, default):
@@ -26,16 +35,22 @@ class Preference(object):
         obj = cls(display, name, kind, default)
         cls.all_prefs.append(obj)
         cls.pref_names.add(name)
+        cls.pref_map[name] = obj
+        return obj
+
+    @classmethod
+    def lookup(cls, name):
+        return cls.pref_map[name]
 
     @classmethod
     def defaults(cls):
         return dict((p.name, p.default) for p in cls.all_prefs)
 
 # Declared preferences go here
-Preference.new('Default Timespan', 'default_timespan', 'int', config.default_timespan)
-Preference.new('Show Rollbar', 'show_rollbar', 'bool', False)
-Preference.new('Graph Width (large)', 'large_width', 'int', 800)
-Preference.new('Graph Width (small)', 'small_width', 'int', 400)
+default_timespan = Preference.new('Default Timespan', 'default_timespan', 'int', config.default_timespan)
+show_rollbar = Preference.new('Show Rollbar', 'show_rollbar', 'bool', False)
+large_width = Preference.new('Graph Width (large)', 'large_width', 'int', 800)
+small_width = Preference.new('Graph Width (small)', 'small_width', 'int', 400)
 
 class UserPrefs(LexigraphModel):
     user_id = db.StringProperty(required=True)
@@ -51,6 +66,8 @@ class UserPrefs(LexigraphModel):
     def store_preference(cls, user_id, pref_name, value):
         # need to clear any existing rows
         db.delete(fetch_all(cls.pref_query(user_id, pref_name)))
+        p = Preference.lookup(pref_name)
+        value = p.normalize(value)
         serialized = simplejson.dumps(value)
         cls(user_id=user_id, pref_name=pref_name, value=serialized).put()
 
@@ -67,8 +84,8 @@ class UserPrefs(LexigraphModel):
         pref_dict = Preference.defaults()
         if user_id:
             for row in fetch_all(cls.all().filter('user_id =', user_id)):
-                if row.name not in Preference.pref_names:
-                    self.log.warning('encountered unknown preference %s' % (row.name,))
+                if row.pref_name not in Preference.pref_names:
+                    self.log.warning('encountered unknown preference %s' % (row.pref_name,))
                     continue
                 pref_dict[str(row.pref_name)] = simplejson.loads(row.value)
         return pref_dict

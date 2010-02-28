@@ -11,8 +11,13 @@
 </div>
 {%- endmacro -%}
 
-{% macro draw_graphs(names, dims=None, columns=2, add_script=True) -%}
+{% macro draw_graphs(names, width=None, add_script=True) -%}
   {% if names %}
+    {% if width %}
+      {% set dims = {'width': width, 'height': width / 2 } %}
+    {% else %}
+      {% set dims = None %}
+    {% endif %}
     {% for name in names %}
       {{ draw_graph(name, dims=dims) }}
     {% endfor %}

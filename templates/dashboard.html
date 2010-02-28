@@ -13,14 +13,14 @@
 
 <div id="layout_controls">
   <label for="graph_width">graph width:</label>
-  <input id="graph_width" type="text" size=4 maxlength=4 value="{{prefs.large_width}}"
+  <input id="graph_width" type="text" size=4 maxlength=4 value="{{prefs.small_width}}"
          onchange="LX.dashboard.redraw_graphs(parseInt(this.value))" />
 </div>
 
 <br />
 
 <div id="query_results" class="row_container">
-  {{ graphs.draw_graphs(dashboard_graphs, columns=2, dims={'height': 300, 'width': 600}) }}
+  {{ graphs.draw_graphs(dashboard_graphs, width=prefs.small_width) }}
 </div>
 
 <div style="clear: both">

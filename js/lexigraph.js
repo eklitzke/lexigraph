@@ -88,8 +88,8 @@ LX.drawGraph = function (opts) {
 
 LX.getGraphDimensions = function () {
     if (LX.userPrefs) {
-        return {width: LX.userPrefs['large_width'],
-                height: parseInt(LX.userPrefs['large_width'] / 1.618, 10)};
+        return {width: LX.userPrefs['small_width'],
+                height: parseInt(LX.userPrefs['small_width'], 10) / 2};
     }
     return null;
 }
@@ -115,6 +115,7 @@ LX.graphQuery = function (input_id, div_id) {
 };
 
 LX.updatePref = function (name, value) {
+    LX.userPrefs[name] = value;
     $.ajax({
         url: "/ajax/prefs",
         type: "POST",

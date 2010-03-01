@@ -7,8 +7,10 @@
 {% block body_content %}
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
-<input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags"/>
+<input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags" onchange="LX.graphQuery('tags_query', 'query_results')"/>
+<!--
 <button type="button" onclick="LX.graphQuery('tags_query', 'query_results')">update</button>
+-->
 </span>
 
 <div id="layout_controls">

@@ -129,3 +129,11 @@ LX.dataset.add_tag_xhr = function () {
         }
     });
 };
+
+LX.dataset.redraw_graph = function (width, name) {
+    LX.updatePref("large_width", width);
+    var elt = document.getElementById("graph_dataset_" + name);
+    elt.style.width = width + "px";
+    elt.style.height = parseInt(width / 2) + "px";
+    LX.drawGraph({dataset_name: name});
+};

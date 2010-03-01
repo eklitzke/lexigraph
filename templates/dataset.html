@@ -52,13 +52,20 @@
   </div>
 </fieldset>
 
-{{- graph.draw_graphs([dataset.name]) -}}
+<div id="layout_controls">
+  <label for="graph_width">graph width:</label>
+  <input id="graph_width" type="text" size=4 maxlength=4 value="{{prefs.large_width}}"
+         onchange="LX.dataset.redraw_graph(parseInt(this.value), '{{dataset.name}}')" >
+</div>
+{{- graph.draw_graphs([dataset.name], width=prefs.large_width) -}}
 
+<div style="float: both">
 {% if dataset.description %}
 <strong>description:</strong> {{dataset.description }}
 {% else %}
 (sorry, no description for this dataset)
 {% endif %}
+</div>
 
 {% if can_delete %}
 <form action="/delete/dataset" method="POST">

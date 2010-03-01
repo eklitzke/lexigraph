@@ -72,26 +72,26 @@ fieldset {
 
 h1 {
     font-weight: bold;
-	border-bottom: 1px solid gray;
-	background-color: #EEE;
-	margin-top: 0;
-	padding-left: 0.6em;
-	padding-right: 1em;
+    border-bottom: 1px solid gray;
+    background-color: #EEE;
+    margin-top: 0;
+    padding-left: 0.6em;
+    padding-right: 1em;
     margin-left: 0;
     margin-bottom: 0;
 }
 
 h2 {
-	font-size: 108%;
+    font-size: 108%;
     font-weight: bold;
-	margin-top: 0.25em;
-	margin-bottom: 0.20em;
+    margin-top: 0.25em;
+    margin-bottom: 0.20em;
 }
 
 h3 {
     font-size: 100%;
     font-weight: bold;
-	margin-bottom: 0.25em;
+    margin-bottom: 0.25em;
     }
 
 
@@ -113,11 +113,11 @@ h3 {
 .inline_header a:hover { color: black; }
 
 p {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 legend {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 fieldset {
@@ -136,7 +136,7 @@ fieldset {
 }
 
 .mini_link { padding-left: 0.2em; font-size: 0.8em; }
-    
+
 
 #info_message {
     border: solid #00c300 2px;
@@ -195,4 +195,9 @@ dfn { font-style: italic; }
 
 strong {
     font-weight: bold;
+}
+
+#layout_controls {
+   float: right;
+   text-align: right;
 }

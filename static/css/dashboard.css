@@ -2,11 +2,6 @@
 .label_input:focus { color: black; }
 .label_input:hover { color: black; }
 
-#layout_controls {
-   float: right; 
-   text-align: right;
-}
-
 #query_results {
     margin-top: 0.8em;
     margin-bottom: 0.5em;

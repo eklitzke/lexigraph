@@ -3,9 +3,9 @@
 <html>
   <head>
     <title>lexigraph</title>
-    <link rel="shortcut icon" href="/images/cat.png" type="image/png" />
+    <link rel="shortcut icon" href="/images/cat.png" type="image/png">
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
-    <link rel="stylesheet" type="text/css" href="/css/lexigraph.css" />
+    <link rel="stylesheet" type="text/css" href="/css/lexigraph.css">
     {% block extra_css %}{% endblock %}
     {{ macros.versioned_js(serials, "dygraph-combined.js") }}
     {%- if config.remote_jquery %}
@@ -38,7 +38,7 @@
         ('/logout', 'logout')], account=account, accounts=accounts) }}
     {% endblock %}
       </div> <!-- hd -->
-      <div id="bd" role="main">
+      <div id="bd">
         <div class="yui-g">
     <div id="real_content">
       {% if error_message %}

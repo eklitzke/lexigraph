@@ -7,48 +7,48 @@
 {% block body_content %}
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
-<input id="tags_query" class="label_input" type="text" size="50" value="dashboard" label="dashboard" name="tags" onchange="LX.graphQuery('tags_query', 'query_results')"/>
+<input id="tags_query" class="label_input" type="text" size="50" value="dashboard" name="tags" onchange="LX.graphQuery()">
 <!--
-<button type="button" onclick="LX.graphQuery('tags_query', 'query_results')">update</button>
+<button type="button" onclick="LX.graphQuery()">update</button>
 -->
 </span>
 
 <div id="layout_controls">
   <label for="graph_width">graph width:</label>
   <input id="graph_width" type="text" size=4 maxlength=4 value="{{prefs.small_width}}"
-         onchange="LX.dashboard.redraw_graphs(parseInt(this.value))" />
+         onchange="LX.dashboard.redraw_graphs(parseInt(this.value))" >
 </div>
 
-<br />
+<!-- <br /> -->
 
 <div id="query_results" class="row_container">
   {{ graphs.draw_graphs(dashboard_graphs, width=prefs.small_width) }}
-</div>
+</div> <!-- query_results -->
 
 <div style="clear: both">
-<h2>add a new dataset</h2>
-<form action="/new/dataset" method="POST">
-  <fieldset>
-    <legend>dataset details</legend>
-    <!--dataset name: <input type="text" name="dataset"> <br />-->
-    {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset") }}
-    {{ macros.aggregate_dropdown() }}
-    initial group: <select name="group">
-      {% for group in groups %}
-      <option name="{{ group.name }}">{{ group.name }}</option>
-      {% endfor %}
-    </select> <br />
-    tags (comma separated): <input type="text" name="tags" size=60 /><br />
-    desc
-    <textarea name="description" cols=80 row=3></textarea> <br />
-  </fieldset>
-  <fieldset>
-    <legend>initial data series</legend>
-    {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval") }}
-    {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage") }}
-  </fieldset>
-  <br />
-  <input type="submit" value="submit">
-</form>
-<div>
+  <h2>add a new dataset</h2>
+  <form action="/new/dataset" method="POST">
+    <fieldset>
+      <legend>dataset details</legend>
+      {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset") }}
+      {{ macros.aggregate_dropdown() }}
+      initial group:
+      <select id="aggregate_dropdown" name="group">
+        {% for group in groups %}
+        <option>{{group.name}}</option>
+        {% endfor %}
+      </select>
+      <br>
+      tags (comma separated): <input type="text" name="tags" size=60><br>
+      description: <br>
+      <textarea name="description" cols=80 rows=3></textarea> <br>
+    </fieldset>
+    <fieldset>
+      <legend>initial data series</legend>
+      {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval") }}
+      {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage") }}
+    </fieldset>
+    <input type="submit" value="submit">
+  </form>
+</div>
 {% endblock %}

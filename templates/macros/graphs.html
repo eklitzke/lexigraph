@@ -1,14 +1,13 @@
 {% macro draw_graph(name, dims=None) -%}
 <div class="inline_header">
-  <a href="/edit/dataset?name={{name}}">
+  <a href="/edit/dataset?name={{name}}" class="block_link">
     <h2>{{name}}</h2>
-    <!-- class="mini_link">edit</a> -->
     <span class="mini_link">edit</span>
   </a>
   <div id="graph_dataset_{{name}}" class="lexigraph_chart"
     {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
   ></div>
-</div>
+</div> <!-- inline header -->
 {%- endmacro -%}
 
 {% macro draw_graphs(names, width=None, add_script=True) -%}
@@ -26,7 +25,7 @@
       {% for name in names -%}
         LX.drawGraph({dataset_name: "{{name}}"});
       {% endfor %}
-      </script
+      </script>
     {% endif %}
   {% else %}
     no matching graphs!

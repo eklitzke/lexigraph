@@ -1,5 +1,15 @@
 LX.dashboard = {};
 
+LX.graphQuery = function () {
+    var input = document.getElementById("tags_query");
+
+    $.getJSON("/ajax/graphs?tags=" + escape(input.value), function (data) {
+        var graph_div = document.getElementById("query_results");
+        graph_div.innerHTML = data.text;
+        LX.drawGraphs(data.names);
+    });
+};
+
 LX.dashboard.redraw_graphs = function (width) {
     var query_results = document.getElementById("query_results");
     var c, d, i, j;

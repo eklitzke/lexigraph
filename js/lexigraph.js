@@ -103,17 +103,6 @@ LX.drawGraphs = function (datasets, onLoad) {
     }
 };
 
-LX.graphQuery = function (input_id, div_id) {
-    var input, graph_div, tag_list = [], tag, i;
-    input = document.getElementById(input_id);
-
-    $.getJSON("/ajax/graphs?tags=" + escape(input.value), function (data) {
-        graph_div = document.getElementById(div_id);
-        graph_div.innerHTML = data.text;
-        LX.drawGraphs(data.names);
-    });
-};
-
 LX.updatePref = function (name, value) {
     LX.userPrefs[name] = value;
     $.ajax({

@@ -15,7 +15,7 @@
 {% macro label_with_input(label_name, id, name, value='', type='text', size=20, br=True) -%}
 <label for="{{id}}">{{label_name}}: </label><input id="{{id}}" type="{{type}}" name="{{name}}" value="{{value|e}}" size="{{size}}">
 {% if br %}
-<br />
+<br>
 {% endif %}
 {%- endmacro %}
 
@@ -23,14 +23,14 @@
 {% macro aggregate_dropdown(label_name='aggregate function', name='aggregate', id='aggregate_dropdown', br=True) -%}
 <label for="{{id}}">{{label_name}}: </label>
 <select name="{{name}}">
-  <option name="min">min</option>
-  <option name="max">max</option>
-  <option name="sum">sum</option>
-  <option name="old">oldest</option>
-  <option name="new">newest</option>
+  <option>min</option>
+  <option>max</option>
+  <option>sum</option>
+  <option>oldest</option>
+  <option>newest</option>
 </select>
 {% if br %}
-<br />
+<br>
 {% endif %}
 {%- endmacro %}
 

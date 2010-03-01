@@ -6,7 +6,7 @@
        src="/images/delete.png"
        alt="delete this data series"
        class="alter_icon"
-       onclick="LX.dataset.remove_series_xhr({{s.id}})"/>
+       onclick="LX.dataset.remove_series_xhr({{s.id}})">
   interval: {{s.interval}} max age: {{s.max_age}}
 </div>
 {%- endmacro -%}
@@ -20,7 +20,7 @@
        src="/images/delete.png"
        alt="delete this tag"
        class="alter_icon"
-       onclick="LX.dataset.remove_tag_xhr('{{tag.name}}')"/>
+       onclick="LX.dataset.remove_tag_xhr('{{tag.name}}')">
   <canvas id="tag_{{tag.name}}" width=14 height=14></canvas>
   {{tag.name}}
 </div>

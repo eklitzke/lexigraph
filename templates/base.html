@@ -1,4 +1,23 @@
 {% import "macros.html" as macros %}
+{% macro draw_topnav(items, id='topnav', account=None, accounts=[]) -%}
+<div id="{{id}}">
+  <ul>
+    {%- for (link, name, title) in items %}
+    <li><a href="{{link}}" title="{{title}}">{{name}}</a></li>
+    {%- endfor %}
+  </ul>
+  <span class="topnav_select">
+    {%- if account %}
+    account: {{account.name}}
+    {%- if accounts|length > 1 %}
+    <span class="mini_link"><a href="/account"><span style="font-weight: normal">edit</span></a></span>
+    {%- endif %}
+    {% else %}
+    <a href="/account">select an account</a>
+    {%- endif %}
+  </span>
+</div>
+{%- endmacro %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
@@ -27,30 +46,30 @@
     <div id="doc3" class="yui-t7">
       <div id="hd">
         <h1>{% block body_header %}lexigraph; graphing &amp; trending{% endblock %}</h1>
-    {% block body %}
-    {% block topnav %}
-    {{ macros.draw_topnav(
-        [('/', 'home'),
-        ('/dashboard', 'dashboard'),
-        ('/prefs', 'preferences'),
-        ('/groups', 'groups'),
-        ('/doc', 'docs'),
-        ('/logout', 'logout')], account=account, accounts=accounts) }}
-    {% endblock %}
+        {% block body %}
+        {% block topnav %}
+        {{ draw_topnav(
+        [('/', 'home', 'Home'),
+        ('/dashboard', 'dashboard', 'Go back to the dashboard'),
+        ('/query', 'query', 'Perform an advanced query'),
+        ('/prefs', 'preferences', 'Edit preferences'),
+        ('/groups', 'groups', 'Manage groups'),
+        ('/doc', 'docs', 'API documentation'),
+        ('/logout', 'logout', 'Logout')], account=account, accounts=accounts) }}
+        {% endblock %}
       </div> <!-- hd -->
       <div id="bd">
         <div class="yui-g">
-    <div id="real_content">
-      {% if error_message %}
-      <div id="error_message">{{error_message|e}}</div>
-      {% endif %}
-      {% if info_message %}
-      <div id="info_message">{{info_message|e}}</div>
-      {% endif %}
-      {% block body_content %}{% endblock %}
-      {% endblock %}
-    </div> <!-- real_content -->
-
+          <div id="real_content">
+            {% if error_message %}
+            <div id="error_message">{{error_message|e}}</div>
+            {% endif %}
+            {% if info_message %}
+            <div id="info_message">{{info_message|e}}</div>
+            {% endif %}
+            {% block body_content %}{% endblock %}
+            {% endblock %}
+          </div> <!-- real_content -->
         </div> <!-- yui-g -->
       </div> <!-- bd -->
     <div id="ft"><p>&copy;{{copyright_year}} the lexicographers</p></div>

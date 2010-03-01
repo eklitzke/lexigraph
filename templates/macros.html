@@ -53,23 +53,3 @@
 </div>
 <script type="text/javascript">LX.draw_graph({"dataset_name": "{{ dataset_name }}"})</script>
 {%- endmacro %}
-
-{% macro draw_topnav(items, id='topnav', account=None, accounts=[]) -%}
-<div id="{{id}}">
-  <ul>
-    {%- for (link, name) in items %}
-    <li><a href="{{link}}">{{name}}</a></li>
-    {%- endfor %}
-  </ul>
-  <span class="topnav_select">
-    {%- if account %}
-    account: {{account.name}}
-    {%- if accounts|length > 1 %}
-    <span class="mini_link"><a href="/account"><span style="font-weight: normal">edit</span></a></span>
-    {%- endif %}
-    {% else %}
-    <a href="/account">select an account</a>
-    {%- endif %}
-  </span>
-</div>
-{%- endmacro %}

@@ -51,6 +51,9 @@ class EditDataSet(InteractiveHandler):
         dataset = self.get_dataset(self.form_required('name', uri='/dashboard'))
         self.load_prefs()
         self.env['dataset'] = dataset
+        self.log.info('dataset = %s' % (dataset,))
+        self.env['tags'] = model.TagColors.colors_for_tags(self.user, dataset.tags)
+        self.log.info('tags = %s' % (self.env['tags'],))
         self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
         self.env['existing_series'] = [{'id': s.key().id(), 'interval': s.interval, 'max_age': s.max_age} for s in self.env['series']]
         self.log.info('existing_series = %r' % (self.env['existing_series'],))

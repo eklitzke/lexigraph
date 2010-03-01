@@ -2,13 +2,13 @@ if (LX.dataset === undefined) {
     LX.dataset = {};
 }
 
-LX.dataset.show_delete = function (series_id) {
-    var img = document.getElementById("delete_img_" + series_id);
+LX.dataset.show_delete = function (elt_id) {
+    var img = document.getElementById(elt_id);
     img.style.visibility = "visible";
 };
 
-LX.dataset.hide_delete = function (series_id) {
-    var img = document.getElementById("delete_img_" + series_id);
+LX.dataset.hide_delete = function (elt_id) {
+    var img = document.getElementById(elt_id);
     img.style.visibility = "hidden";
 };
 
@@ -81,6 +81,50 @@ LX.dataset.remove_series_xhr = function (series_key) {
                     throw {"message": "failed to find the div"};
                 }
                 div.parentNode.removeChild(div);
+            }
+        }
+    });
+};
+
+LX.dataset.redraw_xhr = function (data) {
+    if (data['code'] === 0) {
+        var tag, i;
+        var existing = document.getElementById("existing_tags");
+        existing.innerHTML = data['text'];
+
+        /* Redraw the tag boxes */
+        for (i = 0; i < data['tags'].length; i++) {
+            tag = data['tags'][i]
+            LX.canvas.box("tag_" + tag.name, tag);
+        }
+    } else {
+        alert("failed; code = " + data['code']);
+    }
+};
+
+LX.dataset.remove_tag_xhr = function (name) {
+    $.ajax({
+        url: "/ajax/remove/tag",
+        type: "POST",
+        dataType: "json",
+        data: {"name": name, "dataset": datasetName}, // hack: datsetName will be available and global
+        success: LX.dataset.redraw_xhr
+    });
+};
+
+LX.dataset.add_tag_xhr = function () {
+    var input = document.getElementById("new_tag");
+    var name = input.value;
+    $.ajax({
+        url: "/ajax/add/tag",
+        type: "POST",
+        dataType: "json",
+        data: {"name": name, "dataset": datasetName}, // hack: datsetName will be available and global
+        success: function (data) {
+            LX.dataset.redraw_xhr(data);
+            if (data['code'] === 0) {
+                /* Clear the input form. */
+                input.value = "";
             }
         }
     });

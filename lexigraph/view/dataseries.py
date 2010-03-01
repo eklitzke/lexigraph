@@ -31,7 +31,6 @@ class NewDataSeries(SessionHandler):
         ds = model.DataSeries(dataset=dataset, interval=interval, max_age=max_age)
         ds.put()
         self.log.info('successfully created dataseries with id %s' % (ds.key().id(),))
-        ds.id = ds.key().id()
         self.env['ds'] = ds
         self.render_ajax('ajax/dataset.html')
 

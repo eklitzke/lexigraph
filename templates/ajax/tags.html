@@ -1,0 +1,4 @@
+{% import "macros/series.html" as series %}
+{% for tag in tags %}
+{{ series.draw_tag(tag) }}
+{% endfor %}

@@ -103,7 +103,6 @@ h3 {
 }
 
 
-.inline_header { display: inline }
 .inline_header h1 { display: inline; }
 .inline_header h2 { display: inline; }
 .inline_header h3 { display: inline; }

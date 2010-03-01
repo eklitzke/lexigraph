@@ -12,7 +12,7 @@ minify_build = Builder(action='bin/minjs $SOURCES > $TARGET')
 concatenate_build = Builder(action='bin/minjs --concatenate-only $SOURCES > $TARGET')
 env.Append(BUILDERS = {'MinifyJs': minify_build, 'ConcatenateJs': concatenate_build})
 
-inhouse_js = ['lexigraph', 'dashboard', 'dataset']
+inhouse_js = ['lexigraph', 'dashboard', 'dataset', 'canvas']
 env.ConcatenateJs('js/lexigraph.dev.js', ['js/%s.js' % j for j in inhouse_js])
 #env.MinifyJs('js/lexigraph.min.js', ['js/%s.js' % j for j in inhouse_js])
 

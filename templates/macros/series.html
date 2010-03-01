@@ -1,12 +1,27 @@
 {% macro draw_series(s) -%}
-<div id="existing_{{s.id}}"
-     onmouseover="LX.dataset.show_delete({{s.id}})"
-     onmouseout="LX.dataset.hide_delete({{s.id}})">
-  <img id="delete_img_{{s.id}}"
+<div id="existing_series_{{s.id}}"
+     onmouseover="LX.dataset.show_delete('delete_series_img_{{s.id}}')"
+     onmouseout="LX.dataset.hide_delete('delete_series_img_{{s.id}}')">
+  <img id="delete_series_img_{{s.id}}"
        src="/images/delete.png"
        alt="delete this data series"
        class="alter_icon"
        onclick="LX.dataset.remove_series_xhr({{s.id}})"/>
   interval: {{s.interval}} max age: {{s.max_age}}
+</div>
+{%- endmacro -%}
+
+{% macro draw_tag(tag) -%}
+{% set tag_id = tag.key().id() %}
+<div id="existing_tag_{{tag.key().id()}}"
+     onmouseover="LX.dataset.show_delete('delete_tag_img_{{tag_id}}')"
+     onmouseout="LX.dataset.hide_delete('delete_tag_img_{{tag_id}}')">
+  <img id="delete_tag_img_{{tag_id}}"
+       src="/images/delete.png"
+       alt="delete this tag"
+       class="alter_icon"
+       onclick="LX.dataset.remove_tag_xhr('{{tag.name}}')"/>
+  <canvas id="tag_{{tag.name}}" width=14 height=14></canvas>
+  {{tag.name}}
 </div>
 {%- endmacro -%}

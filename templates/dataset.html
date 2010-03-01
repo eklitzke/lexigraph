@@ -6,9 +6,31 @@
 {% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dataset.css">{% endblock %}
 
 {% block body_content %}
+<script type="text/javascript">
+  datasetName = "{{dataset.name}}";
+</script>
+
 <fieldset>
   <legend>update tags</legend>
-  update your tags, mothafucka
+  <h3>existing</h3>
+  <div id="existing_tags">
+  {% if tags %}
+  {% for tag in tags %}
+  {{ series.draw_tag(tag) }}
+  {% endfor %}
+  <script type="text/javascript">
+  {% for tag in tags %}
+    LX.canvas.box("tag_{{tag.name}}", {red: {{tag.red}}, green: {{tag.green}}, blue: {{tag.blue}}, outline: true});
+  {% endfor %}
+  </script>
+  {% endif %}
+  </div>
+  <h3>add new</h3>
+  <div id="new_tags">
+    <img id="add_tag" src="/images/add.png" alt="add a new tag" onclick="LX.dataset.add_tag_xhr()"/>
+    <label for="new_tag">name: </label>
+    <input type="text" id="new_tag" width=12 />
+  </div>
 </fieldset>
 
 <fieldset>

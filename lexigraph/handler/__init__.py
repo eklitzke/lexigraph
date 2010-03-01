@@ -93,6 +93,7 @@ class RequestHandler(_RequestHandler):
             else:
                 raise
         else:
+            self.log.exception("uncaught exception")
             return super(RequestHandler, self).handle_exception(exception, debug_mode)
 
 

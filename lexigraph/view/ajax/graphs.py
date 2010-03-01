@@ -39,15 +39,9 @@ class TagQueryCache(CacheDict):
 
     def select_by_tags(self, account, user, tag_list):
         """Return datasets containing all tags in the list."""
-        # XXX: for now, we only now how to cache queries for exactly one tag
-        #(because that's the only way that I know how to make remove_by_tags
-        #correct).
+        # XXX: disabled for now
         use_memcache = False
         val = None
-        if len(tag_list) <= 1:
-            val = self[(account, user, tag_list)]
-            use_memcache = True
-        val = use_memcache = None # FIXME
         if val is None:
             q = model.DataSet.all().filter('account =', account)
             for tag in tag_list:

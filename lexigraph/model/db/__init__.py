@@ -254,3 +254,4 @@ class DataPoint(LexigraphModel):
             raise NotImplementedError
 
 from lexigraph.model.db.prefs import *
+from lexigraph.model.db.tags import *

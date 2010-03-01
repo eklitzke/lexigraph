@@ -7,6 +7,15 @@
    text-align: right;
 }
 
+#query_results {
+    margin-top: 0.8em;
+    margin-bottom: 0.5em;
+}
+
+.graph_title {
+    margin-left: 2em;
+}
+
 .inline_header {
     float: left;
 }

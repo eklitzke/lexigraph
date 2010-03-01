@@ -1,4 +1,5 @@
 {% import "macros.html" as macros %}
+{% import "macros/dashboard.html" as dashboard %}
 {% import "macros/graphs.html" as graphs %}
 {% extends "base.html" %}
 
@@ -8,9 +9,6 @@
 <span title="enter a comma separated list of tags to search on" style="padding-bottom: 1em;">
 <label for="tags_query">tag search: </label>
 <input id="tags_query" class="label_input" type="text" size="50" value="dashboard" name="tags" onchange="LX.graphQuery()">
-<!--
-<button type="button" onclick="LX.graphQuery()">update</button>
--->
 </span>
 
 <div id="layout_controls">
@@ -18,9 +16,6 @@
   <input id="graph_width" type="text" size=4 maxlength=4 value="{{prefs.small_width}}"
          onchange="LX.dashboard.redraw_graphs(parseInt(this.value))" >
 </div>
-
-<!-- <br /> -->
-
 <div id="query_results" class="row_container">
   {{ graphs.draw_graphs(dashboard_graphs, width=prefs.small_width) }}
 </div> <!-- query_results -->
@@ -31,17 +26,19 @@
     <fieldset>
       <legend>dataset details</legend>
       {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset") }}
-      {{ macros.aggregate_dropdown() }}
+      {{ dashboard.aggregate_dropdown() }}
+      <label for="group_dropdown">
       initial group:
-      <select id="aggregate_dropdown" name="group">
+      </label>
+      <select id="group_dropdown" name="group">
         {% for group in groups %}
         <option>{{group.name}}</option>
         {% endfor %}
       </select>
       <br>
-      tags (comma separated): <input type="text" name="tags" size=60><br>
-      description: <br>
-      <textarea name="description" cols=80 rows=3></textarea> <br>
+      <label for="tags_input">tags (comma separated): </label><input type="text" id="tags_input" name="tags" size=60><br>
+      <label for="description_input">description: <br></label>
+      <textarea name="description" id="description_input" cols=80 rows=3></textarea> <br>
     </fieldset>
     <fieldset>
       <legend>initial data series</legend>

@@ -1,9 +1,10 @@
 {% macro draw_graph(name, dims=None) -%}
 <div class="inline_header">
-  <a href="/edit/dataset?name={{name}}" class="block_link">
-    <h2>{{name}}</h2>
-    <span class="mini_link">edit</span>
-  </a>
+  <h2 class="graph_title">
+    <a href="/edit/dataset?name={{name}}" title="edit {{name}}">
+      {{name}}
+    </a>
+  </h2>
   <div id="graph_dataset_{{name}}" class="lexigraph_chart"
     {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
   ></div>

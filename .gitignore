@@ -6,3 +6,4 @@ src/dev_add_point
 *.dev.js
 .sconsign.dblite
 lexigraph/config/serials.py
+*.log

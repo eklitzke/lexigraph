@@ -7,9 +7,9 @@ from lexigraph import model
 class DataPointTrim(CronRequestHandler):
 
     def get(self):
-        series = list(model.DataSeries.all())
-        for s in series:
-            taskqueue.add(url="/tasks/trim_series", params={'series_key': s.key()})
-        self.response.out.write('series trim tasks queued for %d series' % len(series))
+        for s in model.DataSeries.all():
+            key = s.key()
+            taskqueue.add(url='/tasks/trim_series', params={'series_key': key})
+            self.response.out.write('queued series_key = %r' % (key,))
 
 add_route(DataPointTrim, '/cron/trim/datapoints')

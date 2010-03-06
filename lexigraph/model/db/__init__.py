@@ -200,9 +200,12 @@ class DataSeries(LexigraphModel):
         last_point.coalesce_value(self.dataset.aggregate, value, timestamp)
         return last_point
 
-    def trim_points(self, limit=1000):
+    def trim_points(self, limit=None):
+        """Trim old points. Returns True if there is more data to process, and
+        False otherwise.
+        """
         if not self.max_age:
-            return
+            return False
         max_age = datetime.datetime.now() - datetime.timedelta(seconds=self.max_age)
         points = True
         while points:

@@ -9,6 +9,9 @@ class SeriesTrim(TaskRequestHandler):
     def post(self):
         series_key = self.request.get('series_key')
         series = model.DataSeries.get_by_key_name(series_key)
-        series.trim_points()
+        if series is None:
+            self.log.warning('No series exists with key %r' % (series_key,))
+        else:
+            series.trim_points()
 
 add_route(SeriesTrim, '/tasks/trim_series')

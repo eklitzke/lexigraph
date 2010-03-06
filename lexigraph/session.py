@@ -95,7 +95,7 @@ class SessionState(object):
     def delete(self, key, delete_cache=True):
         if delete_cache:
             del self.cache[key]
-        db.delete(key, many=True)
+        db.delete(key)
 
     def __delitem__(self, key):
         self.delete(key)

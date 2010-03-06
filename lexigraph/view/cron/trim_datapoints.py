@@ -1,3 +1,5 @@
+from google.appengine.api.labs import taskqueue
+
 from lexigraph.view.cron._common import *
 from lexigraph.view import add_route
 from lexigraph import model
@@ -8,7 +10,7 @@ class DataPointTrim(CronRequestHandler):
     def get(self):
         series = fetch_all(model.DataSeries.all())
         for s in series:
-            s.trim_points()
-        self.response.out.write('points trimmed for %d series' % len(series))
+            taskqueue.add(url="/tasks/trim_series", params={'series_key': s.key()})
+        self.response.out.write('series trim tasks queued for %d series' % len(series))
 
 add_route(DataPointTrim, '/cron/trim/datapoints')

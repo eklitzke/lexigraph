@@ -10,7 +10,6 @@ from vendor.jinja2 import Environment, FileSystemLoader
 from google.appengine.ext.webapp import RequestHandler as _RequestHandler
 from lexigraph.log import ClassLogger
 from lexigraph import model
-from lexigraph.model.query import *
 from lexigraph import config
 from lexigraph.config import serials
 from lexigraph.handler.errors import *

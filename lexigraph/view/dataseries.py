@@ -1,10 +1,9 @@
 from lexigraph.view import add_route
 from lexigraph.handler import SessionHandler
 from lexigraph import model
-from lexigraph.model.query import *
+from lexigraph.model import maybe_one
 from django.utils import simplejson
 from google.appengine.ext import db
-
 
 class NewDataSeries(SessionHandler):
 
@@ -49,7 +48,7 @@ class DeleteDataSeries(SessionHandler):
 
         # delete all of the data points
         while True:
-            points = fetch_all(model.DataPoint.all().filter('series =', series))
+            points = list(model.DataPoint.all().filter('series =', series))
             if not points:
                 break
             for p in points:

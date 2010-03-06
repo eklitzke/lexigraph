@@ -1,7 +1,7 @@
 from lexigraph.view import add_route
 from lexigraph.handler import AccountHandler, SessionHandler, InteractiveHandler
 from lexigraph import model
-from lexigraph.model.query import *
+from lexigraph.model import maybe_one
 from django.utils import simplejson
 
 class NewDataSet(SessionHandler):
@@ -54,7 +54,7 @@ class EditDataSet(InteractiveHandler):
         self.log.info('dataset = %s' % (dataset,))
         self.env['tags'] = model.TagColors.colors_for_tags(self.user, dataset.tags)
         self.log.info('tags = %s' % (self.env['tags'],))
-        self.env['series'] = fetch_all(model.DataSeries.all().filter('dataset =', dataset))
+        self.env['series'] = model.DataSeries.all().filter('dataset =', dataset)
         self.env['existing_series'] = [{'id': s.key().id(), 'interval': s.interval, 'max_age': s.max_age} for s in self.env['series']]
         self.log.info('existing_series = %r' % (self.env['existing_series'],))
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
@@ -75,13 +75,13 @@ class DeleteDataSet(SessionHandler):
         # delete all of the data points
         for s in dataset.series():
             while True:
-                points = fetch_all(model.DataPoint.all().filter('series =', s))
+                points = list(model.DataPoint.all().filter('series =', s))
                 if not points:
                     break
                 for p in points:
                     p.delete()
             s.delete()
-        for ac in fetch_all(model.AccessControl.all().filter('dataset =', dataset)):
+        for ac in model.AccessControl.all().filter('dataset =', dataset):
             ac.delete()
         dataset.delete()
         self.redirect('/dashboard')

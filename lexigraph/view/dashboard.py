@@ -1,7 +1,6 @@
 from lexigraph.view import add_route
 from lexigraph.handler import InteractiveHandler
 from lexigraph import model
-from lexigraph.model.query import *
 from django.utils import simplejson
 
 from lexigraph.view.ajax.graphs import TagQueryCache

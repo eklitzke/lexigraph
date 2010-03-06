@@ -3,7 +3,7 @@ from google.appengine.api import users
 from lexigraph.view import add_route
 from lexigraph.handler import AccountHandler, InteractiveHandler
 from lexigraph import model
-from lexigraph.model.query import *
+from lexigraph.model import maybe_one
 from lexigraph.validate import validate_name
 
 class GroupLanding(InteractiveHandler):

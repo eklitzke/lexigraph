@@ -4,7 +4,6 @@ from lexigraph.view import add_route
 from lexigraph.handler import SessionHandler
 from lexigraph import model
 from lexigraph.cache import CacheDict
-from lexigraph.model.query import *
 
 digit_re = re.compile(r'^\d+')
 nondigit_re = re.compile(r'^\D+')
@@ -46,7 +45,7 @@ class TagQueryCache(CacheDict):
             q = model.DataSet.all().filter('account =', account)
             for tag in tag_list:
                 q = q.filter('tags =', tag)
-            val = [ds.name for ds in fetch_all(q) if ds.is_allowed(user, read=True)]
+            val = [ds.name for ds in q if ds.is_allowed(user, read=True)]
             val.sort(key=name_to_value)
             if use_memcache:
                 self[(account, user, tag_list)] = val

@@ -7,7 +7,6 @@ from lexigraph.view.api._common import *
 from lexigraph.handler import SessionHandler
 
 from lexigraph import model
-from lexigraph.model.query import *
 
 class CSV(ApiRequestHandler, SessionHandler):
 
@@ -98,7 +97,7 @@ class CSV(ApiRequestHandler, SessionHandler):
 
         # candidates must have a positive score
         candidates = []
-        for c in fetch_all(model.DataSeries.all().filter('dataset =', self.dataset)):
+        for c in model.DataSeries.all().filter('dataset =', self.dataset):
             points_required, score = score_candidate(c)
             self.log.debug('considering %s; points_required = %s, score = %s' % (c, points_required, score))
             if score >= 0:

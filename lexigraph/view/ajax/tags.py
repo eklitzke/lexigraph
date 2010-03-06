@@ -3,7 +3,7 @@ import re
 from lexigraph.view import add_route
 from lexigraph.handler import SessionHandler
 from lexigraph import model
-from lexigraph.model.query import *
+from lexigraph.model import maybe_one
 
 from lexigraph.view.ajax.graphs import TagQueryCache
 

@@ -2,7 +2,7 @@ from django.utils import simplejson
 from google.appengine.ext import db
 
 from lexigraph import config
-from lexigraph.model.query import maybe_one, fetch_all
+from lexigraph.model import maybe_one
 from lexigraph.model.db import LexigraphModel
 
 class Preference(object):
@@ -65,7 +65,7 @@ class UserPrefs(LexigraphModel):
     @classmethod
     def store_preference(cls, user_id, pref_name, value):
         # need to clear any existing rows
-        db.delete(fetch_all(cls.pref_query(user_id, pref_name)))
+        db.delete(cls.pref_query(user_id, pref_name))
         p = Preference.lookup(pref_name)
         value = p.normalize(value)
         serialized = simplejson.dumps(value)
@@ -83,7 +83,7 @@ class UserPrefs(LexigraphModel):
     def load_by_user_id(cls, user_id):
         pref_dict = Preference.defaults()
         if user_id:
-            for row in fetch_all(cls.all().filter('user_id =', user_id)):
+            for row in cls.all().filter('user_id =', user_id):
                 if row.pref_name not in Preference.pref_names:
                     self.log.warning('encountered unknown preference %s' % (row.pref_name,))
                     continue

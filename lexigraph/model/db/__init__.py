@@ -6,8 +6,6 @@ from google.appengine.ext import db
 from google.appengine.api import users
 
 from lexigraph.log import ClassLogger
-from lexigraph.model.query import maybe_one, fetch_all
-from lexigraph.model.util import to_python
 
 Error = db.Error
 
@@ -34,7 +32,7 @@ class Account(LexigraphModel):
     def by_user(cls, user):
         user_id = user.user_id()
         accounts = set()
-        for row in fetch_all(AccessGroup.all().filter('users =', user_id)):
+        for row in AccessGroup.all().filter('users =', user_id):
             accounts.add(row.account)
         return sorted(accounts, key=lambda x: x.name)
 
@@ -55,7 +53,7 @@ class Account(LexigraphModel):
         return obj
 
     def datasets(self):
-        return fetch_all(DataSet.all().filter('account =', self))
+        return DataSet.all().filter('account =', self)
 
 class AccessGroup(LexigraphModel):
     name = db.StringProperty(required=True) # unique
@@ -81,7 +79,7 @@ class AccessGroup(LexigraphModel):
         if user is None:
             user = users.get_current_user()
             assert user is not None
-        return fetch_all(cls.all().filter('account =', account).filter('users =', user.user_id()))
+        return cls.all().filter('account =', account).filter('users =', user.user_id())
 
     @classmethod
     def group_for_api_key(cls, api_token):
@@ -96,7 +94,7 @@ class DataSet(LexigraphModel):
     tags = db.StringListProperty() # optional
 
     def series(self):
-        return fetch_all(DataSeries.all().filter('dataset =', self))
+        return DataSeries.all().filter('dataset =', self)
 
     def anonymous_permission(self):
         access = maybe_one(AccessControl.all().filter('dataset =', self))

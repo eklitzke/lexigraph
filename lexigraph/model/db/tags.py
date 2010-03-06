@@ -1,6 +1,6 @@
 from google.appengine.ext import db
 
-from lexigraph.model.query import maybe_one, fetch_all
+from lexigraph.model import maybe_one
 from lexigraph.model.db import LexigraphModel
 
 class TagColors(LexigraphModel):
@@ -16,7 +16,7 @@ class TagColors(LexigraphModel):
 
     @classmethod
     def colors_for_tags(cls, user, names):
-        rows = fetch_all(cls.all().filter('owner =', user).filter('name IN', names))
+        rows = list(cls.all().filter('owner =', user).filter('name IN', names))
         result = rows[:]
         cls.log.info('-----')
         cls.log.info('names = %s' % (names,))

@@ -7,8 +7,7 @@ from django.utils import simplejson
 from google.appengine.ext.webapp import RequestHandler as _RequestHandler
 from lexigraph.handler import RequestHandler
 from lexigraph.handler.errors import *
-from lexigraph import model
-from lexigraph.model.query import *
+from lexigraph.model import *
 import lexigraph.session
 
 def requires_login(func):
@@ -55,7 +54,7 @@ class AccountHandler(RequestHandler):
         self.user_id = self.user.user_id() if self.user else None
         self.accounts = []
         if self.user:
-            self.accounts = model.Account.by_user(self.user)
+            self.accounts = Account.by_user(self.user)
 
     def enforce_login(self):
         if self.user is None:
@@ -67,7 +66,7 @@ class AccountHandler(RequestHandler):
         if not (self.user or self.key):
             return None
         if self.key:
-            group = maybe_one(model.AccessGroup.all().filter('api_token =', self.key))
+            group = maybe_one(AccessGroup.all().filter('api_token =', self.key))
             if not group:
                 self.log.info('No AccessGroup associated with key %s' % (self.key,))
                 return None
@@ -79,7 +78,7 @@ class AccountHandler(RequestHandler):
 
     def get_dataset(self, name, check_read=True, check_write=False, check_delete=False):
         assert name
-        ds = maybe_one(model.DataSet.all().filter('name =', name).filter('account =', self.account))
+        ds = maybe_one(DataSet.all().filter('name =', name).filter('account =', self.account))
         if ds is not None and not ds.is_allowed(self.user, self.key, read=check_read, write=check_write, delete=check_delete):
             raise PermissionsError
         return ds
@@ -97,7 +96,7 @@ class SessionHandler(AccountHandler):
     def get_account_by_user(self):
         account = self.session['account']
         if account is None:
-            accounts = model.Account.by_user(self.user)
+            accounts = Account.by_user(self.user)
             if not accounts:
                 self.session['error_message'] = 'You must create an account first.'
                 account = None
@@ -120,7 +119,7 @@ class InteractiveHandler(SessionHandler):
         has already been called during this request.
         """
         if 'prefs' not in self.env:
-            self.env['prefs'] = model.UserPrefs.load_by_user_id(self.user_id)
+            self.env['prefs'] = UserPrefs.load_by_user_id(self.user_id)
             self.env['prefs_json'] = simplejson.dumps(self.env['prefs'])
         return self.env['prefs']
 

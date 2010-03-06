@@ -3,8 +3,7 @@ import pickle
 from google.appengine.ext import db
 
 from lexigraph.log import ClassLogger
-from lexigraph.model import LexigraphModel
-from lexigraph.model.query import *
+from lexigraph.model import maybe_one, LexigraphModel
 from lexigraph.cache import CacheDict
 
 class SessionStorage(LexigraphModel):
@@ -17,7 +16,7 @@ class SessionStorage(LexigraphModel):
     def _remove_all(cls, worker):
         count = 0
         while True:
-            rows = worker()
+            rows = list(worker())
             if not rows:
                 break
             count += len(rows)
@@ -28,7 +27,7 @@ class SessionStorage(LexigraphModel):
     def remove_expired(cls, expiration=6*3600):
         """Remove all expired rows."""
         cutoff = datetime.datetime.now() - datetime.timedelta(seconds=expiration)
-        return cls._remove_all(lambda: fetch_all(cls.all().filter('timestamp <', cutoff)))
+        return cls._remove_all(lambda: cls.all().filter('timestamp <', cutoff))
 
 class SessionCache(CacheDict):
     namespace = 'session'
@@ -51,7 +50,7 @@ class SessionState(object):
     def query(self, key, many=False):
         q = SessionStorage.all().filter('user_id =', self.user_id).filter('item_name =', key)
         if many:
-            return fetch_all(q)
+            return list(q)
         else:
             return maybe_one(q)
 
@@ -96,7 +95,7 @@ class SessionState(object):
     def delete(self, key, delete_cache=True):
         if delete_cache:
             del self.cache[key]
-        db.delete(self.query(key, many=True))
+        db.delete(key, many=True)
 
     def __delitem__(self, key):
         self.delete(key)
@@ -106,7 +105,7 @@ class SessionState(object):
         self.cache[key] = val
 
     def clear_all(self):
-        rows = fetch_all(SessionStorage.all().filter('user_id =', self.user_id))
+        rows = SessionStorage.all().filter('user_id =', self.user_id)
         for row in rows:
             del self.cache[row.item_name]
         db.delete(rows)

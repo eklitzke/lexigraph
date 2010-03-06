@@ -1,7 +1,6 @@
 from lexigraph.view import add_route
 from lexigraph.handler import AccountHandler
 from lexigraph import model
-from lexigraph.model.query import *
 
 class NewDataPoint(AccountHandler):
 

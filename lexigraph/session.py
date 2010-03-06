@@ -64,9 +64,8 @@ class SessionState(object):
         """
         val = self.cache[key]
         if val is not None:
-            self.log.info('hit cache')
+            self.log.debug('hit session cache for key=%r' % (key,))
             self.delete(key, delete_cache=True)
-            self.log.info('cache says: %s' % (self.cache[key],))
             return val
 
         # XXX: the use case for this is really just for the "flash" messages, so
@@ -92,10 +91,17 @@ class SessionState(object):
             self.cache[key] = raw
             return raw
 
-    def delete(self, key, delete_cache=True):
+    def delete(self, key, delete_cache=True, ignore_db_errors=True):
         if delete_cache:
             del self.cache[key]
-        db.delete(key)
+
+        try:
+            db.delete(SessionStorage.all().filter('user_id =', self.user_id).filter('item_name =', key))
+        except db.BadKeyError:
+            if ignore_db_errors:
+                self.log.warning("Ignoring missing session key for user_id=%d, item_name=%r" % (self.user_id, key))
+            else:
+                raise
 
     def __delitem__(self, key):
         self.delete(key)

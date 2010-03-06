@@ -7,19 +7,14 @@ from lexigraph.cache import CacheDict
 from lexigraph.model.db import LexigraphModel, DataSet
 
 class _LastDataPointCache(CacheDict):
-    
-    namespace = 'lastdatapoint'
+    """A cache of the last point in a data series. This is pretty specialized
+    and isn't intended to be used directly.
+    """
+
+    namespace = 'lastdatapoint_20100306c'
 
     def normalize_key(self, k):
-        return str(k.key())
-    normalize_val = normalize_key
-
-    def last_datapoint(self, series):
-        key = self[series]
-        if key:
-            return DataPoint.get_by_key_name(key)
-        else:
-            return DataPoint.all().filter('series =', series).order('-timestamp').fetch(1)
+        return k.key().id()
 
 LastDataPointCache = _LastDataPointCache()
 
@@ -34,31 +29,34 @@ class DataSeries(LexigraphModel):
         """timestamp: a unix timestamp"""
         if isinstance(timestamp, datetime.datetime):
             timestamp = time.mktime(timestamp.timetuple())
-        self.log.debug('ts = %r' % (timestamp,))
         return int(timestamp / self.interval)
 
     def add_point(self, value, timestamp):
-        last_point = LastDataPointCache.last_datapoint(self)
-
-        if not last_point:
-            # no data for the series yet, just add a new point
-            return DataPoint(series=self, value=value).put()
-
-        # is the point old?
-        last_point, = last_point
-        last_epoch = self.to_epoch(last_point.timestamp)
         curr_epoch = self.to_epoch(timestamp)
+        info = LastDataPointCache[self]
 
-        # the point is for a new epoch, just add a new point
-        if last_epoch != curr_epoch:
-            last_point = DataPoint(series=self, value=value)
-            last_point.put()
-        else:
+        def add_new_point():
+            point = DataPoint(series=self, value=value, timestamp=timestamp)
+            point.put()
+            LastDataPointCache[self] = (point.key().id(), value, timestamp)
+
+        if info is None:
+            last_point = DataPoint.all().filter('series =', self).order('-timestamp').fetch(1)
+            if not last_point:
+                # no data for the series yet, just add a new point
+                return add_new_point()
+            last_point, = last_point
+            last_epoch = self.to_epoch(last_point.timestamp)
+            if last_epoch != curr_epoch:
+                return add_new_point()
             last_point.coalesce_value(self.dataset.aggregate, value, timestamp)
- 
-        # TODO: only set when the value has changed
-        LastDataPointCache[self] = last_point
-        return last_point
+        else:
+            entity_id, old_value, old_timestamp = info
+            last_epoch = self.to_epoch(old_timestamp)
+            if last_epoch != curr_epoch:
+                add_new_point()
+            else:
+                DataPoint.fake_coalesce_value(entity_id, self.dataset.aggregate, old_value, value, timestamp)
 
     def trim_points(self, limit=None):
         """Trim old points. Returns True if there is more data to process, and
@@ -79,26 +77,38 @@ class DataPoint(LexigraphModel):
     value = db.FloatProperty(required=True)
     timestamp = db.DateTimeProperty(required=True, auto_now_add=True)
 
-    def coalesce_value(self, aggregate, new_value, new_timestamp):
-        """Coalesce an existing DataPoint with a new value/timestamp"""
-
-        def update_value(updated_value):
-            self.log.debug('coalescing value for id=%s (%s, %s) -> (%s, %s)' % (self.key().id(), self.value, self.timestamp, updated_value, new_timestamp))
-            self.value = updated_value
-            self.timestamp = new_timestamp
-            self.put()
-
+    @staticmethod
+    def choose_coalesced_value(aggregate, old_value, new_value):
         if aggregate == 'min':
-            update_value(min(self.value, new_value))
+            return min(old_value, new_value)
         elif aggregate == 'max':
-            update_value(max(self.value, new_value))
+            return max(old_value, new_value)
         elif aggregate == 'sum':
-            update_value(self.value + new_value)
-        #elif aggregate == AggregateType.AVG:
-        #    raise NotImplementedError
+            return old_value + new_value
         elif aggregate == 'old':
-            update_value(self.value) # i.e. just update the timestamp
+            return old_value
         elif aggregate == 'new':
-            update_value(new_value)
+            return new_value
         else:
             raise NotImplementedError
+
+    def update_point(self, value, timestamp=None, update_cache=True):
+        self.value = value
+        self.timestamp = timestamp or datetime.datetime.now()
+        self.put()
+        if update_cache:
+            LastDataPointCache[self.series] = (self.key().id(), value, timestamp)
+
+    def coalesce_value(self, aggregate, new_value, new_timestamp):
+        chosen_value = self.choose_coalesced_value(aggregate, self.value, new_value)
+        if chosen_value != self.value:
+            return self.update_point(chosen_value, new_timestamp)
+
+    @classmethod
+    def fake_coalesce_value(cls, entity_id, aggregate, old_value, new_value, new_timestamp):
+        chosen_value = cls.choose_coalesced_value(aggregate, old_value, new_value)
+        if chosen_value != old_value:
+            obj = cls.get_by_id(entity_id)
+            if obj is None:
+                raise ValueError("id %d does not correspond to a valid DataPoint" % (entity_id,))
+            return obj.update_point(chosen_value, new_timestamp)

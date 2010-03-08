@@ -42,3 +42,4 @@ skip_files:
 - vendor/closure-templates
 - bin/
 - ^(.*/)?\.map$
+- ^(.*/)?\.jar$

@@ -107,7 +107,7 @@ LX.dataset.remove_tag_xhr = function (name) {
         url: "/ajax/remove/tag",
         type: "POST",
         dataType: "json",
-        data: {"name": name, "dataset": datasetName}, // hack: datsetName will be available and global
+        data: {"name": name, "dataset": datasetName}, // hack: datasetName will be available and global
         success: LX.dataset.redraw_xhr
     });
 };
@@ -119,7 +119,7 @@ LX.dataset.add_tag_xhr = function () {
         url: "/ajax/add/tag",
         type: "POST",
         dataType: "json",
-        data: {"name": name, "dataset": datasetName}, // hack: datsetName will be available and global
+        data: {"name": name, "dataset": datasetName}, // hack: datasetName will be available and global
         success: function (data) {
             LX.dataset.redraw_xhr(data);
             if (data['code'] === 0) {

@@ -59,7 +59,6 @@ LX.drawGraph = function (opts) {
             }
             csv_url += "dataset=" + datasets[i];
         }
-        console.log("csv_url = " + csv_url);
 
         /* dygraphs options are mixed in with other options */
         var graph_opts = {};

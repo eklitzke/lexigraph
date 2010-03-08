@@ -201,3 +201,6 @@ strong {
    float: right;
    text-align: right;
 }
+
+q:before { content: "\201C"; }
+q:after { content: "\201D"; }

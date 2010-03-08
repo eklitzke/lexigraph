@@ -18,13 +18,13 @@
 #new_dataset_form {
     float: left;
     clear: left;
-    max-width: 60em;;
+    max-width: 50em;;
     margin-right: 1em;
 }
 
 #other_dataset_form {
     float: left;
-    max-width: 40em;;
+    max-width: 40em;
 }
 
 .dataseries_label {

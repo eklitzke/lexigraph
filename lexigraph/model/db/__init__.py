@@ -1,5 +1,6 @@
 import os
 import datetime
+from django.utils import simplejson
 
 from google.appengine.ext import db
 from google.appengine.api import users
@@ -89,7 +90,7 @@ class DataSet(LexigraphModel):
     name = db.StringProperty(required=True) # unique
     aggregate = db.StringProperty(required=True)
     account = db.ReferenceProperty(Account, required=True)
-    description = db.TextProperty();
+    description = db.TextProperty()
     tags = db.StringListProperty() # optional
 
     def series(self):
@@ -132,6 +133,10 @@ class DataSet(LexigraphModel):
         for schema in series:
             schema.add_point(value, timestamp)
 
+    def names_json(self):
+        """For compatibility with CompositeDataSet"""
+        return simplejson.dumps([self.name]).strip()
+
 class AccessControl(LexigraphModel):
     # The primary key is (access_group, dataset). The access_group may be None,
     # in which case it refers to the default set of access controls.
@@ -166,3 +171,4 @@ class AccessControl(LexigraphModel):
 from lexigraph.model.db.prefs import *
 from lexigraph.model.db.series import *
 from lexigraph.model.db.tags import *
+from lexigraph.model.db.composite import *

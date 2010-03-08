@@ -1,5 +1,6 @@
 import time
 import math
+from collections import defaultdict
 
 from lexigraph import config
 from lexigraph.view import add_route
@@ -16,12 +17,19 @@ class CSV(ApiRequestHandler, SessionHandler):
 
     def process_form(self):
         super(CSV, self).process_form()
-        dataset = self.request.get('dataset')
-        if not dataset:
+
+        datasets = self.request.get_all('dataset')
+        if not datasets:
             return self.make_error(StatusCodes.MISSING_FIELD, field='dataset')
 
+        self.datasets = []
         try:
-            self.dataset = self.get_dataset(dataset)
+            for dataset in datasets:
+                ds = self.get_dataset(dataset)
+                if not ds:
+                    raise KeyError("No such dataset %r" % (dataset,))
+                self.datasets.append(ds)
+        # FIXME: handle unknown datasets
         except PermissionsError:
             return self.make_error(StatusCodes.PERMISSIONS_ERROR, field='dataset')
 
@@ -60,14 +68,12 @@ class CSV(ApiRequestHandler, SessionHandler):
         else:
             return reversed(query.order('-timestamp').fetch(limit))
 
-    def get_worker(self):
+    def get_points_for_dataset(self, dataset):
 
         # Figure out the best series to use. We're trying to achieve a chart
         # with self.points points in it, and strictly at most self.max_points
         # points. It's better to have too many points than it is to have too
         # few.
-
-        self.response.out.write('Timestamp,Value\n')
 
         def score_candidate(candidate):
             """Score a candidate DataSeries. This returns the tuple
@@ -97,7 +103,7 @@ class CSV(ApiRequestHandler, SessionHandler):
 
         # candidates must have a positive score
         candidates = []
-        for c in model.DataSeries.all().filter('dataset =', self.dataset):
+        for c in model.DataSeries.all().filter('dataset =', dataset):
             points_required, score = score_candidate(c)
             self.log.debug('considering %s; points_required = %s, score = %s' % (c, points_required, score))
             if score >= 0:
@@ -109,8 +115,40 @@ class CSV(ApiRequestHandler, SessionHandler):
 
         # pick the best candidate
         series, score, points_required = min(candidates, key=lambda (a, b, c): b)
-        self.log.info('Chose series %s, score = %s, points_required = %d' % (series, score, points_required))
-        for point in self.fetch_ordered_points(series, span=self.span, limit=points_required, python_order=True):
-            self.response.out.write('%s,%s\n' % (point.timestamp.strftime('%s'), point.value))
+        self.log.info('Chose series %s, score = %s, points_required = %d (for dataset %s)' % (series, score, points_required, dataset))
+        return list(self.fetch_ordered_points(series, span=self.span, limit=points_required, python_order=True))
+
+    def get_worker(self):
+
+        self.log.info('in get worker')
+        self.log.info('dir(self) = %s' % (dir(self,)))
+        # simple and fast code if only one dataset
+        if len(self.datasets) == 1:
+            dataset = self.datasets[0]
+            self.response.out.write('Timestamp,%s\n' % (dataset.name,))
+            points = self.get_points_for_dataset(dataset)
+            for p in points:
+                self.response.out.write('%s,%s\n' % (p.timestamp.strftime('%s'), p.value))
+        else:
+            header = ['Timestamp'] + [ds.name for ds in self.datasets]
+            self.response.out.write(','.join(header) + '\n')
+            points = []
+            for ds in self.datasets:
+                points.append(self.get_points_for_dataset(ds))
+
+            times = defaultdict(dict)
+            dataset_names = [ds.name for ds in self.datasets]
+            for name, point_list in zip(dataset_names, points):
+                for p in point_list:
+                    time = config.graph_resolution * (int(p.timestamp.strftime('%s')) / config.graph_resolution)
+                    times[time][name] = p.value
+
+            for t in sorted(times.keys()):
+                vals = times[t]
+                self.log.info('vals = %s' % (vals,))
+                output = [t]
+                for name in dataset_names:
+                    output.append(vals.get(name, ''))
+                self.response.out.write(','.join(str(x) for x in output) + '\n')
 
 add_route(CSV, '/api/csv')

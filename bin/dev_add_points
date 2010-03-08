@@ -3,7 +3,7 @@ import os
 import time
 import subprocess
 
-args = ['./src/dev_add_point', '0a0b16f0fff054ae0724533afdd4944b']
+args = ['./src/dev_add_point', 'ea05f4120b2660646efc78f5d10b07a8']
 
 while True:
 	avg = open('/proc/loadavg').read().strip()

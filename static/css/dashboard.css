@@ -14,3 +14,37 @@
 .inline_header {
     float: left;
 }
+
+#new_dataset_form {
+    float: left;
+    clear: left;
+    max-width: 60em;;
+    margin-right: 1em;
+}
+
+#other_dataset_form {
+    float: left;
+    max-width: 40em;;
+}
+
+.dataseries_label {
+    float: left;
+    clear: left;
+    width: 9em;
+}
+
+.form_input {
+    float: left;}
+
+
+.details_label {
+    float: left;
+    clear: left;
+    width: 7em;
+}
+
+.composite_label {
+    float: left;
+    clear: left;
+    width: 5em;
+}

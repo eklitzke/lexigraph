@@ -1,13 +1,11 @@
 import re
 
 from lexigraph.view import add_route
-from lexigraph.handler import SessionHandler
+from lexigraph.handler import TagsMixin, SessionHandler
 from lexigraph import model
 from lexigraph.model import maybe_one
 
-from lexigraph.view.ajax.graphs import TagQueryCache
-
-class TagBase(SessionHandler):
+class TagBase(TagsMixin, SessionHandler):
 
     requires_login = True
 

@@ -13,3 +13,5 @@ mkvar('whitelisted_emails', ['evan@eklitzke.org', 'test@example.com'])
 
 # set this to false to load jquery locally
 mkvar('remote_jquery', True)
+
+mkvar('graph_resolution', 60)

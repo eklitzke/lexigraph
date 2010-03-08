@@ -106,3 +106,4 @@ def handle_error(func):
     return closure
 
 from lexigraph.handler.interactive import *
+from lexigraph.handler.tags import *

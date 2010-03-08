@@ -1,4 +1,5 @@
 {% macro aggregate_dropdown(label_name='aggregate function', name='aggregate', id='aggregate_dropdown', br=True) -%}
+<div style="clear: left">
 <label for="{{id}}">{{label_name}}: </label>
 <select id="{{id}}" name="{{name}}">
   <option>min</option>
@@ -7,7 +8,5 @@
   <option>oldest</option>
   <option>newest</option>
 </select>
-{% if br %}
-<br>
-{% endif %}
+</div>
 {%- endmacro %}

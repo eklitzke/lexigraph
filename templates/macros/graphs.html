@@ -1,31 +1,47 @@
-{% macro draw_graph(name, dims=None) -%}
+{% macro draw_graph(ds, dims=None) -%}
 <div class="inline_header">
-  <h2 class="graph_title">
-    <a href="/edit/dataset?name={{name}}" title="edit {{name}}">
-      {{name}}
-    </a>
-  </h2>
-  <div id="graph_dataset_{{name}}" class="lexigraph_chart"
+    {% if ds.kind() == "CompositeDataSet" %}
+    <h2 class="graph_title">
+      <a href="/dashboard" title="just kidding">composite</a>
+    </h2>
+    <div id="graph_dataset_{{ds.key().id()}}" class="lexigraph_chart"
+         {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
+         ></div>
+  {% else %}
+    <h2 class="graph_title">
+      <a href="/edit/dataset?name={{ds.name}}" title="edit {{ds.name}}">{{ds.name}}</a>
+    </h2>
+  <div id="graph_dataset_{{ds.key().id()}}" class="lexigraph_chart"
     {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
   ></div>
+  {% endif %}
 </div> <!-- inline header -->
 {%- endmacro -%}
 
-{% macro draw_graphs(names, width=None, add_script=True) -%}
-  {% if names %}
+{% macro draw_graphs(datasets, width=None, add_script=True) -%}
+  {% if datasets %}
     {% if width %}
       {% set dims = {'width': width, 'height': width / 2 } %}
     {% else %}
       {% set dims = None %}
     {% endif %}
-    {% for name in names %}
-      {{ draw_graph(name, dims=dims) }}
+    {% for ds in datasets %}
+      {{ draw_graph(ds, dims=dims) }}
     {% endfor %}
     {% if add_script %}
       <script type="text/javascript">
-      {% for name in names -%}
-        LX.drawGraph({dataset_name: "{{name}}"});
+        try {
+      {% for ds in datasets -%}
+      {% if ds.kind() == "CompositeDataSet" %}
+      LX.drawGraph({datasets: {{ds.names_json()}}, dataset_id: {{ds.key().id()}}});
+      {% else %}
+      LX.drawGraph({datasets: {{ds.names_json()}}, dataset_id: {{ds.key().id()}}});
+      {% endif %}
       {% endfor %}
+        } catch (e) {
+        console.info(e);
+        throw e;
+        }
       </script>
     {% endif %}
   {% else %}

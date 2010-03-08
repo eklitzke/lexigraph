@@ -1,3 +1,7 @@
+import lexigraph.log
+
+logger = lexigraph.log.new_logger('model')
+
 class TooManyResults(ValueError):
     pass
 

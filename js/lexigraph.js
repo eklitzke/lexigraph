@@ -23,14 +23,18 @@ LX.updatePrefs = function (map) {
 };
 
 LX.drawGraph = function (opts) {
-    var dataset_name = opts.dataset_name;
-    if (dataset_name === undefined) {
-        throw {name: "undefined dataset", args: opts};
+    var datasets = opts.datasets;
+    if (datasets === undefined) {
+        throw {name: "undefined datasets", args: opts};
     }
 
     var element_id = opts.element_id;
     if (element_id === undefined) {
-        element_id = "graph_dataset_" + dataset_name;
+        if (opts.dataset_id === undefined) {
+            throw "must have an element_id or dataset_id defined";
+        } else {
+            element_id = "graph_dataset_" + opts.dataset_id;
+        }
     }
 
     var draw_graph = function () {
@@ -45,7 +49,17 @@ LX.drawGraph = function (opts) {
             div.style.width = dims.width + "px";
             div.style.height = dims.height + "px";
         }
-        var csv_url = "/api/csv?dataset=" + dataset_name;
+        var csv_url = "/api/csv?";
+        var need_amp = false;
+        for (var i = 0; i < datasets.length; i++) {
+            if (need_amp) {
+                csv_url += "&";
+            } else {
+                need_amp = true;
+            }
+            csv_url += "dataset=" + datasets[i];
+        }
+        console.log("csv_url = " + csv_url);
 
         /* dygraphs options are mixed in with other options */
         var graph_opts = {};
@@ -68,7 +82,10 @@ LX.drawGraph = function (opts) {
 
         setopt('includeZero', true);
         setopt('fillGraph', false);
-        setopt('colors', ['#5C7977', '#86997B', '#E8A03A', '#D24B14', '#2D292A']); //AIW pallet from colourlovers.com
+        // setopt('colors', ['#5C7977', '#86997B', '#E8A03A', '#D24B14', '#2D292A']); //AIW pallet from colourlovers.com
+        //setopt('colors', ['#3F4C5F', '#A81213', '#467040', '#E7FE4C', '#D75A7C']); // http://kuler.adobe.com/#themeID/802345
+        //setopt('colors', ['#471045', '#FF7000', '#BD2056', '#648C02', '#FFD300']);
+        setopt('colors', ['#3f4c5f', '#66b132', '#0248ff', '#fd5202']);
         setopt('strokeWidth', 2);
         setuseropt('showRoller', 'show_rollbar', false);
 

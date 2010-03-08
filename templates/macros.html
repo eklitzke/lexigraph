@@ -12,8 +12,13 @@
 <script type="text/javascript" src="{{expand_serial(serials, '/versioned_js', filename)}}"></script>
 {%- endmacro -%}
 
-{% macro label_with_input(label_name, id, name, value='', type='text', size=20, br=True) -%}
-<label for="{{id}}">{{label_name}}: </label><input id="{{id}}" type="{{type}}" name="{{name}}" value="{{value|e}}" size="{{size}}">
+{% macro label_with_input(label_name, id, name, value='', type='text', size=20, br=True, label_div=None, input_div=None) -%}
+{% if label_div %}<div class="{{label_div}}">{% endif %}
+<label for="{{id}}">{{label_name}}: </label>
+{% if label_div %}</div>{% endif %}
+{% if input_div %}<div class="{{input_div}}">{% endif %}
+<input id="{{id}}" type="{{type}}" name="{{name}}" value="{{value|e}}" size="{{size}}">
+{% if input_div %}</div>{% endif %}
 {% if br %}
 <br>
 {% endif %}

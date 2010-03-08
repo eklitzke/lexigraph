@@ -20,12 +20,14 @@
   {{ graphs.draw_graphs(dashboard_graphs, width=prefs.small_width) }}
 </div> <!-- query_results -->
 
-<div style="clear: both">
+<div id="new_dataset_form">
   <h2>add a new dataset</h2>
   <form action="/new/dataset" method="POST">
     <fieldset>
       <legend>dataset details</legend>
-      {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset") }}
+      {{ macros.label_with_input("hostname", "new_hostname", "hostname", label_div="details_label", input_div="form_input") }}
+      {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset", label_div="details_label", input_div="form_input") }}
+      {{ macros.label_with_input("tags", "tags_input", "tags", size=40, label_div="details_label", input_div="form_input") }}
       {{ dashboard.aggregate_dropdown() }}
       <label for="group_dropdown">
       initial group:
@@ -36,16 +38,26 @@
         {% endfor %}
       </select>
       <br>
-      <label for="tags_input">tags (comma separated): </label><input type="text" id="tags_input" name="tags" size=60><br>
       <label for="description_input">description: <br></label>
-      <textarea name="description" id="description_input" cols=80 rows=3></textarea> <br>
+      <textarea name="description" id="description_input" cols=60 rows=3></textarea> <br>
     </fieldset>
     <fieldset>
       <legend>initial data series</legend>
-      {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval") }}
-      {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage") }}
+      {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval", label_div="dataseries_label", input_div="form_input") }}
+      {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage", label_div="dataseries_label", input_div="form_input") }}
     </fieldset>
     <input type="submit" value="submit">
+  </form>
+</div>
+<div id="other_dataset_form">
+  <h2>other stuff</h2>
+  <form action="/new/composite_dataset" method="POST">
+    <fieldset>
+      <legend>create a composite dataset</legend>
+      {{ macros.label_with_input("datasets", "composite_datasets", "datasets", size=40, label_div="composite_label", input_div="form_input", br=False) }}
+      {{ macros.label_with_input("tags", "composite_tags", "tags", size=40, label_div="composite_label", input_div="form_input") }}
+      <input type="submit" value="submit" style="clear: left">
+    </fieldset>
   </form>
 </div>
 {% endblock %}

@@ -83,6 +83,9 @@ class AccountHandler(RequestHandler):
             raise PermissionsError
         return ds
 
+    def get_datasets(self, names, check_read=True, check_write=False, check_delete=False):
+        return [self.get_dataset(name, check_read=check_read, check_write=check_write, check_delete=check_delete) for name in names]
+
 class SessionHandler(AccountHandler):
     """A request handler that knows about sessions and user accounts."""
 

@@ -9,7 +9,6 @@ class NewDataSet(SessionHandler):
     requires_login = True
 
     def post(self):
-        self.log.info('making ds')
         dataset_name = self.form_required('dataset')
         aggregate = self.form_required('aggregate')
         group_name = self.form_required('group')

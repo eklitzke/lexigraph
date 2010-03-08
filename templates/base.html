@@ -26,6 +26,7 @@
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
     <link rel="stylesheet" type="text/css" href="/css/lexigraph.css">
     {% block extra_css %}{% endblock %}
+    <!-- [if IE]>{{ macros.versioned_js(serials, "excanvas.compiled.js") }}<![endif] -->
     {{ macros.versioned_js(serials, "dygraph-combined.js") }}
     {%- if config.remote_jquery %}
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>

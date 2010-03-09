@@ -1,9 +1,6 @@
 # Configuration nonsense for lexigraph. Uses Yelp configuration conventions.
 
-try:
-    import lexigraph.level as level
-except ImportError:
-    level = object()
+import level
 
 def mkvar(name, default):
     globals()[name] = getattr(level, name, default)

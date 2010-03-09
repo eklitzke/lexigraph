@@ -59,9 +59,9 @@ this.upload = upload = function (name, key, val) {
 };
 
 var COMMANDS = [
-    {"cmd": "cut -f1 -d' ' /proc/loadavg", "interval": 30, "key": "bc98d09c5915ef1c19e1e21bfd51a111", "name": "load1"},
-    {"cmd": "cut -f2 -d' ' /proc/loadavg", "interval": 30, "key": "bc98d09c5915ef1c19e1e21bfd51a111", "name": "load5"},
-    {"cmd": "cut -f3 -d' ' /proc/loadavg", "interval": 30, "key": "bc98d09c5915ef1c19e1e21bfd51a111", "name": "load15"}
+    {"cmd": "cut -f1 -d' ' /proc/loadavg", "interval": 30, "key": "bc98d09c5915ef1c19e1e21bfd51a111", "name": "fPGpQ1mRoyJnsT0ujAW-KA"},
+    {"cmd": "cut -f2 -d' ' /proc/loadavg", "interval": 30, "key": "bc98d09c5915ef1c19e1e21bfd51a111", "name": "SKEjcZVTiU4fSKa6BAWxHg"},
+    {"cmd": "cut -f3 -d' ' /proc/loadavg", "interval": 30, "key": "bc98d09c5915ef1c19e1e21bfd51a111", "name": "glsNQ97-8TCDP-GebAaLJg"}
 ];
 
 function commandLoop(params) {

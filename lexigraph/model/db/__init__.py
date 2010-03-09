@@ -6,6 +6,7 @@ from google.appengine.ext import db
 from google.appengine.api import users
 
 from lexigraph.log import ClassLogger
+import lexigraph.crypt
 
 Error = db.Error
 
@@ -19,6 +20,15 @@ class LexigraphModel(db.Model):
     def __str__(self):
         return '%s(%s)' % (self.kind(), ', '.join('%s=%r' % (k, getattr(self, k)) for k in self.properties().keys()))
     __repr__ = __str__
+
+    def encode(self):
+        if not hasattr(self, '_encoded_id'):
+            self._encoded_id = lexigraph.crypt.encode(self.key().id())
+        return self._encoded_id
+
+    @classmethod
+    def decode(cls, encid):
+        return cls.get_by_id(lexigraph.crypt.decode(encid))
 
 class PermissionsError(APIError):
     pass
@@ -93,6 +103,19 @@ class DataSet(LexigraphModel):
     description = db.TextProperty()
     tags = db.StringListProperty() # optional
 
+    @classmethod
+    def from_encoded(cls, key, user=None, api_key=None, read=True, write=False, delete=False):
+        if not (user or api_key):
+            raise TypeError("Must specify a user or api_key")
+        ds = cls.decode(key)
+        if ds is None:
+            cls.log.info('No dataset known by key %r' % (key,))
+            return None
+        if not ds.is_allowed(user=user, api_key=api_key, read=read, write=write, delete=delete):
+            cls.log.info('Insufficient privileges by user=%r, api_key=%r' % (user, api_key))
+            return None
+        return ds
+
     def series(self):
         return DataSeries.all().filter('dataset =', self)
 
@@ -133,9 +156,9 @@ class DataSet(LexigraphModel):
         for schema in series:
             schema.add_point(value, timestamp)
 
-    def names_json(self):
+    def keys_json(self):
         """For compatibility with CompositeDataSet"""
-        return simplejson.dumps([self.name]).strip()
+        return simplejson.dumps([self.encode()]).strip()
 
 class AccessControl(LexigraphModel):
     # The primary key is (access_group, dataset). The access_group may be None,

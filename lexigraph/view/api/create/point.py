@@ -1,4 +1,5 @@
 import datetime
+from lexigraph import model
 from lexigraph.view import add_route
 from lexigraph.handler import RequestHandler
 from lexigraph.view.api._common import *
@@ -7,17 +8,15 @@ class CreatePoint(ApiRequestHandler):
 
     @encode_json
     def post(self):
-
         dataset = self.form_required('dataset')
         if not dataset:
             return self.make_error(StatusCodes.MISSING_FIELD, missing='dataset')
         try:
-            dataset = self.get_dataset(dataset)
+            dataset = model.DataSet.from_encoded(dataset, api_key=self.key)
             if dataset is None:
                 return self.make_error(StatusCodes.INVALID_FIELD, invalid='dataset')
         except PermissionsError:
             raise
-
         try:
             value = float(self.request.get('value'))
         except ValueError:

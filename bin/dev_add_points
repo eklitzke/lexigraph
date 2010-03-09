@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 import os
+import sys
 import time
+import urllib
+import simplejson
 import subprocess
 
-args = ['./src/dev_add_point', 'ea05f4120b2660646efc78f5d10b07a8']
+key = sys.argv[1]
+args = ['./src/dev_add_point', key]
+result = simplejson.loads(urllib.urlopen('http://localhost:8080/api/description.json?key=' + key).read())
+keys = dict((r['name'], r['key']) for r in result['datasets'])
 
 while True:
 	avg = open('/proc/loadavg').read().strip()
 	parts = avg.split(' ')
-	subprocess.Popen(args + ['load1', parts[0]])
-	subprocess.Popen(args + ['load5', parts[1]])
-	subprocess.Popen(args + ['load15', parts[2]])
+	subprocess.Popen(args + [keys['load1'], parts[0]])
+	subprocess.Popen(args + [keys['load5'], parts[1]])
+	subprocess.Popen(args + [keys['load15'], parts[2]])
 	time.sleep(30)

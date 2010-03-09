@@ -25,7 +25,7 @@ class CSV(ApiRequestHandler, SessionHandler):
         self.datasets = []
         try:
             for dataset in datasets:
-                ds = self.get_dataset(dataset)
+                ds = model.DataSet.from_encoded(dataset, user=self.user, api_key=self.key)
                 if not ds:
                     raise KeyError("No such dataset %r" % (dataset,))
                 self.datasets.append(ds)
@@ -120,8 +120,6 @@ class CSV(ApiRequestHandler, SessionHandler):
 
     def get_worker(self):
 
-        self.log.info('in get worker')
-        self.log.info('dir(self) = %s' % (dir(self,)))
         # simple and fast code if only one dataset
         if len(self.datasets) == 1:
             dataset = self.datasets[0]

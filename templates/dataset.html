@@ -57,7 +57,7 @@
   <input id="graph_width" type="text" size=4 maxlength=4 value="{{prefs.large_width}}"
          onchange="LX.dataset.redraw_graph(parseInt(this.value), '{{dataset.name}}')" >
 </div>
-{{- graph.draw_graphs([dataset.name], width=prefs.large_width) -}}
+{{- graph.draw_graphs([dataset], width=prefs.large_width) -}}
 
 <div style="float: both">
 {% if dataset.description %}

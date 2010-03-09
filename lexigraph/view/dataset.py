@@ -47,15 +47,16 @@ class EditDataSet(InteractiveHandler):
     requires_login = True
 
     def get(self):
-        dataset = self.get_dataset(self.form_required('name', uri='/dashboard'))
+        key = self.form_required('d', uri='/dashboard')
+        dataset = model.DataSet.from_encoded(key, self.user)
+        if not dataset:
+            self.session['error_message'] = 'Dataset does not exist (or you have insufficient privileges)'
+            self.redirect('/dashboard')
         self.load_prefs()
         self.env['dataset'] = dataset
-        self.log.info('dataset = %s' % (dataset,))
         self.env['tags'] = model.TagColors.colors_for_tags(self.user, dataset.tags)
-        self.log.info('tags = %s' % (self.env['tags'],))
         self.env['series'] = model.DataSeries.all().filter('dataset =', dataset)
         self.env['existing_series'] = [{'id': s.key().id(), 'interval': s.interval, 'max_age': s.max_age} for s in self.env['series']]
-        self.log.info('existing_series = %r' % (self.env['existing_series'],))
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
         self.render_template('dataset.html')
 

@@ -76,9 +76,8 @@ class AccountHandler(RequestHandler):
     def get_account_by_user(self):
         raise NotImplementedError
 
-    def get_dataset(self, name, check_read=True, check_write=False, check_delete=False):
-        assert name
-        ds = maybe_one(DataSet.all().filter('name =', name).filter('account =', self.account))
+    def get_dataset(self, key, check_read=True, check_write=False, check_delete=False):
+        ds = DataSet.get_by_key_name(key)
         if ds is not None and not ds.is_allowed(self.user, self.key, read=check_read, write=check_write, delete=check_delete):
             raise PermissionsError
         return ds

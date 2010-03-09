@@ -8,5 +8,5 @@ class CompositeDataSet(LexigraphModel):
     tags = db.StringListProperty()
     account = db.ReferenceProperty(Account, required=True)
 
-    def names_json(self):
-        return simplejson.dumps(list(self.names)).strip()
+    def keys_json(self):
+        return simplejson.dumps([])

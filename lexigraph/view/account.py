@@ -40,7 +40,7 @@ class UpdateAccount(InteractiveHandler):
         if config.whitelisted_emails and mail not in config.whitelisted_emails:
             self.session['error_message'] = 'Sorry, your email (%s) hasn\'t been whitelisted. Ask Evan if you need access.' % (mail,)
             self.redirect('/')
-        self.env['accounts'] = model.Account.all().filter('owner =', self.user)
+        self.env['accounts'] = list(model.Account.all().filter('owner =', self.user))
         self.render_template('account.html')
 
 

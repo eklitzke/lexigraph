@@ -21,7 +21,7 @@ for char in 'HILQ':
 def encode(num):
 	if num <= 0 or num > MAXVAL:
 		raise ValueError('Invalid number: only input in the range [1, %d] allowed' % (MAXVAL,))
-	s1 = hashlib.md5(struct.pack(U64T, num)).digest()[:8]
+	s1 = hashlib.md5(CRYPT_SALT + struct.pack(U64T, num)).digest()[:8]
 	s1n, = struct.unpack(U64T, s1)
 	s2 = hashlib.md5(s1 + CRYPT_SALT).digest()[:4]
 	s2n, = struct.unpack(U32T, s2)

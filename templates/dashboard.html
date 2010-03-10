@@ -50,8 +50,8 @@
     </fieldset>
     <fieldset>
       <legend>initial data series</legend>
-      {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval", value="60", label_div="dataseries_label", input_div="form_input") }}
-      {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage", value="86400", label_div="dataseries_label", input_div="form_input") }}
+      {{ macros.label_with_input("interval (seconds)", "new_interval", "ds_interval", value=prefs.default_series_interval, label_div="dataseries_label", input_div="form_input") }}
+      {{ macros.label_with_input("max age (seconds)", "new_maxage", "ds_maxage", value=prefs.default_series_maxage, label_div="dataseries_label", input_div="form_input") }}
     </fieldset>
     <input type="submit" value="submit">
     </fieldset>
@@ -61,6 +61,7 @@
   <form action="/new/composite_dataset" method="POST">
     <fieldset>
       <legend>create a composite dataset</legend>
+      {{ macros.label_with_input("name", "composite_name", "name", size=40, label_div="composite_label", input_div="form_input", br=False) }}
       {{ macros.label_with_input("datasets", "composite_datasets", "datasets", size=40, label_div="composite_label", input_div="form_input", br=False) }}
       {{ macros.label_with_input("tags", "composite_tags", "tags", size=40, label_div="composite_label", input_div="form_input") }}
       <div style="clear: left">

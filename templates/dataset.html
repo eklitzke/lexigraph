@@ -33,6 +33,7 @@
   </div>
 </fieldset>
 
+{% if not is_composite %}
 <fieldset>
   <legend>edit data series</legend>
   <h3>existing</h3>
@@ -51,6 +52,7 @@
     </span>
   </div>
 </fieldset>
+{% endif %}
 
 <div id="layout_controls">
   <label for="graph_width">graph width:</label>
@@ -74,7 +76,7 @@
     <input type=checkbox name="delete_confirm" id="delete_confirm">
     <label for="delete_confirm">yes, i really want to permanently and irreversible delete <q>{{dataset.name}}</q></label>
     <br>
-    <input type="hidden" name="name" value="{{dataset.name}}">
+    <input type="hidden" name="{% if is_composite %}c{% else %}d{% endif %}" value="{{dataset.encode()}}">
     <input type="submit" value="delete it">
   </fieldset>
 </form>

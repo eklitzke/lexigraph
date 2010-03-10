@@ -7,6 +7,7 @@ class NewCompositeDataSet(SessionHandler):
     requires_login = True
 
     def post(self):
+        name = self.form_required('name')
         datasets = self.form_required('datasets')
         datasets = [x.strip() for x in datasets.split(',')]
         self.get_datasets(datasets)
@@ -16,7 +17,7 @@ class NewCompositeDataSet(SessionHandler):
         tags = set(x.strip() for x in tags.split(','))
         tags.add('composite')
 
-        composite = model.CompositeDataSet(names=datasets, tags=list(tags), account=self.account)
+        composite = model.CompositeDataSet.create(name=name, names=datasets, tags=list(tags), account=self.account)
         composite.put()
 
         self.redirect('/dashboard')

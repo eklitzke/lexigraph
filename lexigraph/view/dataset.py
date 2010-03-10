@@ -4,6 +4,22 @@ from lexigraph import model
 from lexigraph.model import maybe_one
 from django.utils import simplejson
 
+class DataSetMixin(object):
+
+    def get_dataset(self):
+        d = self.request.get('d')
+        if d:
+            self.env['is_composite'] = False
+            dataset = model.DataSet.from_encoded(d, self.user)
+        else:
+            c = self.request.get('c')
+            if not c:
+                self.session['error_message'] = 'No dataset (or composite dataset) was specified'
+                self.redirect('/dashboard')
+            self.env['is_composite'] = True
+            dataset = model.CompositeDataSet.from_encoded(c, self.user)
+        return dataset
+
 class NewDataSet(SessionHandler):
 
     requires_login = True
@@ -42,31 +58,35 @@ class NewDataSet(SessionHandler):
 
         self.redirect('/dashboard')
 
-class EditDataSet(InteractiveHandler):
+class EditDataSet(InteractiveHandler, DataSetMixin):
 
     requires_login = True
 
     def get(self):
-        key = self.form_required('d', uri='/dashboard')
-        dataset = model.DataSet.from_encoded(key, self.user)
+        dataset = self.get_dataset()
         if not dataset:
             self.session['error_message'] = 'Dataset does not exist (or you have insufficient privileges)'
             self.redirect('/dashboard')
         self.load_prefs()
         self.env['dataset'] = dataset
         self.env['tags'] = model.TagColors.colors_for_tags(self.user, dataset.tags)
-        self.env['series'] = model.DataSeries.all().filter('dataset =', dataset)
-        self.env['existing_series'] = [{'id': s.key().id(), 'interval': s.interval, 'max_age': s.max_age} for s in self.env['series']]
+        if not self.env['is_composite']:
+            self.env['series'] = model.DataSeries.all().filter('dataset =', dataset)
+            self.env['existing_series'] = [{'id': s.key().id(), 'interval': s.interval, 'max_age': s.max_age} for s in self.env['series']]
         self.env['can_delete'] = dataset.is_allowed(self.user, delete=True)
         self.render_template('dataset.html')
 
-class DeleteDataSet(SessionHandler):
+class DeleteDataSet(SessionHandler, DataSetMixin):
 
     requires_login = True
 
     def post(self):
-        dataset = self.get_dataset(self.form_required('name'))
+        dataset = self.get_dataset()
         assert dataset.is_allowed(self.user, delete=True)
+
+        if self.env['is_composite']:
+            dataset.delete()
+            self.redirect('/dashboard')
 
         # XXX: this is racy (i.e. if someone creates points while we're deleting
         # the dataset). This ought to be amended by a cron job that looks for

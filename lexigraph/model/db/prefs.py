@@ -52,6 +52,9 @@ show_rollbar = Preference.new('Show Rollbar', 'show_rollbar', 'bool', False)
 large_width = Preference.new('Graph Width (large)', 'large_width', 'int', 800)
 small_width = Preference.new('Graph Width (small)', 'small_width', 'int', 400)
 
+default_series_interval = Preference.new('default series interval', 'default_series_interval', 'int', 60)
+default_series_maxage = Preference.new('default series max-age', 'default_series_maxage', 'int', 86400)
+
 class UserPrefs(LexigraphModel):
     user_id = db.StringProperty(required=True)
     pref_name = db.StringProperty(required=True)

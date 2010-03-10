@@ -6,7 +6,6 @@ def add_route(cls, uri_regex):
 import lexigraph.view.account
 import lexigraph.view.composite_dataset
 import lexigraph.view.dashboard
-import lexigraph.view.datapoint
 import lexigraph.view.dataseries
 import lexigraph.view.dataset
 import lexigraph.view.groups

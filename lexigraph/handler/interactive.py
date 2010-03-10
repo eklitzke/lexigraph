@@ -96,22 +96,23 @@ class SessionHandler(AccountHandler):
             self.session = None
 
     def get_account_by_user(self):
-        account = self.session['account']
+        account = ActiveAccount.get_active_account(self.user)
         if account is None:
             accounts = Account.by_user(self.user)
             if not accounts:
                 self.session['error_message'] = 'You must create an account first.'
                 account = None
+                if not self.uri.startswith('/account'):
+                    self.redirect('/account') # N.B. this takes you out of the current flow (although it should never actually happen)
             elif len(accounts) == 1:
+                # only one account, auto-set the active account
                 account = accounts[0]
-                self.session['account'] = account
+                ActiveAccount.set_active_account(self.user, account)
             else:
                 if self.requires_login and not self.uri.startswith('/account'):
                     self.session['info_message'] = 'You must select an account first.'
                     self.redirect('/account')
                 account = None
-        else:
-            self.log.info('hit account = %s in session' % (account,))
         return account
 
 class InteractiveHandler(SessionHandler):

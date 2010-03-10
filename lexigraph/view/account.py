@@ -13,7 +13,8 @@ class NewAccount(AccountHandler):
         if not account_name:
             self.redirect('/new/account')
         else:
-            model.Account.create(account_name, self.user)
+            account = model.Account.create(account_name, self.user)
+            model.ActiveAccount.set_active_account(self.user, account)
             self.redirect('/dashboard')
 
 class ChooseAccount(SessionHandler):
@@ -25,7 +26,7 @@ class ChooseAccount(SessionHandler):
         name = self.form_required('account')
         account = maybe_one(model.Account.all().filter('name =', name))
         if account:
-            self.session['account'] = account
+            model.ActiveAccount.set_active_account(self.user, account)
             self.redirect('/dashboard')
         else:
             self.session['error_message'] = 'invalid choice'

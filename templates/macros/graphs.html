@@ -29,19 +29,10 @@
       {{ draw_graph(ds, dims=dims) }}
     {% endfor %}
     {% if add_script %}
-      <script type="text/javascript">
-        try {
+      <script>
       {% for ds in datasets -%}
-      {% if ds.kind() == "CompositeDataSet" %}
       LX.drawGraph({datasets: {{ds.keys_json()}}, dataset_id: "{{ds.encode()}}"});
-      {% else %}
-      LX.drawGraph({datasets: {{ds.keys_json()}}, dataset_id: "{{ds.encode()}}"});
-      {% endif %}
       {% endfor %}
-        } catch (e) {
-        console.info(e);
-        throw e;
-        }
       </script>
     {% endif %}
   {% else %}

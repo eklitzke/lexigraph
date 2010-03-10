@@ -6,6 +6,7 @@ from google.appengine.ext import db
 from google.appengine.api import users
 
 from lexigraph.log import ClassLogger
+from lexigraph.model import maybe_one
 import lexigraph.crypt
 
 Error = db.Error
@@ -33,67 +34,7 @@ class LexigraphModel(db.Model):
 class PermissionsError(APIError):
     pass
 
-class Account(LexigraphModel):
-    """A hosted lexigraph account."""
-    name = db.StringProperty(required=True) # unique
-    owner = db.UserProperty(required=True)
-
-    @classmethod
-    def by_user(cls, user):
-        user_id = user.user_id()
-        accounts = set()
-        for row in AccessGroup.all().filter('users =', user_id):
-            accounts.add(row.account)
-        return sorted(accounts, key=lambda x: x.name)
-
-    @classmethod
-    def create(cls, name, owner):
-        # ensure that the name is unique
-        existing = maybe_one(cls.all().filter('name =', name))
-        if existing:
-            raise ValueError('Account with name %r already exists: %s' % (name, existing))
-
-        obj = cls(name=name, owner=owner)
-        obj.put()
-
-        # now, create an access group
-        group = AccessGroup.new('admin', obj, users=[owner])
-        group.put()
-
-        return obj
-
-    def datasets(self):
-        return DataSet.all().filter('account =', self)
-
-class AccessGroup(LexigraphModel):
-    name = db.StringProperty(required=True) # unique
-    account = db.ReferenceProperty(Account, required=True)
-    api_token = db.StringProperty()
-    users = db.StringListProperty(required=True)
-
-    @classmethod
-    def new(cls, name, account, api_key=True, users=[]):
-        TOKEN_LENGTH = 16
-        if api_key == True:
-            api_token = os.urandom(TOKEN_LENGTH).encode('hex')
-        elif api_key == False:
-            api_token = None
-        else:
-            api_token = api_key
-            assert type(api_token) is str
-            assert len(api_token) == TOKEN_LENGTH
-        return cls(name=name, account=account, api_token=api_token, users=[u.user_id() for u in users])
-
-    @classmethod
-    def groups_for_user(cls, account, user=None):
-        if user is None:
-            user = users.get_current_user()
-            assert user is not None
-        return cls.all().filter('account =', account).filter('users =', user.user_id())
-
-    @classmethod
-    def group_for_api_key(cls, api_token):
-        return maybe_one(cls.all().filter('api_token =', api_token))
+from lexigraph.model.db.account import *
 
 class DataSet(LexigraphModel):
     # PK is (account, name)

@@ -5,7 +5,7 @@ from django.utils import simplejson
 
 # TODO add permissions
 class CompositeDataSet(LexigraphModel):
-    name = db.StringProperty()
+    name = db.StringProperty(required=True)
     names = db.StringListProperty(required=True)
     tags = db.StringListProperty()
     account = db.ReferenceProperty(Account, required=True)

@@ -10,7 +10,7 @@ class NewCompositeDataSet(SessionHandler):
         count = 0
         for ds in model.DataSet.all().filter('account =', self.account).filter('name IN', datasets):
             count += 1
-            if not (ds.is_allowed(read=True) and ds.is_allowed(write=True)):
+            if not ds.is_allowed(user=self.user, read=True, write=True):
                 self.session['error_message'] = 'Insufficient privileges'
                 self.redirect('/dashboard')
         if count < len(set(datasets)):

@@ -33,3 +33,33 @@ LX.dashboard.redraw_graphs = function (width) {
         }
     }
 };
+
+LX.dashboard.datasets_widget = (function () {
+    $(function () {
+        var cache = {};
+        $("#composite_datasets").autocomplete({
+            source: function (request, response) {
+                if (cache.term == request.term && cache.content) {
+                    response(cache.content);
+                }
+                if (new RegExp(cache.term).test(request.term) && cache.content && cache.content.length < 25) {
+                    var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                    response($.grep(cache.content, function (value) {
+                        return matcher.test(value.value);
+                    }));
+                }
+                $.ajax({
+                    url: "/search/dataset",
+                    dataType: "json",
+                    data: request,
+                    success: function (data) {
+                        cache.term = request.term;
+                        cache.content = data;
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2
+        });
+    });
+});

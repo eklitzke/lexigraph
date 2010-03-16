@@ -6,8 +6,9 @@
 {% block extra_css %}<link rel="stylesheet" type="text/css" href="/css/dataset.css">{% endblock %}
 
 {% block body_content %}
+{# FIXME: this is a hack #}
 <script type="text/javascript">
-  datasetName = "{{dataset.name}}";
+  datasetKey = "{{dataset.encode()}}";
 </script>
 
 <fieldset>
@@ -45,7 +46,7 @@
   <div>
     <h3>add new</h3>
     <img id="add_img" src="/images/add.png" alt="add a new data series" onclick="LX.dataset.add_series_xhr()">
-    <input type="hidden" id="ds_name" value="{{dataset.name}}">
+    <input type="hidden" id="ds_key" value="{{dataset.encode()}}">
     {{ macros.label_with_input('interval', 'new_ival', 'interval', size=5, br=False) }}
     <span style="padding-left: 1em;">
       {{ macros.label_with_input('max age', 'new_max_age', 'max_age', size=7, br=False)}} 

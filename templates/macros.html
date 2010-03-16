@@ -8,8 +8,16 @@
 {%- endif %}
 {%- endmacro -%}
 
+{% macro scheme(use_ssl) -%}
+http{% if use_ssl %}s{% endif %}://
+{%- endmacro -%}
+
 {% macro versioned_js(serials, filename) -%}
 <script type="text/javascript" src="{{expand_serial(serials, '/versioned_js', filename)}}"></script>
+{%- endmacro -%}
+
+{% macro versioned_css(serials, filename) -%}
+<link rel="stylesheet" type="text/css" href="{{expand_serial(serials, '/versioned_css', filename)}}">
 {%- endmacro -%}
 
 {% macro label_with_input(label_name, id, name, value='', type='text', size=20, br=True, label_div=None, input_div=None) -%}

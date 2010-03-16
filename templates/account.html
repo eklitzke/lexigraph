@@ -5,14 +5,14 @@ manage accounts
 {% endblock %}
 
 {% block body_content %}
-{% if accounts %}
+{% if accounts|length > 1 %}
 <form action="/choose/account" method="POST">
   <fieldset>
     <legend>select an account</legend>
     choose account:
     <select name="account">
       {% for account in accounts %}
-      <option value="{{account.name}}">{{account.name}}</option>
+      <option value="{{account.name|e}}">{{account.display_name|e}}</option>
       {% endfor %}
     </select>
     <input type="submit" value="submit"/>
@@ -23,10 +23,18 @@ manage accounts
 <form action="/new/account" method="POST">
   <fieldset>
     <legend>create a new account</legend>
-    create a new account. this should be a logical account for an entire domain
-    (imagine a hosted account), e.g. something like <q>yelp.com</q> or
-    <q>485 w. macarthur</q>.<br />
+    create a new account. this should be a logical account for an entire domain (imagine a hosted account),
+    e.g. something like <q>example.com</q> or
+    <q>the illuminati</q>. additionally, this name must be globally
+    unique within lexigraph.
+<br>
+
     account name: <input type="text" name="account_name"> <input type="submit" value="create">
   </fielset>
 </form>
+
+{% if accounts %}
+if you'd like to delete
+{% if accounts|length == 1 %}your{% else %}an{% endif %} account, please contact us directly at <a href="mailto:service@example.com">service@example.com</a>
+{% endif %}
 {% endblock %}

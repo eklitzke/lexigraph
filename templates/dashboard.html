@@ -57,6 +57,10 @@
     </fieldset>
   </form>
 </div>
+
+<script type="text/javascript">
+  LX.dashboard.datasets_widget();
+</script>
 <div id="other_dataset_form">
   <form action="/new/composite_dataset" method="POST">
     <fieldset>
@@ -64,9 +68,6 @@
       {{ macros.label_with_input("name", "composite_name", "name", size=40, label_div="composite_label", input_div="form_input", br=False) }}
       {{ macros.label_with_input("datasets", "composite_datasets", "datasets", size=40, label_div="composite_label", input_div="form_input", br=False) }}
       {{ macros.label_with_input("tags", "composite_tags", "tags", size=40, label_div="composite_label", input_div="form_input") }}
-      <div style="clear: left">
-        <input type="submit" value="submit">
-      </div>
     </fieldset>
   </form>
 </div>

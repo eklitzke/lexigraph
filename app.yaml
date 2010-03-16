@@ -21,12 +21,26 @@ handlers:
       static_files: js/\2.js
       upload: js/(.+)\.js
       expiration: 10d
-   
+
+    - url: /versioned_css/(.+)/(.+)\.css
+      static_files: static/css/\2.css
+      upload: static/css/(.+)\.css
+      expiration: 10d
+
     - url: /(cron|tasks)/.*
       script: main.py
       login: admin
-    
-    - url: /.*
+
+    - url: /
+      script: main.py
+      secure: never
+
+    - url: /(dashboard|account)
+      script: main.py
+      secure: always
+
+    - url: /.+
+      secure: optional
       script: main.py
 
 skip_files:

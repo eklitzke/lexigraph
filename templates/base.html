@@ -8,10 +8,7 @@
   </ul>
   <span class="topnav_select">
     {%- if account %}
-    account: {{account.name}}
-    {%- if accounts|length > 1 %}
-    <span class="mini_link"><a href="/account"><span style="font-weight: normal">edit</span></a></span>
-    {%- endif %}
+    account: <a href="/account" title="edit or change account">{{account.display_name}}</a>
     {% else %}
     <a href="/account">select an account</a>
     {%- endif %}
@@ -23,16 +20,17 @@
   <head>
     <title>lexigraph</title>
     <link rel="icon" href="/favicon.ico">
+    {% if use_ssl %}
+    {{ macros.versioned_css(serials, "reset-fonts-grids.css") }}
+    {% else %}
     <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css">
+    {% endif %}
     <link rel="stylesheet" type="text/css" href="/css/lexigraph.css">
     {% block extra_css %}{% endblock %}
     <!-- [if IE]>{{ macros.versioned_js(serials, "excanvas.compiled.js") }}<![endif] -->
     {{ macros.versioned_js(serials, "dygraph-combined.js") }}
-    {%- if config.remote_jquery %}
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    {% else %}
-    {{ macros.versioned_js(serials, "jquery-1.4.2.min.js") }}
-    {% endif -%}
+    <script type="text/javascript" src="{{macros.scheme(use_ssl)}}ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="{{macros.scheme(use_ssl)}}ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
     {%- if is_live %}
     {{ macros.versioned_js(serials, "lexigraph.min.js") }}
     {% else %}

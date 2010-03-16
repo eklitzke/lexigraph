@@ -25,6 +25,7 @@ class NewDataSet(SessionHandler):
     requires_login = True
 
     def post(self):
+        hostname = self.form_required('hostname')
         dataset_name = self.form_required('dataset')
         aggregate = self.form_required('aggregate')
         group_name = self.form_required('group')
@@ -44,14 +45,14 @@ class NewDataSet(SessionHandler):
         tags = [t.strip() for t in tags.split(',')]
 
         # create the dataset
-        ds = model.DataSet(name=dataset_name, aggregate=aggregate, account=self.account, description=description, tags=tags)
+        ds = model.DataSet(name=dataset_name, hostname=hostname, aggregate=aggregate, account=self.account, description=description, tags=tags)
         ds.put()
-        self.log.debug('created new dataset, with id %s' % (ds.key().id(),))
+        self.log.debug('created new dataset %s' % (ds.encode(),))
 
         # add an access control for it
         access = model.AccessControl.new(group, ds, read=True, write=True, delete=True)
         access.put()
-        self.log.debug('created new access control with id %s' % (access.key().id(),))
+        self.log.debug('created new access control id %s' % (access.encode(),))
 
         # create an initial data series
         model.DataSeries(dataset=ds, interval=ds_interval, max_age=ds_maxage).put()

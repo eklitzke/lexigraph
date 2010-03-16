@@ -9,7 +9,8 @@ from lexigraph.model import maybe_one
 
 class Account(LexigraphModel):
     """A hosted lexigraph account."""
-    name = db.StringProperty(required=True) # unique
+    name = db.StringProperty(required=True) # unique, lowercase version of display_name
+    display_name = db.StringProperty(required=True)
     owner = db.UserProperty(required=True)
 
     @classmethod
@@ -21,13 +22,14 @@ class Account(LexigraphModel):
         return sorted(accounts, key=lambda x: x.name)
 
     @classmethod
-    def create(cls, name, owner):
+    def create(cls, display_name, owner):
         # ensure that the name is unique
+        name = display_name.lower()
         existing = maybe_one(cls.all().filter('name =', name))
         if existing:
             raise ValueError('Account with name %r already exists: %s' % (name, existing))
 
-        obj = cls(name=name, owner=owner)
+        obj = cls(name=name, display_name=display_name, owner=owner)
         obj.put()
 
         # now, create an access group

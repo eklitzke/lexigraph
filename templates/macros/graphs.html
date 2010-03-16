@@ -1,5 +1,10 @@
-{% macro draw_graph(ds, dims=None) -%}
+{% macro draw_graph(ds, dims=None, show_host=True) -%}
 <div class="inline_header">
+  {% if show_host %}
+  {% set display_name = (ds.hostname or '') + ':' + ds.name %}
+  {% else %}
+  {% set display_name = ds.name %}
+  {% endif %}
     {% if ds.kind() == "CompositeDataSet" %}
     <h2 class="graph_title">
       <a href="/edit/dataset?c={{ds.encode()}}" title="edit composite">{{ds.name}}</a>
@@ -9,7 +14,7 @@
          ></div>
   {% else %}
     <h2 class="graph_title">
-      <a href="/edit/dataset?d={{ds.encode()}}" title="edit {{ds.name}}">{{ds.name}}</a>
+      <a href="/edit/dataset?d={{ds.encode()}}" title="edit {{display_name}}">{{display_name}}</a>
     </h2>
   <div id="graph_dataset_{{ds.encode()}}" class="lexigraph_chart"
     {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
@@ -18,7 +23,7 @@
 </div> <!-- inline header -->
 {%- endmacro -%}
 
-{% macro draw_graphs(datasets, width=None, add_script=True) -%}
+{% macro draw_graphs(datasets, width=None, add_script=True, show_host=True) -%}
   {% if datasets %}
     {% if width %}
       {% set dims = {'width': width, 'height': width / 2 } %}
@@ -26,7 +31,7 @@
       {% set dims = None %}
     {% endif %}
     {% for ds in datasets %}
-      {{ draw_graph(ds, dims=dims) }}
+      {{ draw_graph(ds, dims=dims, show_host=show_host) }}
     {% endfor %}
     {% if add_script %}
       <script>

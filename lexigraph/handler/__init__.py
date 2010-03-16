@@ -41,7 +41,7 @@ class RequestHandler(_RequestHandler):
         self.initialize_env()
 
     def initialize_env(self):
-        self.env = {'config': config, 'serials': serials.hashes}
+        self.env = {'config': config, 'serials': serials.hashes, 'use_ssl': True}
         if hasattr(config.level, 'is_live'):
             self.env['is_live'] = config.level.is_live
         else:

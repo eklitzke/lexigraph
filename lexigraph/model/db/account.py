@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from google.appengine.ext import db
 from google.appengine.api import users
@@ -7,10 +8,15 @@ from google.appengine.api import memcache
 from lexigraph.model.db import LexigraphModel
 from lexigraph.model import maybe_one
 
+# how frequently last_login is updated
+LAST_LOGIN_UPDATE_FREQUENCY = datetime.timedelta(seconds=600)
+
 class Account(LexigraphModel):
     """A hosted lexigraph account."""
     name = db.StringProperty(required=True) # unique, lowercase version of display_name
     display_name = db.StringProperty(required=True)
+    time_created = db.DateTimeProperty(required=True, auto_now_add=True)
+    last_login = db.DateTimeProperty(required=True, auto_now_add=True)
     owner = db.UserProperty(required=True)
 
     @classmethod
@@ -83,12 +89,20 @@ class ActiveAccount(LexigraphModel):
     def get_active_account(cls, user):
         user_id = user.user_id()
         account_id = memcache.get(user_id, namespace='active_account')
+        account = None
         if account_id:
-            return Account.get_by_id(account_id)
-        row = maybe_one(cls.all().filter('user =', user))
-        if row:
-            memcache.set(user_id, row.account.key().id(), namespace='active_account')
-            return row.account
+            account = Account.get_by_id(account_id)
+        else:
+            row = maybe_one(cls.all().filter('user =', user))
+            if row:
+                memcache.set(user_id, row.account.key().id(), namespace='active_account')
+                account = row.account
+        if account:
+            now = datetime.datetime.now()
+            if now - account.last_login >= LAST_LOGIN_UPDATE_FREQUENCY:
+                account.last_login = now
+                account.put()
+            return account
         else:
             return None
 

@@ -17,6 +17,7 @@ import lexigraph.view.tasks
 import lexigraph.view.doc
 import lexigraph.view.graph
 
+import lexigraph.view.adhoc
 import lexigraph.view.ajax
 import lexigraph.view.api
 import lexigraph.view.debug

@@ -34,7 +34,8 @@ manage accounts
 </form>
 
 {% if accounts %}
-if you'd like to delete
-{% if accounts|length == 1 %}your{% else %}an{% endif %} account, please contact us directly at <a href="mailto:service@example.com">service@example.com</a>
+<br>
+if you'd like to deactivate
+{% if accounts|length == 1 %}your{% else %}an{% endif %} account, please contact us directly at <a href="mailto:{{support_address}}">{{support_address}}</a>
 {% endif %}
 {% endblock %}

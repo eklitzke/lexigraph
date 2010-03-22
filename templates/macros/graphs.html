@@ -12,13 +12,13 @@
     <div id="graph_dataset_{{ds.encode()}}" class="lexigraph_chart"
          {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
          ></div>
-  {% else %}
+    {% else %}
     <h2 class="graph_title">
       <a href="/edit/dataset?d={{ds.encode()}}" title="edit {{display_name}}">{{display_name}}</a>
     </h2>
-  <div id="graph_dataset_{{ds.encode()}}" class="lexigraph_chart"
-    {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
-  ></div>
+    <div id="graph_dataset_{{ds.encode()}}" class="lexigraph_chart"
+         {% if dims %}style="width: {{dims.width}}px; height: {{dims.height}}px;"{% endif %}
+         ></div>
   {% endif %}
 </div> <!-- inline header -->
 {%- endmacro -%}

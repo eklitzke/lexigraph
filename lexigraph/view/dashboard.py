@@ -2,6 +2,7 @@ from lexigraph.view import add_route
 from lexigraph.handler import TagsMixin, InteractiveHandler
 from lexigraph import model
 from django.utils import simplejson
+import contextlib
 
 class Dashboard(TagsMixin, InteractiveHandler):
 
@@ -13,8 +14,9 @@ class Dashboard(TagsMixin, InteractiveHandler):
             self.redirect('/account')
             return
         self.load_prefs()
-        self.env['groups'] = model.AccessGroup.groups_for_user(self.account)
+        self.env['groups'] = list(model.AccessGroup.groups_for_user(self.account))
         self.env['dashboard_graphs'] = self.datasets_by_tags(['dashboard'])
+        self.env['any_hosts'] = bool(model.DataSet.all().filter('account =', self.account).fetch(1))
         self.render_template('dashboard.html')
         
 add_route(Dashboard, '/dashboard')

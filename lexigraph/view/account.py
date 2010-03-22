@@ -16,7 +16,7 @@ class NewAccount(AccountHandler):
         if not account_name:
             self.redirect('/new/account')
         else:
-            self.account = model.Account.create(account_name, self.user)
+            account = model.Account.create(account_name, self.user)
             model.ActiveAccount.set_active_account(self.user, account)
             try:
                 self.send_welcome_email(account)

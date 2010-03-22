@@ -1,6 +1,6 @@
 from functools import wraps
 
-from lexigraph.handler import AccountHandler
+from lexigraph.handler import AccountHandler, SessionHandler
 from lexigraph.model import *
 
 from django.utils import simplejson
@@ -36,7 +36,7 @@ def encode_json(func):
         self.response.out.write(simplejson.dumps(val))
     return inner
 
-class ApiRequestHandler(AccountHandler):
+class ApiRequestHandler(SessionHandler):
 
     def initialize(self, request, response):
         super(ApiRequestHandler, self).initialize(request, response)

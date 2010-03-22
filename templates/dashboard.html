@@ -21,6 +21,24 @@
 </div> <!-- query_results -->
 
 <div id="new_dataset_form">
+  <form action="/new/host" method="POST">
+    <fieldset>
+      <legend>add a new host</legend>
+      {{ macros.label_with_input("hostname", "hostname", "hostname") }}
+      {{ macros.label_with_input("class", "host_class", "host_class") }}
+      {% if groups|length > 1 %}
+      <select id="group_dropdown_host" name="group">
+        {% for group in groups %}
+        <option>{{group.name}}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+      <input type="checkbox" name="populate" checked> automatically create standard datasets
+      <br>
+      <input type="submit" value="submit">
+    </fieldset>
+  </form>
+  {% if any_datasets %}
   <form action="/new/dataset" method="POST">
     <fieldset>
       <legend>add a new dataset</legend>
@@ -36,6 +54,7 @@
       {{ macros.label_with_input("dataset name", "new_dataset_name", "dataset", label_div="details_label", input_div="form_input") }}
       {{ macros.label_with_input("tags", "tags_input", "tags", size=40, label_div="details_label", input_div="form_input") }}
       {{ dashboard.aggregate_dropdown() }}
+      {% if groups|length > 1 %}
       <label for="group_dropdown">
       initial group:
       </label>
@@ -45,6 +64,7 @@
         {% endfor %}
       </select>
       <br>
+      {% endif%}
       <label for="description_input">description: <br></label>
       <textarea name="description" id="description_input" cols=60 rows=3></textarea> <br>
     </fieldset>
@@ -71,4 +91,5 @@
     </fieldset>
   </form>
 </div>
+{% endif %} {# any_datsets #}
 {% endblock %}

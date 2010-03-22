@@ -90,7 +90,7 @@ class DataPoint(LexigraphModel):
         elif aggregate == 'new':
             return new_value
         else:
-            raise NotImplementedError
+            raise NotImplementedError("Coalesce strategy %r not implemented" % (aggregate,))
 
     def update_point(self, value, timestamp=None, update_cache=True):
         self.value = value

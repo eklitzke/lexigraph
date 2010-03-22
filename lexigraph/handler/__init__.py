@@ -28,6 +28,7 @@ def cache_per_request(func):
         return cache_dict[cache_key]
     return cache_per_request_inner
 
+
 class RequestHandler(_RequestHandler):
 
     log = ClassLogger()

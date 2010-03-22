@@ -10,6 +10,7 @@ import lexigraph.view.dataseries
 import lexigraph.view.dataset
 import lexigraph.view.groups
 import lexigraph.view.home
+import lexigraph.view.host
 import lexigraph.view.logout
 import lexigraph.view.prefs
 import lexigraph.view.cron

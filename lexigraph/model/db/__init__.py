@@ -38,6 +38,7 @@ class PermissionsError(APIError):
     pass
 
 from lexigraph.model.db.account import *
+from lexigraph.model.db.host import *
 
 class DataSet(LexigraphModel):
     # PK is (account, name)
@@ -46,6 +47,7 @@ class DataSet(LexigraphModel):
     aggregate = db.StringProperty(required=True)
     account = db.ReferenceProperty(Account, required=True)
     description = db.TextProperty()
+    scale = db.FloatProperty()
     tags = db.StringListProperty() # optional
 
     @classmethod

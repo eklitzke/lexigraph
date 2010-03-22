@@ -1,3 +1,6 @@
+import time
+from google.appengine.api.labs import taskqueue
+
 from lexigraph.handler import RequestHandler
 from lexigraph.model import *
 
@@ -6,35 +9,38 @@ class TaskRequestHandler(RequestHandler):
     def initialize(self, request, response):
         super(TaskRequestHandler, self).initialize(request, response)
         response.headers['Content-Type'] = 'text/plain; charset=utf-8'
+        
+class WorkFinished(Exception):
+    def __init__(self, params={}):
+        self.params = params
 
-class TimedIdempotentTask(RequestHandler):
+class TimedTaskHandler(TaskRequestHandler):
 
-    batch_size = 100
+    TARGET_ELAPSED = 20.0
 
-
-    def pre_run(self):
+    def do_piece(self):
         pass
 
-    def run(self):
-        self.pre_run()
-        if not hasattr(self, 'items'):
-            raise AttributeError("Missing attribute 'items'")
-        self.items = list(self.items)
-        while True:
-            self.process_items(self.items[:self.batch_size])
-            self.items = self.items[self.batch_size:]
-            if not self.items:
-                break
-        self.post_run()
-
-    def post_run(self):
-        pass
-
-    def process_item(self, item):
+    def remaining_params(self):
         raise NotImplementedError
 
-    def process_items(self, items):
+    def before_work(self):
         pass
 
+    def post(self):
+        self.before_work()
+        time_end = time.time() + self.TARGET_ELAPSED
+        params = None
+        more_work = False
+        try:
+            while True:
+                self.do_piece()
+                if time.time() > time_end:
+                    break
+        except WorkFinished:
+            pass
+
+        if more_work:
+            taskqueue.add(url=self.request.path, params=self.remaining_params())
 
 import lexigraph.view.tasks.trim_series

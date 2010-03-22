@@ -6,28 +6,48 @@ from lexigraph.view.api._common import *
 
 class CreatePoint(ApiRequestHandler):
 
+    def get_datasets(self, datasets):
+        result = []
+        for ds in datasets:
+            dataset = model.DataSet.from_encoded(ds, api_key=self.key, write=True)
+            assert dataset is not None
+            result.append(dataset)
+        return result
+
+    def get_timestamps(self, timestamps):
+        ts = []
+        now = datetime.datetime.now()
+        for t in timestamps:
+            t = int(t)
+            if t:
+                t = datetime.datetime.fromtimestamp(t)
+            else:
+                t = now
+            ts.append(t)
+        return ts
+
     @encode_json
     def post(self):
-        dataset = self.form_required('dataset')
-        if not dataset:
-            return self.make_error(StatusCodes.MISSING_FIELD, missing='dataset')
-        try:
-            dataset = model.DataSet.from_encoded(dataset, api_key=self.key)
-            if dataset is None:
-                return self.make_error(StatusCodes.INVALID_FIELD, invalid='dataset')
-        except PermissionsError:
-            raise
-        try:
-            value = float(self.request.get('value'))
-        except ValueError:
-            raise # FIXME
-        timestamp = self.request.get('timestamp')
-        if not timestamp:
-            timestamp = datetime.datetime.now()
-        else:
-            timestamp = datetime.datetime.fromtimestamp(int(timestamp))
+        """Add one or more DataPoints. To add multiple points from a single
+        request, you simply repeat the dataset/value/timestamp form variables.
+        """
+        datasets = self.request.get_all('dataset')
+        values = self.request.get_all('value')
+        timestamps = self.request.get_all('timestamp')
 
-        dataset.add_points(value, timestamp)
+        assert datasets
+
+        if not timestamps:
+            timestamps = [0 for x in xrange(len(datasets))]
+        assert len(datasets) == len(values)
+        assert len(datasets) == len(timestamps)
+
+        values = [float(v) for v in values]
+        datasets = self.get_datasets(datasets)
+        timestamps = self.get_timestamps(timestamps)
+
+        for ds, v, t in zip(datasets, values, timestamps):
+            ds.add_points(v, t)
         return self.add_status({}, StatusCodes.OK)
 
 add_route(CreatePoint, '/api/new/datapoint')
